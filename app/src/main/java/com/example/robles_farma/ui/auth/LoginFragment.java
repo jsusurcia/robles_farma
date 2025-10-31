@@ -1,5 +1,6 @@
 package com.example.robles_farma.ui.auth;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.robles_farma.MainActivity;
 import com.example.robles_farma.R;
 import com.example.robles_farma.databinding.FragmentLoginBinding;
 
@@ -47,6 +49,9 @@ public class LoginFragment extends Fragment {
         //Lógica sencilla, luego se reemplaza con la llamada a la API
         if (dni.equals("72680893")) {
             Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+            getActivity().finish();
         }
     }
 }
