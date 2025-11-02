@@ -15,7 +15,11 @@
         android:id="@+id/navigation_citas"
         android:name="com.example.robles_farma.ui.citas.CitasFragment"
         android:label="@string/title_citas"
-        tools:layout="@layout/fragment_citas" />
+        tools:layout="@layout/fragment_citas" >
+        <action
+            android:id="@+id/action_navigation_citas_to_navigation_detalle_cita"
+            app:destination="@id/navigation_detalle_cita" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_chat"
@@ -28,4 +32,10 @@
         android:name="com.example.robles_farma.ui.perfil.PerfilFragment"
         android:label="@string/title_perfil"
         tools:layout="@layout/fragment_perfil" />
+
+    <fragment
+        android:id="@+id/navigation_detalle_cita"
+        android:name="com.example.robles_farma.ui.citas.DetalleCitaFragment"
+        android:label="@string/title_detalle_cita"
+        tools:layout="@layout/fragment_detalle_cita" />
 </navigation>

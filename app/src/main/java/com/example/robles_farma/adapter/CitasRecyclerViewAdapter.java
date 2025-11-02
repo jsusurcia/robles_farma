@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -70,15 +71,11 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
         return listaCitas.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CircleImageView imageDoctor;
-        TextView textDoctorName;
-        TextView textSpecialty;
-        TextView textDate;
-        TextView textLocation;
+        TextView textDoctorName, textSpecialty, textDate, textLocation;
         Chip chipStatus;
-        ImageView iconInfo;
-        ImageView iconMessage;
+        ImageView iconInfo, iconMessage;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -91,6 +88,19 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
             chipStatus = itemView.findViewById(R.id.chipStatus);
             iconInfo = itemView.findViewById(R.id.iconInfo);
             iconMessage = itemView.findViewById(R.id.iconMessage);
+
+            itemView.setOnClickListener(this);
+            iconInfo.setOnClickListener(this);
+            iconMessage.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.iconInfo) {
+                Toast.makeText(v.getContext(), "Ver detalle de la cita", Toast.LENGTH_SHORT).show();
+            } else if (v.getId() == R.id.iconMessage) {
+                Toast.makeText(v.getContext(), "Redirigiendo al chat del doctor", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
