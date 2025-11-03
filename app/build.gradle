@@ -45,6 +45,8 @@ dependencies {
     implementation libs.lifecycle.viewmodel.ktx
     implementation libs.navigation.fragment
     implementation libs.circleimageview             //CircleImageView
+    implementation libs.retrofit                    //Retrofit
+    implementation libs.converter.gson              //Converter-gson (Retrofit)
     implementation libs.navigation.ui
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
