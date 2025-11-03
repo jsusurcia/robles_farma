@@ -38,10 +38,12 @@ public class ProximasCitasFragment extends Fragment {
     }
 
     private void cargarCitasEjemplo() {
+        listaProxCitas.clear();
         listaProxCitas.add(new CitasData(
                 "Dr. Juan Pérez",
                 "Cardiología",
-                "15 Nov 2024 - 10:00 AM",
+                "15 Nov 2024",
+                "10:00",
                 "Consultorio 301",
                 "Confirmada"
         ));
@@ -49,7 +51,8 @@ public class ProximasCitasFragment extends Fragment {
         listaProxCitas.add(new CitasData(
                 "Dra. María García",
                 "Pediatría",
-                "20 Nov 2024 - 3:00 PM",
+                "20 Nov 2024",
+                "15:00",
                 "Consultorio 205",
                 "Pendiente"
         ));
@@ -57,7 +60,8 @@ public class ProximasCitasFragment extends Fragment {
         listaProxCitas.add(new CitasData(
                 "Dr. Carlos López",
                 "Dermatología",
-                "25 Nov 2024 - 11:30 AM",
+                "25 Nov 2024",
+                "11:30",
                 "Consultorio 402",
                 "Cancelada"
         ));

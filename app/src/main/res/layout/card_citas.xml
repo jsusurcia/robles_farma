@@ -59,7 +59,16 @@
                 android:id="@+id/textDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Aug 15, 2024 at 10:00 AM"
+                android:text="Aug 15, 2024 at"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/textHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:00 AM"
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 android:layout_marginTop="4dp" />

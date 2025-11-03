@@ -1,6 +1,8 @@
 package com.example.robles_farma.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.robles_farma.R;
@@ -44,6 +47,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
         holder.textDoctorName.setText(cita.getNombrePersonal());
         holder.textSpecialty.setText(cita.getEspecialidad());
         holder.textDate.setText(cita.getFecha());
+        holder.textHour.setText(cita.getHora());
         holder.textLocation.setText(cita.getUbicacion());
         holder.chipStatus.setText(cita.getEstado());
 
@@ -71,9 +75,9 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
         return listaCitas.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         CircleImageView imageDoctor;
-        TextView textDoctorName, textSpecialty, textDate, textLocation;
+        TextView textDoctorName, textSpecialty, textDate, textHour, textLocation;
         Chip chipStatus;
         ImageView iconInfo, iconMessage;
 
@@ -84,6 +88,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
             textDoctorName = itemView.findViewById(R.id.textDoctorName);
             textSpecialty = itemView.findViewById(R.id.textSpecialty);
             textDate = itemView.findViewById(R.id.textDate);
+            textHour = itemView.findViewById(R.id.textHour);
             textLocation = itemView.findViewById(R.id.textLocation);
             chipStatus = itemView.findViewById(R.id.chipStatus);
             iconInfo = itemView.findViewById(R.id.iconInfo);
@@ -96,10 +101,29 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
 
         @Override
         public void onClick(View v) {
+            int position = getAdapterPosition();
+            if (position == RecyclerView.NO_POSITION) {
+                return;
+            }
+            CitasData cita = listaCitas.get(position);
+            String doctorName = cita.getNombrePersonal();
+            String specialty = cita.getEspecialidad();
+            String date = cita.getFecha();
+            String hour = cita.getHora();
+            String location = cita.getUbicacion();
+
             if (v.getId() == R.id.iconInfo) {
-                Toast.makeText(v.getContext(), "Ver detalle de la cita", Toast.LENGTH_SHORT).show();
+                Bundle args = new Bundle();
+                args.putString("doctorName", doctorName);
+                args.putString("specialty", specialty);
+                args.putString("date", date);
+                args.putString("hour", hour);
+                args.putString("location", location);
+                Navigation.findNavController(v).navigate(R.id.action_navigation_citas_to_navigation_detalle_cita, args);
             } else if (v.getId() == R.id.iconMessage) {
-                Toast.makeText(v.getContext(), "Redirigiendo al chat del doctor", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Redirigiendo al chat del doctor: " + doctorName, Toast.LENGTH_SHORT).show();
+            } else {
+                //Se supone que no pasa nd, pero no creo
             }
         }
     }

@@ -9,58 +9,32 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.robles_farma.R;
+import com.example.robles_farma.databinding.FragmentDetalleCitaBinding;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DetalleCitaFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DetalleCitaFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public DetalleCitaFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DetalleCitaFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DetalleCitaFragment newInstance(String param1, String param2) {
-        DetalleCitaFragment fragment = new DetalleCitaFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    FragmentDetalleCitaBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detalle_cita, container, false);
+        binding = FragmentDetalleCitaBinding.inflate(inflater, container, false);
+
+        Bundle args = getArguments();
+        if (args == null) return binding.getRoot();
+
+        String doctorName = args.getString("doctorName", "");
+        String specialty = args.getString("specialty", "");
+        String date = args.getString("date", "");
+        String hour = args.getString("hour", "");
+        String location = args.getString("location", "");
+
+        binding.tvNombreMedico.setText(doctorName);
+        binding.tvEspecialidad.setText(specialty);
+        binding.tvFecha.setText(date);
+        binding.tvHora.setText(hour);
+        binding.tvUbicacion.setText(location);
+
+        return binding.getRoot();
     }
 }

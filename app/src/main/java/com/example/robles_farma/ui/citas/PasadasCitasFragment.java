@@ -41,7 +41,8 @@ public class PasadasCitasFragment extends Fragment {
         listaCitasPasadas.add(new CitasData(
                 "Dr. Atendida",
                 "Cardiología",
-                "15 Nov 2024 - 10:00 AM",
+                "15 Nov 2024",
+                "10:00",
                 "Consultorio 301",
                 "Atendida"
         ));
@@ -49,7 +50,8 @@ public class PasadasCitasFragment extends Fragment {
         listaCitasPasadas.add(new CitasData(
                 "Dra. Atendida",
                 "Pediatría",
-                "20 Nov 2024 - 3:00 PM",
+                "20 Nov 2024",
+                "14:00",
                 "Consultorio 205",
                 "Atendida"
         ));
