@@ -31,7 +31,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
-        apiService = RetrofitClient.getApiService();
+        apiService = RetrofitClient.createService();
         loginStorage = new LoginStorage(requireContext());
 
         binding.btnIniciarSesion.setOnClickListener(v -> {
@@ -81,6 +81,9 @@ public class LoginFragment extends Fragment {
 
                 if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("success")) {
                     LoginResponse loginResponse = response.body().getData();
+
+                    RetrofitClient.API_TOKEN = loginResponse.getAccessToken();
+
                     if (recordarme) {
                         loginStorage.saveLoginCredentials(dni, clave, loginResponse.getAccessToken(), loginResponse.getPaciente());
                     } else {
@@ -91,6 +94,7 @@ public class LoginFragment extends Fragment {
 
                     Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), MainActivity.class);
+
                     startActivity(intent);
                     getActivity().finish();
                 } else {
