@@ -12,7 +12,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
-    public static final String URL_API_SERVICE = "/";
+    public static final String URL_API_SERVICE = "https://citassalud-production.up.railway.app/";
     public static String API_TOKEN;
 
     private static class AuthInterceptor implements Interceptor {

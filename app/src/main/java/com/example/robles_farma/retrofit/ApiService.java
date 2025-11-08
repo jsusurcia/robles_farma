@@ -8,6 +8,9 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import com.example.robles_farma.response.EspecialidadResponse;
+
+
 
 public interface ApiService {
     //Aqui se implementa las llamadas a los endpoints
@@ -20,4 +23,7 @@ public interface ApiService {
 //
 //    @POST("viaje/listado")
 //    Call<ViajeListadoResponse> listarViaje(@Body ViajeListadoRequest request);
+
+    @GET("especialidades/")
+    Call<EspecialidadResponse> getEspecialidades();
 }

@@ -2,11 +2,32 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="teal_700">#00796B</color>
+    <color name="principal_bg">#00796B</color>
     <color name="gray">#9E9E9E</color>
 
-    <!--Colores para las tarjetas de citas-->
     <color name="confirmada_color">#009688</color>
     <color name="pendiente_color">#f59e0b</color>
     <color name="cancelada_color">#d64651</color>
+
+    <color name="chat_bg_header_cards">#F7F7F7</color>
+
+    <color name="chat_text_primary_icon">#171A1F</color>
+
+    <color name="chat_text_secondary">#565D6D</color>
+
+    <color name="chat_primary_500">#2DD0AA</color>
+
+    <color name="chat_card_divider">#F3F4F6</color>
+
+    <color name="chat_nav_divider">#E5E7EB</color>
+
+    <color name="chat_divider_border_opacity">#B0DEE1E6</color>
+
+    <color name="chat_search_bg_opacity">#B0F3F4F6</color>
+
+    <color name="chat_avatar_bg_1">#E8EFF7</color>
+    <color name="chat_avatar_bg_2">#E3FBF3</color>
+    <color name="chat_avatar_bg_3">#FCEFF2</color>
+    <color name="chat_avatar_bg_4">#DEFDF2</color>
+    <color name="chat_avatar_bg_5">#EFF9DC</color>
 </resources>
