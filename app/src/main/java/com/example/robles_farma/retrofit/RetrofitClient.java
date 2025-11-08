@@ -23,7 +23,7 @@ public class RetrofitClient {
 
             // Aquí verificas si tienes un token y lo agregas al encabezado si es necesario
             //String token = original.header("Authorization");
-            String token = API_TOKEN;
+            String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwicm9sIjoicGFjaWVudGUiLCJub21icmUiOiJNYXJrIiwiZXhwIjoxNzYyNjM4MTczfQ.PJOed5CA5D6kb0cLDyAhoYevHbfwlzBjruWrkv690DQ";
             if (token != null && !token.isEmpty()) {
                 //Log.e("API TOKEN ->", token);
                 requestBuilder.header("Authorization", "Bearer " + token);

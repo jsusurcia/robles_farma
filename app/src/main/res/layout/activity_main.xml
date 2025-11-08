@@ -10,7 +10,7 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/teal_700"
+        android:background="@color/principal_bg"
         android:fitsSystemWindows="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
             app:titleTextColor="@color/white"
             app:navigationIconTint="@color/white"
             app:titleCentered="true"
-            android:background="@color/teal_700"/>
+            android:background="@color/principal_bg"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
