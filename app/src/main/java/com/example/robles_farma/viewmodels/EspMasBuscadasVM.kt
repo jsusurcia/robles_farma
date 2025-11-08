@@ -12,11 +12,14 @@ import com.example.robles_farma.retrofit.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
+import com.example.robles_farma.model.BusquedaEspecialidadData
+import com.example.robles_farma.response.BusquedaEspecialidadResponse
+import java.io.IOException
 
 class EspMasBuscadasVM(application: Application) : AndroidViewModel(application) {
     private val apiService: ApiService = RetrofitClient.createService()
 
+    // =============== TOP 6 MEJORES ESPECIALIDADES OñO ========================
     // LiveData para guardar la lista de especialidades
     // El Fragment observará este objeto
     private val _especialidades = MutableLiveData<List<EspecialidadData>>()
@@ -29,6 +32,16 @@ class EspMasBuscadasVM(application: Application) : AndroidViewModel(application)
     // LiveData para mensajes de error
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
+
+
+    // ======== CAMPOS DE BÚSQUEDA BRUHHHH ================
+    // --- LiveData para los resultados de BÚSQUEDA ---
+    private val _searchResults = MutableLiveData<List<BusquedaEspecialidadData>>()
+    val searchResults: LiveData<List<BusquedaEspecialidadData>> get() = _searchResults
+
+    // --- Referencia a la llamada de búsqueda para poder cancelarla ---
+    private var searchCall: Call<BusquedaEspecialidadResponse>? = null
+
 
     fun listarEspecialidades() {
         // Marcamos que está cargando
@@ -61,5 +74,47 @@ class EspMasBuscadasVM(application: Application) : AndroidViewModel(application)
                 Log.e("ViewModel", "Fallo de Retrofit: ${t.message}")
             }
         })
+    }
+
+    // --- Para buscar especialidades ---
+    fun buscarEspecialidades(query: String) {
+        // Si la búsqueda está vacía o es muy corta, limpia los resultados
+        if (query.length < 2) {
+            _searchResults.value = emptyList()
+            return
+        }
+
+        //  Cancela cualquier búsqueda anterior que aún esté en progreso
+        searchCall?.cancel()
+
+        //  Crea la nueva llamada
+        searchCall = apiService.getBusquedaEspecialidad(query)
+        searchCall?.enqueue(object : Callback<BusquedaEspecialidadResponse> {
+            override fun onResponse(
+                call: Call<BusquedaEspecialidadResponse>,
+                response: Response<BusquedaEspecialidadResponse>
+            ) {
+                if (response.isSuccessful) {
+                    // Actualiza el LiveData con los nuevos resultados
+                    _searchResults.value = response.body()?.data
+                }
+            }
+
+            override fun onFailure(call: Call<BusquedaEspecialidadResponse>, t: Throwable) {
+                // Si la llamada fue cancelada, no hagas nada
+                if (t is IOException && t.message == "Canceled") {
+                    Log.d("ViewModel", "Búsqueda cancelada")
+                } else {
+                    // Otro error de red
+                    Log.e("ViewModel", "Fallo en búsqueda: ${t.message}")
+                }
+            }
+        })
+    }
+
+    // --- Cancelar la llamada si el ViewModel se destruye ---
+    override fun onCleared() {
+        super.onCleared()
+        searchCall?.cancel()
     }
 }

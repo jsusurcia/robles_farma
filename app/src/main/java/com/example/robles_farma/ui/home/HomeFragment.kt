@@ -12,6 +12,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.robles_farma.adapter.EspMasBuscadasAdapter
 import com.example.robles_farma.databinding.FragmentHomeBinding
 import com.example.robles_farma.viewmodels.EspMasBuscadasVM
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.ArrayAdapter
 
 class HomeFragment : Fragment() {
 
@@ -21,6 +26,9 @@ class HomeFragment : Fragment() {
 
     private val viewModel: EspMasBuscadasVM by viewModels()
 
+    private lateinit var busquedaAdapter: ArrayAdapter<String>
+    private val busquedaHandler = Handler(Looper.getMainLooper())
+    private val BUSQUEDA_DELAY_MS: Long = 300
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,6 +37,7 @@ class HomeFragment : Fragment() {
     ): View? {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         setupEspecialidadRecyclerView()
+        setupBusquedaAutoComplete()
         return binding.root
     }
 
@@ -63,6 +72,48 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun setupBusquedaAutoComplete() {
+        // 1. Inicializa el adapter de búsqueda (al inicio vacío)
+        busquedaAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
+        binding.autoCompleteSearch.setAdapter(busquedaAdapter)
+
+        // 2. Configura el listener de texto (con debouncing)
+        binding.autoCompleteSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(editable: Editable?) {
+                // Cancela la búsqueda anterior
+                busquedaHandler.removeCallbacksAndMessages(null)
+                // Programa una nueva búsqueda después del retraso
+                busquedaHandler.postDelayed({
+                    val query = editable.toString()
+                    viewModel.buscarEspecialidades(query)
+                }, BUSQUEDA_DELAY_MS)
+            }
+        })
+
+        // 3. Configura el listener de CLIC en una sugerencia
+        binding.autoCompleteSearch.setOnItemClickListener { parent, view, position, id ->
+            val selectedName = parent.getItemAtPosition(position) as String
+
+            // Busca la especialidad completa en la lista de resultados
+            val selectedEspecialidad = viewModel.searchResults.value?.find { it.nombre == selectedName }
+
+            if (selectedEspecialidad != null) {
+                // Aquí va tu lógica (navegar, etc.)
+                Toast.makeText(
+                    requireContext(),
+                    "Seleccionado: ${selectedEspecialidad.nombre} (ID: ${selectedEspecialidad.idEspecialidad})",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                // Opcional: Limpiar el buscador después de seleccionar
+                binding.autoCompleteSearch.setText("", false)
+            }
+        }
+    }
+
     // Función para observar los LiveData del ViewModel
     private fun observeViewModel() {
         // Observador para la lista de especialidades
@@ -90,8 +141,14 @@ class HomeFragment : Fragment() {
 
         // Observador para los errores
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMsg ->
-            // Mostramos un Toast si hay un error
             Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Limpiando el handler para evitar memory leaks
+        busquedaHandler.removeCallbacksAndMessages(null)
+        _binding = null
     }
 }
