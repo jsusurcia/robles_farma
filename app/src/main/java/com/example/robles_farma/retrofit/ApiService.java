@@ -1,29 +1,22 @@
 package com.example.robles_farma.retrofit;
 
+import com.example.robles_farma.request.LoginRequest;
+import com.example.robles_farma.request.RegisterRequest;
+import com.example.robles_farma.response.ItemResponse;
+import com.example.robles_farma.response.LoginResponse;
+import com.example.robles_farma.response.PacienteResponse;
 
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
-import com.example.robles_farma.response.EspecialidadResponse;
-
-
 
 public interface ApiService {
-    //Aqui se implementa las llamadas a los endpoints
 
-//    @POST("login")
-//    Call<LoginResponse> login(@Body LoginRequest request);
-//
-//    @GET("usuario/foto/{id}")
-//    Call<ResponseBody> getFoto(@Path("id") int id);
-//
-//    @POST("viaje/listado")
-//    Call<ViajeListadoResponse> listarViaje(@Body ViajeListadoRequest request);
+    // 🔹 Login paciente
+    @POST("pacientes/login")
+    Call<ItemResponse<LoginResponse>> login(@Body LoginRequest request);
 
-    @GET("especialidades/")
-    Call<EspecialidadResponse> getEspecialidades();
+    // 🔹 Registrar paciente
+    @POST("pacientes/")
+    Call<ItemResponse<PacienteResponse>> registerPaciente(@Body RegisterRequest request);
 }
