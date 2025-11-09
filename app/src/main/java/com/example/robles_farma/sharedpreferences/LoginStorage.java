@@ -66,6 +66,10 @@ public class LoginStorage {
         return prefs.getString(KEY_TOKEN, null);
     }
 
+    public String getToken() {
+        return sharedPreferences.getString(KEY_TOKEN, null);
+    }
+
     public static void saveToken(Context context, String token) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         prefs.edit().putString(KEY_TOKEN, token).apply();
