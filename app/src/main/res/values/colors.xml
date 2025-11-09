@@ -25,8 +25,6 @@
 
     <color name="chat_search_bg_opacity">#B0F3F4F6</color>
 
-    <color name="teal_700">#00796B</color>
-
     <color name="chat_avatar_bg_1">#E8EFF7</color>
     <color name="chat_avatar_bg_2">#E3FBF3</color>
     <color name="chat_avatar_bg_3">#FCEFF2</color>
@@ -35,5 +33,4 @@
     <color name="teal_700">#018786</color>
     <color name="teal_200">#03DAC5</color>
     <color name="teal_500">#009688</color>
-
 </resources>
