@@ -121,7 +121,24 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
                 args.putString("location", location);
                 Navigation.findNavController(v).navigate(R.id.action_navigation_citas_to_navigation_detalle_cita, args);
             } else if (v.getId() == R.id.iconMessage) {
-                Toast.makeText(v.getContext(), "Redirigiendo al chat del doctor: " + doctorName, Toast.LENGTH_SHORT).show();
+                // Supongamos que el chat_id viene del backend o se genera con el ID del doctor
+                String chatId = cita.getChatId(); // Asegúrate de tener este campo en tu modelo CitasData
+
+                if (chatId == null || chatId.isEmpty()) {
+                    Toast.makeText(v.getContext(), "No se encontró el chat para esta cita", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Pasamos el chat_id al fragmento Chat
+                Bundle args = new Bundle();
+                args.putString("chat_id", chatId);
+
+                try {
+                    Navigation.findNavController(v).navigate(R.id.action_navigation_citas_to_navigation_chat, args);
+                } catch (Exception e) {
+                    Log.e("CitasAdapter", "Error al navegar al chat: " + e.getMessage());
+                    Toast.makeText(v.getContext(), "Error al abrir el chat", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 //Se supone que no pasa nd, pero no creo
             }

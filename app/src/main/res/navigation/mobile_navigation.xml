@@ -19,6 +19,10 @@
         <action
             android:id="@+id/action_navigation_citas_to_navigation_detalle_cita"
             app:destination="@id/navigation_detalle_cita" />
+
+        <action
+            android:id="@+id/action_navigation_citas_to_navigation_chat"
+            app:destination="@id/navigation_chat" />
     </fragment>
 
     <fragment
