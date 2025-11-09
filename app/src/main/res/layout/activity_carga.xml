@@ -19,8 +19,11 @@
         android:id="@+id/title_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pantalla de Carga oño"
+        android:text="Conectando con tu salud..."
         android:layout_below="@+id/logo_citas_salud"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:textColor="#4A222C"
+        android:textSize="20sp" />
 
 </RelativeLayout>
