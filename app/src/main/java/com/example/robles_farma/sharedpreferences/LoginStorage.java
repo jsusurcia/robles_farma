@@ -61,9 +61,16 @@ public class LoginStorage {
         return sharedPreferences.getString(KEY_CLAVE, null);
     }
 
-    public String getToken() {
-        return sharedPreferences.getString(KEY_TOKEN, null);
+    public static String getToken(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(KEY_TOKEN, null);
     }
+
+    public static void saveToken(Context context, String token) {
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        prefs.edit().putString(KEY_TOKEN, token).apply();
+    }
+
 
     public PacienteResponse getPaciente() {
         String pacienteJson = sharedPreferences.getString(KEY_PACIENTE, null);

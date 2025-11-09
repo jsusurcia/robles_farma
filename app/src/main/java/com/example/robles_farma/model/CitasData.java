@@ -8,6 +8,9 @@ public class CitasData {
     private String ubicacion;
     private String estado;
 
+    private String chatId;
+
+
     public CitasData(String nombrePersonal, String especialidad, String fecha, String hora, String ubicacion, String estado) {
         this.nombrePersonal = nombrePersonal;
         this.especialidad = especialidad;
@@ -39,5 +42,13 @@ public class CitasData {
 
     public String getEstado() {
         return estado;
+    }
+
+    public String getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
     }
 }
