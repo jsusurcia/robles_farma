@@ -78,25 +78,39 @@ class EspMasBuscadasVM(application: Application) : AndroidViewModel(application)
 
     // --- Para buscar especialidades ---
     fun buscarEspecialidades(query: String) {
+        Log.d("ViewModel", "Iniciando búsqueda con query: \"$query\"")
+
         // Si la búsqueda está vacía o es muy corta, limpia los resultados
         if (query.length < 2) {
+            Log.d("ViewModel", "Query demasiado corta (${query.length} caracteres), limpiando resultados.")
             _searchResults.value = emptyList()
             return
+        }
+
+        if (searchCall != null) {
+            Log.d("ViewModel", "Cancelando búsqueda anterior...")
+            searchCall?.cancel()
         }
 
         //  Cancela cualquier búsqueda anterior que aún esté en progreso
         searchCall?.cancel()
 
         //  Crea la nueva llamada
+        Log.d("ViewModel", "Creando nueva llamada a la API para: \"$query\"")
         searchCall = apiService.getBusquedaEspecialidad(query)
         searchCall?.enqueue(object : Callback<BusquedaEspecialidadResponse> {
             override fun onResponse(
                 call: Call<BusquedaEspecialidadResponse>,
                 response: Response<BusquedaEspecialidadResponse>
             ) {
+                Log.d("ViewModel", "Respuesta recibida de la API (código: ${response.code()})")
                 if (response.isSuccessful) {
                     // Actualiza el LiveData con los nuevos resultados
+
                     _searchResults.value = response.body()?.data
+                    Log.d("ViewModel", "Búsqueda exitosa. Resultados encontrados: ${_searchResults.value}")
+                } else {
+                    Log.w("ViewModel", "Respuesta no exitosa: ${response.code()} - ${response.message()}")
                 }
             }
 

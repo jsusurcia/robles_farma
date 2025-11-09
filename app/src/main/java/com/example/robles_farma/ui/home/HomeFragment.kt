@@ -16,7 +16,9 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.ArrayAdapter
+import com.example.robles_farma.sharedpreferences.LoginStorage
 
 class HomeFragment : Fragment() {
 
@@ -28,7 +30,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var busquedaAdapter: ArrayAdapter<String>
     private val busquedaHandler = Handler(Looper.getMainLooper())
-    private val BUSQUEDA_DELAY_MS: Long = 300
+    private val BUSQUEDA_DELAY_MS: Long = 800
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +49,8 @@ class HomeFragment : Fragment() {
         // Registramos los observadores
         observeViewModel()
 
+        setupSaludo()
+
         binding.swipeRefreshLayout.setOnRefreshListener {
             viewModel.listarEspecialidades()
         }
@@ -60,7 +64,8 @@ class HomeFragment : Fragment() {
         especialidadAdapter = EspMasBuscadasAdapter { specialty ->
             // Aquí va la lógica del clic
             // Por ejemplo, navegar a otra pantalla con los doctores de esa especialidad
-            Toast.makeText(requireContext(), "Clic en: ${specialty.nombre}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Clic en: ${specialty.nombre}", Toast.LENGTH_SHORT)
+                .show()
         }
 
         binding.recyclerViewSpecialties.apply {
@@ -74,7 +79,59 @@ class HomeFragment : Fragment() {
 
     private fun setupBusquedaAutoComplete() {
         // 1. Inicializa el adapter de búsqueda (al inicio vacío)
-        busquedaAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
+        //busquedaAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
+
+        busquedaAdapter = object : ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            mutableListOf<String>()
+        ) {
+            // Mantenemos una referencia al adapter mismo
+            private val thisAdapter = this
+
+            override fun getFilter(): android.widget.Filter {
+                return object : android.widget.Filter() {
+
+                    // Esta función se ejecuta en un hilo de fondo
+                    override fun performFiltering(constraint: CharSequence?): FilterResults {
+                        val results = FilterResults()
+
+                        // 1. Creamos una lista con TODOS los items
+                        //    que están *actualmente* en el adapter (los que puso el observer)
+                        val currentItems = mutableListOf<String>()
+                        for (i in 0 until thisAdapter.count) {
+                            thisAdapter.getItem(i)?.let {
+                                currentItems.add(it)
+                            }
+                        }
+
+                        // 2. Asignamos esa lista COMPLETA a los resultados
+                        results.values = currentItems
+
+                        // 3. ESTA ES LA CORRECCIÓN:
+                        //    El 'count' es el tamaño de la lista que acabamos de crear.
+                        results.count = currentItems.size
+
+                        return results
+                    }
+
+                    // Esta función se ejecuta en el hilo principal (UI)
+                    override fun publishResults(
+                        constraint: CharSequence?,
+                        results: FilterResults?
+                    ) {
+                        // Esta función es necesaria para que 'overrides' funcione.
+                        // Simplemente le decimos al adapter que se actualice.
+                        if (results != null && results.count > 0) {
+                            thisAdapter.notifyDataSetChanged()
+                        } else {
+                            thisAdapter.notifyDataSetInvalidated()
+                        }
+                    }
+                }
+            }
+        }
+
         binding.autoCompleteSearch.setAdapter(busquedaAdapter)
 
         // 2. Configura el listener de texto (con debouncing)
@@ -98,7 +155,8 @@ class HomeFragment : Fragment() {
             val selectedName = parent.getItemAtPosition(position) as String
 
             // Busca la especialidad completa en la lista de resultados
-            val selectedEspecialidad = viewModel.searchResults.value?.find { it.nombre == selectedName }
+            val selectedEspecialidad =
+                viewModel.searchResults.value?.find { it.nombre == selectedName }
 
             if (selectedEspecialidad != null) {
                 // Aquí va tu lógica (navegar, etc.)
@@ -139,11 +197,51 @@ class HomeFragment : Fragment() {
             }
         })
 
+        viewModel.searchResults.observe(viewLifecycleOwner, Observer { results ->
+
+            Log.d("HomeFragment", "Observer de searchResults disparado. Resultados: $results")
+            if (results == null) return@Observer
+
+            // 1. Mapea la lista de objetos [BusquedaEspecialidadData]
+            //    a una lista simple de [String]
+            val names = results.map { it.nombre }
+            Log.d("HomeFragment", "Nombres para el adapter: $names")
+            // 2. Actualiza el adapter del AutoComplete
+            busquedaAdapter.clear()
+            busquedaAdapter.addAll(names)
+            busquedaAdapter.notifyDataSetChanged()
+
+            // 3. --- ¡LA LÍNEA QUE TE FALTA! ---
+            // Si hay resultados, fuerza que el dropdown se muestre.
+            // Si no hay (names.isEmpty()), el adapter ya se limpió.
+            if (names.isNotEmpty()) {
+                Log.d("HomeFragment", "¡Llamando a showDropDown()!")
+                binding.autoCompleteSearch.showDropDown()
+            } else {
+                Log.d("HomeFragment", "No hay nombres, no se llama a showDropDown()")
+            }
+        })
+
+
         // Observador para los errores
         viewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMsg ->
             Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
         })
     }
+
+    private fun setupSaludo() {
+        val loginStorage = LoginStorage(requireContext())
+        val paciente = loginStorage.paciente
+
+        if (paciente != null && paciente.nombre != null) {
+            binding.textViewSaludo.text = "¡Hola, ${paciente.nombre}!"
+        }
+        else {
+            binding.textViewSaludo.text = "¡Hola, desconocido!"
+        }
+
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

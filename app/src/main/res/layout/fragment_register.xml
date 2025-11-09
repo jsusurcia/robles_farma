@@ -187,7 +187,7 @@
             android:layout_marginTop="10dp"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:buttonTint="@color/teal_700"
+            android:buttonTint="@color/principal_bg"
             android:text="Acepto los T&amp;C y las Políticas de privacidad"
             android:linksClickable="true" />
 
@@ -196,7 +196,7 @@
             android:id="@+id/btnRegistrar"
             android:text="Registrarse"
             android:layout_marginTop="20dp"
-            android:backgroundTint="@color/teal_700"
+            android:backgroundTint="@color/principal_bg"
             android:textColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

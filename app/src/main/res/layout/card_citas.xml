@@ -104,7 +104,7 @@
             android:text="Confirmada"
             android:textSize="10sp"
             android:textColor="@android:color/white"
-            app:chipBackgroundColor="@color/teal_700"
+            app:chipBackgroundColor="@color/principal_bg"
             app:chipCornerRadius="20dp"
             app:chipMinHeight="32dp"
             app:chipEndPadding="8dp"

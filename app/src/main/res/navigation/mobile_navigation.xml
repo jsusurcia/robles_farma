@@ -35,11 +35,22 @@
         android:id="@+id/navigation_perfil"
         android:name="com.example.robles_farma.ui.perfil.PerfilFragment"
         android:label="@string/title_perfil"
-        tools:layout="@layout/fragment_perfil" />
+        tools:layout="@layout/fragment_perfil" >
+        <action
+            android:id="@+id/action_navigation_perfil_to_editarPerfilFragment"
+            app:destination="@id/navigation_editar_perfil" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_editar_perfil"
+        android:name="com.example.robles_farma.EditarPerfilFragment"
+        android:label="fragment_editar_perfil"
+        tools:layout="@layout/fragment_editar_perfil" />
 
     <fragment
         android:id="@+id/navigation_detalle_cita"
         android:name="com.example.robles_farma.ui.citas.DetalleCitaFragment"
         android:label="@string/title_detalle_cita"
         tools:layout="@layout/fragment_detalle_cita" />
+
 </navigation>
