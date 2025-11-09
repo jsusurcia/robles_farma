@@ -16,22 +16,23 @@ public class RetrofitClient {
     public static String API_TOKEN;
 
     private static class AuthInterceptor implements Interceptor {
+
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request original = chain.request();
             Request.Builder requestBuilder = original.newBuilder().header("Content-Type", "application/json");
 
-            // Aquí verificas si tienes un token y lo agregas al encabezado si es necesario
-            //String token = original.header("Authorization");
             String token = API_TOKEN;
+            Log.e("INTERCEPTOR", "Token enviado: " + token);
+
             if (token != null && !token.isEmpty()) {
-                //Log.e("API TOKEN ->", token);
                 requestBuilder.header("Authorization", "Bearer " + token);
             }
 
             Request request = requestBuilder.build();
             return chain.proceed(request);
         }
+
     }
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder().addInterceptor(new AuthInterceptor());

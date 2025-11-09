@@ -2,6 +2,7 @@ package com.example.robles_farma.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,9 +84,12 @@ public class LoginFragment extends Fragment {
                     LoginResponse loginResponse = response.body().getData();
 
                     RetrofitClient.API_TOKEN = loginResponse.getAccessToken();
+                    Log.e("TOKEN_GUARDADO", loginResponse.getAccessToken());
 
                     if (recordarme) {
                         loginStorage.saveLoginCredentials(dni, clave, loginResponse.getAccessToken(), loginResponse.getPaciente());
+
+
                     } else {
                         loginStorage.clearLoginCredentials();
                         // Guardar solo el token y datos de sesión actual

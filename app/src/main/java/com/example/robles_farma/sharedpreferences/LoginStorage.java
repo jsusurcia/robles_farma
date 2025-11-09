@@ -2,9 +2,13 @@ package com.example.robles_farma.sharedpreferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Base64;
+import android.util.Log;
 
 import com.example.robles_farma.response.PacienteResponse;
 import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 public class LoginStorage {
     private static final String PREFS_NAME = "LoginPrefs";
@@ -49,8 +53,77 @@ public class LoginStorage {
         editor.apply();
     }
 
+    /**
+     *  MÉTODO MEJORADO: Verifica si hay sesión activa Y si el token NO está expirado
+     */
     public boolean isUserLoggedIn() {
-        return sharedPreferences.getBoolean(KEY_LOGGED_IN, false);
+        boolean hasCredentials = sharedPreferences.getBoolean(KEY_LOGGED_IN, false);
+        boolean hasToken = sharedPreferences.getString(KEY_TOKEN, null) != null;
+
+        // Si no hay ni credenciales ni token, retornar false
+        if (!hasCredentials && !hasToken) {
+            return false;
+        }
+
+        // Validar si el token NO está expirado
+        boolean tokenValid = isTokenValid();
+
+        if (!tokenValid) {
+            Log.w("LoginStorage", "Token expirado, limpiando sesión automáticamente");
+            clearLoginCredentials(); // Limpiar todo si el token expiró
+            return false;
+        }
+
+        return true; // Token válido y sesión activa
+    }
+
+    /**
+     *  NUEVO: Valida si el token JWT NO está expirado
+     */
+    public boolean isTokenValid() {
+        String token = sharedPreferences.getString(KEY_TOKEN, null);
+
+        if (token == null || token.isEmpty()) {
+            Log.e("LoginStorage", " No hay token guardado");
+            return false;
+        }
+
+        try {
+            // Separar el JWT en sus 3 partes: header.payload.signature
+            String[] parts = token.split("\\.");
+            if (parts.length < 2) {
+                Log.e("LoginStorage", " Token malformado (no tiene 3 partes)");
+                return false;
+            }
+
+            // Decodificar el payload (parte 2) que contiene el "exp"
+            String payload = new String(Base64.decode(parts[1], Base64.URL_SAFE | Base64.NO_WRAP));
+            JSONObject json = new JSONObject(payload);
+
+            // Obtener el tiempo de expiración (exp) en segundos
+            long exp = json.getLong("exp");
+            long currentTime = System.currentTimeMillis() / 1000; // Tiempo actual en segundos
+
+            Log.d("LoginStorage", " Token expira en: " + exp + " (epoch)");
+            Log.d("LoginStorage", " Tiempo actual: " + currentTime + " (epoch)");
+            Log.d("LoginStorage", " Tiempo restante: " + (exp - currentTime) + " segundos");
+
+            // El token es válido si exp > currentTime
+            boolean isValid = exp > currentTime;
+
+            if (!isValid) {
+                Log.e("LoginStorage", " Token EXPIRADO hace " + (currentTime - exp) + " segundos");
+            } else {
+                Log.i("LoginStorage", " Token VÁLIDO, expira en " + (exp - currentTime) + " segundos");
+            }
+
+            return isValid;
+
+        } catch (Exception e) {
+            Log.e("LoginStorage", " Error al validar token: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public String getDni() {
@@ -74,7 +147,6 @@ public class LoginStorage {
         SharedPreferences prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         prefs.edit().putString(KEY_TOKEN, token).apply();
     }
-
 
     public PacienteResponse getPaciente() {
         String pacienteJson = sharedPreferences.getString(KEY_PACIENTE, null);

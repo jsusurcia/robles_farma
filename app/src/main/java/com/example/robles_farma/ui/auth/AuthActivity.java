@@ -2,6 +2,7 @@ package com.example.robles_farma.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.robles_farma.MainActivity;
 import com.example.robles_farma.R;
@@ -21,19 +22,26 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 🔹 Verificamos si hay sesión activa antes de mostrar la UI
+        // 🔹 Verificar si hay sesión activa Y si el token es válido (no expirado)
         LoginStorage loginStorage = new LoginStorage(this);
+
         if (loginStorage.isUserLoggedIn()) {
-            String token = loginStorage.getToken();
+            //  Este método ahora valida automáticamente si el token NO está expirado
+            String token = LoginStorage.getToken(this);
+
             if (token != null && !token.isEmpty()) {
                 RetrofitClient.API_TOKEN = token;
+                Log.i("AuthActivity", " Token válido encontrado, redirigiendo a MainActivity");
+
                 startActivity(new Intent(this, MainActivity.class));
-                finish(); // 👈 importante, así no vuelve al login
+                finish(); // Importante: cerrar AuthActivity para que no vuelva al login
                 return;
             }
+        } else {
+            Log.w("AuthActivity", " No hay sesión válida o el token expiró");
         }
 
-        // 🔹 Si no hay sesión, seguimos con el flujo normal
+        // 🔹 Si no hay sesión válida o el token expiró, mostrar el login
         setContentView(R.layout.activity_auth);
 
         tabLayout = findViewById(R.id.tabLayout);
