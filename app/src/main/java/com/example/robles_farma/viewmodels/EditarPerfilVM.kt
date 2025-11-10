@@ -20,8 +20,7 @@ import retrofit2.Response
 
 class EditarPerfilVM(application: Application) : AndroidViewModel(application) {
 
-    private val apiService: ApiService = RetrofitClient.createService(getApplication())
-
+    private val apiService: ApiService = RetrofitClient.createService()
 
     // LiveData para estado de carga
     private val _isLoading = MutableLiveData<Boolean>()

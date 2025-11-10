@@ -54,6 +54,9 @@
         <action
             android:id="@+id/action_navigation_perfil_to_editarPerfilFragment"
             app:destination="@id/navigation_editar_perfil" />
+        <action
+            android:id="@+id/action_navigation_perfil_to_verFotoFragment"
+            app:destination="@id/navigation_ver_foto" />
     </fragment>
 
     <!-- 📝 EDITAR PERFIL -->
@@ -69,5 +72,10 @@
         android:name="com.example.robles_farma.ui.citas.DetalleCitaFragment"
         android:label="@string/title_detalle_cita"
         tools:layout="@layout/fragment_detalle_cita" />
+    <fragment
+        android:id="@+id/navigation_ver_foto"
+        android:name="com.example.robles_farma.ui.perfil.VerFotoFragment"
+        android:label="fragment_ver_foto"
+        tools:layout="@layout/fragment_ver_foto" />
 
 </navigation>

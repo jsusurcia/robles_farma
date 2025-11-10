@@ -32,7 +32,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
-        apiService = RetrofitClient.createService(requireContext());
+        apiService = RetrofitClient.createService();
         loginStorage = new LoginStorage(requireContext());
 
         binding.btnIniciarSesion.setOnClickListener(v -> {
@@ -83,6 +83,7 @@ public class LoginFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("success")) {
                     LoginResponse loginResponse = response.body().getData();
 
+                    RetrofitClient.API_TOKEN = loginResponse.getAccessToken();
                     Log.e("TOKEN_GUARDADO", loginResponse.getAccessToken());
 
                     if (recordarme) {

@@ -7,6 +7,7 @@ import com.example.robles_farma.request.PacienteUpdateRequest;
 import com.example.robles_farma.request.RegisterRequest;
 import com.example.robles_farma.response.BusquedaEspecialidadResponse;
 import com.example.robles_farma.response.CitasPacienteResponse;
+import com.example.robles_farma.response.FotoUploadResponse;
 import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.response.PacienteResponse;
@@ -17,12 +18,17 @@ import com.example.robles_farma.response.PacienteUpdateResponse;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.GET;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Streaming;
 
 
 public interface ApiService {
@@ -54,4 +60,12 @@ public interface ApiService {
     // 🔹 Obtener citas pasadas de un paciente
     @GET("cita/pasadas_paciente/{id_paciente}")
     Call<CitasPacienteResponse> getCitasPasadas(@Path("id_paciente") int idPaciente);
+
+    @Streaming
+    @GET("pacientes/foto")
+    Call<ResponseBody> getFotoPerfil();
+
+    @Multipart
+    @PUT("pacientes/update_foto")
+    Call<FotoUploadResponse> updateFotoPerfil(@Part MultipartBody.Part file);
 }

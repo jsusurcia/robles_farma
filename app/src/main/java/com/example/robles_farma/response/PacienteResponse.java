@@ -8,8 +8,7 @@ public class PacienteResponse {
     private int idPaciente;
     @SerializedName("nro_documento")
     private String nroDocumento;
-    @SerializedName("nombre")
-    private String nombre;
+    private String nombres;
     @SerializedName("apellido_paterno")
     private String apellidoPaterno;
     @SerializedName("apellido_materno")
@@ -43,12 +42,12 @@ public class PacienteResponse {
         this.nroDocumento = nroDocumento;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getNombres() {
+        return nombres;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNombres(String nombre) {
+        this.nombres = nombre;
     }
 
     public String getApellidoPaterno() {
