@@ -50,7 +50,7 @@ class PerfilFragment : Fragment() {
 
         if (paciente != null) {
             // Combina nombre y apellido paterno para el nombre principal
-            binding.textViewNombre.text = "${paciente.nombre} ${paciente.apellidoPaterno}"
+            binding.textViewNombre.text = "${paciente.nombres} ${paciente.apellidoPaterno}"
 
             binding.textViewEmail.text = "DNI: ${paciente.nroDocumento}"
 

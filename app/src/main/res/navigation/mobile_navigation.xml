@@ -59,8 +59,8 @@
     <!-- 📝 EDITAR PERFIL -->
     <fragment
         android:id="@+id/navigation_editar_perfil"
-        android:name="com.example.robles_farma.EditarPerfilFragment"
-        android:label="fragment_editar_perfil"
+        android:name="com.example.robles_farma.ui.perfil.EditarPerfilFragment"
+        android:label="Editar perfil"
         tools:layout="@layout/fragment_editar_perfil" />
 
     <!-- 🔍 DETALLE CITA -->

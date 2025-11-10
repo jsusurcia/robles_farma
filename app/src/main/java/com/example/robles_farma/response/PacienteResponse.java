@@ -6,59 +6,33 @@ public class PacienteResponse {
 
     @SerializedName("id")
     private int idPaciente;
-
     @SerializedName("nro_documento")
     private String nroDocumento;
-
     @SerializedName("nombre")
     private String nombre;
-
     @SerializedName("apellido_paterno")
     private String apellidoPaterno;
-
     @SerializedName("apellido_materno")
     private String apellidoMaterno;
-
     @SerializedName("fecha_nacimiento")
     private String fechaNacimiento;
-
     @SerializedName("sexo")
     private boolean sexo;
-
     @SerializedName("foto_perfil_url")
     private String fotoPerfilUrl;
-
     @SerializedName("contacto_emergencia_nombre")
     private String contactoEmergenciaNombre;
-
     @SerializedName("contacto_emergencia_telefono")
     private String contactoEmergenciaTelefono;
-
     private String rol;
 
-    // ===========================
-    // ✅ Getters y Setters
-    // ===========================
-
+    // Getters y Setters
     public int getIdPaciente() {
         return idPaciente;
     }
 
     public void setIdPaciente(int idPaciente) {
         this.idPaciente = idPaciente;
-    }
-
-    // 👇 Alias para compatibilidad con LoginStorage y Retrofit
-    public String getId() {
-        return String.valueOf(idPaciente);
-    }
-
-    public void setId(String id) {
-        try {
-            this.idPaciente = Integer.parseInt(id);
-        } catch (NumberFormatException e) {
-            this.idPaciente = 0;
-        }
     }
 
     public String getNroDocumento() {
@@ -141,8 +115,4 @@ public class PacienteResponse {
         this.rol = rol;
     }
 
-    // ✅ Método útil para mostrar nombre completo
-    public String getNombreCompleto() {
-        return nombre + " " + apellidoPaterno + " " + apellidoMaterno;
-    }
 }
