@@ -122,7 +122,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
                 Navigation.findNavController(v).navigate(R.id.action_navigation_citas_to_navigation_detalle_cita, args);
             } else if (v.getId() == R.id.iconMessage) {
                 // Supongamos que el chat_id viene del backend o se genera con el ID del doctor
-                String chatId = cita.getChatId(); // Asegúrate de tener este campo en tu modelo CitasData
+/*                String chatId = cita.getChatId(); // Asegúrate de tener este campo en tu modelo CitasData
 
                 if (chatId == null || chatId.isEmpty()) {
                     Toast.makeText(v.getContext(), "No se encontró el chat para esta cita", Toast.LENGTH_SHORT).show();
@@ -138,7 +138,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
                 } catch (Exception e) {
                     Log.e("CitasAdapter", "Error al navegar al chat: " + e.getMessage());
                     Toast.makeText(v.getContext(), "Error al abrir el chat", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             } else {
                 //Se supone que no pasa nd, pero no creo
             }
