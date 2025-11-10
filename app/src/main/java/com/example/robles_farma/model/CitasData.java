@@ -1,14 +1,22 @@
 package com.example.robles_farma.model;
 
-public class CitasData {
-    private String nombrePersonal;
-    private String especialidad;
-    private String fecha;
-    private String hora;
-    private String ubicacion;
-    private String estado;
+import com.google.gson.annotations.SerializedName;
 
-    private String chatId;
+public class CitasData {
+    @SerializedName("id_personal_especialidad")
+    private int idPersonal;
+    @SerializedName("nombre_personal")
+    private String nombrePersonal;
+    @SerializedName("nombre_especialidad")
+    private String especialidad;
+    @SerializedName("fecha")
+    private String fecha;
+    @SerializedName("hora_inicio")
+    private String hora;
+    @SerializedName("direccion_domicilio")
+    private String ubicacion;
+    @SerializedName("estado_cita")
+    private String estado;
 
 
     public CitasData(String nombrePersonal, String especialidad, String fecha, String hora, String ubicacion, String estado) {
@@ -18,6 +26,14 @@ public class CitasData {
         this.hora = hora;
         this.ubicacion = ubicacion;
         this.estado = estado;
+    }
+
+    public int getIdPersonal() {
+        return idPersonal;
+    }
+
+    public void setIdPersonal(int idPersonal) {
+        this.idPersonal = idPersonal;
     }
 
     public String getNombrePersonal() {
@@ -42,13 +58,5 @@ public class CitasData {
 
     public String getEstado() {
         return estado;
-    }
-
-    public String getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(String chatId) {
-        this.chatId = chatId;
     }
 }
