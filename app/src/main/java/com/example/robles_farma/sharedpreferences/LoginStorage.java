@@ -39,7 +39,7 @@ public class LoginStorage {
                 .putString(KEY_CLAVE, clave)
                 .putString(KEY_TOKEN, token)
                 .putString(KEY_PACIENTE, gson.toJson(paciente))
-                .putString(KEY_USER_ID, paciente != null ? paciente.getId() : null) // 👈 Guardar ID del paciente
+                .putString(KEY_USER_ID, paciente != null ? String.valueOf(paciente.getIdPaciente()) : null) // 👈 Guardar ID del paciente
                 .putBoolean(KEY_LOGGED_IN, true)
                 .apply();
     }
@@ -49,7 +49,7 @@ public class LoginStorage {
         prefs.edit()
                 .putString(KEY_TOKEN, token)
                 .putString(KEY_PACIENTE, gson.toJson(paciente))
-                .putString(KEY_USER_ID, paciente != null ? paciente.getId() : null)
+                .putString(KEY_USER_ID, paciente != null ? String.valueOf(paciente.getIdPaciente()) : null)
                 .putBoolean(KEY_LOGGED_IN, true)
                 .apply();
     }

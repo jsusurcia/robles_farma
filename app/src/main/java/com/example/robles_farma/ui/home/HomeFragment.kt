@@ -233,8 +233,8 @@ class HomeFragment : Fragment() {
         val loginStorage = LoginStorage(requireContext())
         val paciente = loginStorage.paciente
 
-        if (paciente != null && paciente.nombres != null) {
-            binding.textViewSaludo.text = "¡Hola, ${paciente.nombres}!"
+        if (paciente != null && paciente.nombre != null) {
+            binding.textViewSaludo.text = "¡Hola, ${paciente.nombre}!"
         }
         else {
             binding.textViewSaludo.text = "¡Hola, desconocido!"

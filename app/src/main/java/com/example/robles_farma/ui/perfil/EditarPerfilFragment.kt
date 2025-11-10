@@ -48,7 +48,7 @@ class EditarPerfilFragment : Fragment() {
         // ... (esta función está perfecta, no necesita cambios) ...
         val paciente = loginStorage.paciente
         if (paciente != null) {
-            binding.etNombres.setText(paciente.nombres)
+            binding.etNombres.setText(paciente.nombre)
             binding.etApellidoPaterno.setText(paciente.apellidoPaterno)
             binding.etApellidoMaterno.setText(paciente.apellidoMaterno)
             binding.etDni.setText(paciente.nroDocumento)
