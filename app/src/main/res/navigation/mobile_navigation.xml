@@ -5,12 +5,14 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@id/navigation_home">
 
+    <!-- 🏠 INICIO -->
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.robles_farma.ui.home.HomeFragment"
         android:label="@string/title_inicio"
         tools:layout="@layout/fragment_home" />
 
+    <!-- 📅 CITAS -->
     <fragment
         android:id="@+id/navigation_citas"
         android:name="com.example.robles_farma.ui.citas.CitasFragment"
@@ -25,12 +27,25 @@
             app:destination="@id/navigation_chat" />
     </fragment>
 
+    <!-- 💬 CHAT LISTA -->
     <fragment
         android:id="@+id/navigation_chat"
-        android:name="com.example.robles_farma.ui.chat.ChatsFragment"
+        android:name="com.example.robles_farma.ui.chat.ChatListFragment"
         android:label="@string/title_chat"
+        tools:layout="@layout/fragment_chat_list" >
+        <action
+            android:id="@+id/action_navigation_chat_to_chat_detail"
+            app:destination="@id/navigation_chat_detail" />
+    </fragment>
+
+    <!-- 💭 CHAT INDIVIDUAL -->
+    <fragment
+        android:id="@+id/navigation_chat_detail"
+        android:name="com.example.robles_farma.ui.chat.ChatsFragment"
+        android:label="Chat con el doctor"
         tools:layout="@layout/fragment_chats" />
 
+    <!-- 👤 PERFIL -->
     <fragment
         android:id="@+id/navigation_perfil"
         android:name="com.example.robles_farma.ui.perfil.PerfilFragment"
@@ -41,12 +56,14 @@
             app:destination="@id/navigation_editar_perfil" />
     </fragment>
 
+    <!-- 📝 EDITAR PERFIL -->
     <fragment
         android:id="@+id/navigation_editar_perfil"
         android:name="com.example.robles_farma.EditarPerfilFragment"
         android:label="fragment_editar_perfil"
         tools:layout="@layout/fragment_editar_perfil" />
 
+    <!-- 🔍 DETALLE CITA -->
     <fragment
         android:id="@+id/navigation_detalle_cita"
         android:name="com.example.robles_farma.ui.citas.DetalleCitaFragment"

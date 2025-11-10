@@ -17,7 +17,10 @@ import com.example.robles_farma.response.BusquedaEspecialidadResponse
 import java.io.IOException
 
 class EspMasBuscadasVM(application: Application) : AndroidViewModel(application) {
-    private val apiService: ApiService = RetrofitClient.createService()
+    private val apiService: ApiService =
+        RetrofitClient.createService(getApplication<Application>().applicationContext)
+
+
 
     // =============== TOP 6 MEJORES ESPECIALIDADES OñO ========================
     // LiveData para guardar la lista de especialidades

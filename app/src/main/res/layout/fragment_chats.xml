@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="12dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F9F9F9">
 
-    <!-- Mensajes -->
+
+
+    <!-- 🔹 Mensajes -->
     <ScrollView
+        android:id="@+id/scrollViewMessages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/tvMessages"
@@ -17,15 +22,18 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textColor="#000"
-            android:text="Mensajes del chat aparecerán aquí 💬\n" />
+             />
     </ScrollView>
 
-    <!-- Entrada de texto -->
+    <!-- 🔹 Entrada de texto -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:background="#FFFFFF"
+        android:padding="6dp"
+        android:elevation="2dp">
 
         <EditText
             android:id="@+id/etMessage"
@@ -33,13 +41,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Escribe un mensaje..."
-            android:padding="8dp" />
+            android:padding="10dp"
+            android:background="@android:drawable/edit_text"
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/btnSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Enviar" />
+            android:text="Enviar"
+            android:padding="8dp"
+            android:backgroundTint="#1976D2"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
 </LinearLayout>

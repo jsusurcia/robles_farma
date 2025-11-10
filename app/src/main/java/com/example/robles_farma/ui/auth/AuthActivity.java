@@ -26,20 +26,20 @@ public class AuthActivity extends AppCompatActivity {
         LoginStorage loginStorage = new LoginStorage(this);
 
         if (loginStorage.isUserLoggedIn()) {
-            //  Este método ahora valida automáticamente si el token NO está expirado
+            //  Este método ya valida si el token está vigente
             String token = LoginStorage.getToken(this);
 
             if (token != null && !token.isEmpty()) {
-                RetrofitClient.API_TOKEN = token;
-                Log.i("AuthActivity", " Token válido encontrado, redirigiendo a MainActivity");
+                Log.i("AuthActivity", "✅ Token válido encontrado, redirigiendo a MainActivity");
 
                 startActivity(new Intent(this, MainActivity.class));
-                finish(); // Importante: cerrar AuthActivity para que no vuelva al login
+                finish(); // Importante: cerrar AuthActivity para no volver al login
                 return;
             }
         } else {
-            Log.w("AuthActivity", " No hay sesión válida o el token expiró");
+            Log.w("AuthActivity", "⚠️ No hay sesión válida o el token expiró");
         }
+
 
         // 🔹 Si no hay sesión válida o el token expiró, mostrar el login
         setContentView(R.layout.activity_auth);

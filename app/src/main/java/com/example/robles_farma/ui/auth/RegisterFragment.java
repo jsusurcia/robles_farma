@@ -62,7 +62,8 @@ public class RegisterFragment extends Fragment {
         btnRegistrar = view.findViewById(R.id.btnRegistrar);
         chkTerminos = view.findViewById(R.id.chkTerminos);
 
-        apiService = RetrofitClient.createService();
+        apiService = RetrofitClient.createService(requireContext());
+
 
         // Configurar adaptadores para los AutoCompleteTextView
         String[] tiposDocumento = new String[]{"DNI", "Carnet de Extranjería", "Pasaporte"};

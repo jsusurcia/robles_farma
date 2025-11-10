@@ -9,7 +9,6 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.example.robles_farma.databinding.ActivityMainBinding;
-import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,13 +22,12 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // 🔹 Inicializar el token antes de cualquier request
+        // 🔹 Verificar si hay token guardado
         String token = LoginStorage.getToken(this);
         if (token != null && !token.isEmpty()) {
-            RetrofitClient.API_TOKEN = token;
-            Log.e("TOKEN_MAIN", "Token cargado en MainActivity: " + token);
+            Log.d("TOKEN_MAIN", "✅ Token cargado correctamente desde SharedPreferences");
         } else {
-            Log.e("TOKEN_MAIN", "⚠️ No se encontró token en SharedPreferences");
+            Log.w("TOKEN_MAIN", "⚠️ No se encontró token, usuario debe iniciar sesión");
         }
 
         // 🔹 Toolbar
@@ -41,11 +39,22 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_home,
                 R.id.navigation_citas,
                 R.id.navigation_chat,
-                R.id.navigation_perfil)
-                .build();
+                R.id.navigation_perfil
+        ).build();
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+
+        binding.navView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            // Limpia el back stack antes de cambiar de pestaña
+            navController.popBackStack(navController.getGraph().getStartDestinationId(), false);
+
+            // Navega al destino seleccionado
+            navController.navigate(itemId);
+            return true;
+        });
     }
 
     @Override
