@@ -3,6 +3,7 @@ package com.example.robles_farma.ui.citas;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,8 +29,15 @@ public class CancelarCitaFragment extends Fragment {
         int idCita = args.getInt("idCita", 0);
         int idPersonal = args.getInt("idPersonal", 0);
 
-        Log.d("CancelarCitaFragment", "ID de la cita: " + idCita);
-        Log.d("CancelarCitaFragment", "ID del personal: " + idPersonal);
+        // Configurar el botón "Volver"
+        binding.btnVolver.setOnClickListener(v -> {
+            Navigation.findNavController(v).popBackStack();
+        });
+
+        // Configurar el botón "Confirmar Cancelación"
+        binding.btnConfirmarCancelacion.setOnClickListener(v -> {
+
+        });
 
         return binding.getRoot();
     }
