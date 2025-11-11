@@ -13,7 +13,6 @@ import com.example.robles_farma.databinding.FragmentEditarPerfilBinding
 import com.example.robles_farma.request.PacienteUpdatePassRequest
 import com.example.robles_farma.request.PacienteUpdateRequest
 import com.example.robles_farma.response.PacienteResponse
-import com.example.robles_farma.response.PacienteUpdateResponse
 import com.example.robles_farma.sharedpreferences.LoginStorage
 import com.example.robles_farma.viewmodels.EditarPerfilVM
 

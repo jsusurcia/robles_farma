@@ -129,6 +129,9 @@ class PerfilFragment : Fragment() {
         }
 
         // (Puedes añadir listeners para 'Ajustes' aquí si lo necesitas)
+        binding.textViewAjustes.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_perfil_to_navigation_configuracion)
+        }
     }
 
     private fun mostrarDialogoDeCierreSesion() {

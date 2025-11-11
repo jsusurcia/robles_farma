@@ -57,6 +57,9 @@
         <action
             android:id="@+id/action_navigation_perfil_to_verFotoFragment"
             app:destination="@id/navigation_ver_foto" />
+        <action
+            android:id="@+id/action_navigation_perfil_to_navigation_configuracion"
+            app:destination="@id/navigation_configuracion" />
     </fragment>
 
     <!-- 📝 EDITAR PERFIL -->
@@ -75,7 +78,12 @@
     <fragment
         android:id="@+id/navigation_ver_foto"
         android:name="com.example.robles_farma.ui.perfil.VerFotoFragment"
-        android:label="fragment_ver_foto"
+        android:label="Foto de perfil"
         tools:layout="@layout/fragment_ver_foto" />
+    <fragment
+        android:id="@+id/navigation_configuracion"
+        android:name="com.example.robles_farma.ui.perfil.ConfiguracionFragment"
+        android:label="Configuración"
+        tools:layout="@layout/fragment_configuracion" />
 
 </navigation>
