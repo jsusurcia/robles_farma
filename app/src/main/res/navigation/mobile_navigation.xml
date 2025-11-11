@@ -25,6 +25,11 @@
         <action
             android:id="@+id/action_navigation_citas_to_navigation_chat"
             app:destination="@id/navigation_chat" />
+
+        <action
+            android:id="@+id/action_navigation_citas_to_navigation_chat_detail"
+            app:destination="@id/navigation_chat_detail" />
+
     </fragment>
 
     <!-- 💬 CHAT LISTA -->

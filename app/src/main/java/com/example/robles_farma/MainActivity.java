@@ -25,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
         // 🔹 Verificar si hay token guardado
         String token = LoginStorage.getToken(this);
         if (token != null && !token.isEmpty()) {
-            Log.d("TOKEN_MAIN", "✅ Token cargado correctamente desde SharedPreferences");
+            Log.d("TOKEN_MAIN", "Token cargado correctamente desde SharedPreferences");
         } else {
-            Log.w("TOKEN_MAIN", "⚠️ No se encontró token, usuario debe iniciar sesión");
+            Log.w("TOKEN_MAIN", "No se encontró token, usuario debe iniciar sesión");
         }
 
         // 🔹 Toolbar
