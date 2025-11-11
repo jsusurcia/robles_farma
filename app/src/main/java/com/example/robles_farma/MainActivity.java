@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // 🔹 Verificar si hay token guardado
+        // 🔹 Verificar si hay token guardado - iniciando comprobación
         String token = LoginStorage.getToken(this);
         if (token != null && !token.isEmpty()) {
             Log.d("TOKEN_MAIN", "Token cargado correctamente desde SharedPreferences");
