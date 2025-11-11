@@ -79,7 +79,15 @@
         android:id="@+id/navigation_detalle_cita"
         android:name="com.example.robles_farma.ui.citas.DetalleCitaFragment"
         android:label="@string/title_detalle_cita"
-        tools:layout="@layout/fragment_detalle_cita" />
+        tools:layout="@layout/fragment_detalle_cita" >
+        <action
+            android:id="@+id/action_navigation_detalle_cita_to_navigation_cancelar_cita"
+            app:destination="@id/navigation_cancelar_cita" />
+        <action
+            android:id="@+id/action_navigation_detalle_cita_to_navigation_reprogramar_cita"
+            app:destination="@id/navigation_reprogramar_cita" />
+    </fragment>
+
     <fragment
         android:id="@+id/navigation_ver_foto"
         android:name="com.example.robles_farma.ui.perfil.VerFotoFragment"
@@ -90,5 +98,17 @@
         android:name="com.example.robles_farma.ui.perfil.ConfiguracionFragment"
         android:label="Configuración"
         tools:layout="@layout/fragment_configuracion" />
+
+    <fragment
+        android:id="@+id/navigation_cancelar_cita"
+        android:name="com.example.robles_farma.ui.citas.CancelarCitaFragment"
+        android:label="@string/title_cancelar_cita"
+        tools:layout="@layout/fragment_cancelar_cita" />
+
+    <fragment
+        android:id="@+id/navigation_reprogramar_cita"
+        android:name="com.example.robles_farma.ui.citas.ReprogramarCitaFragment"
+        android:label="@string/title_reprogramar_cita"
+        tools:layout="@layout/fragment_reprogramar_cita" />
 
 </navigation>

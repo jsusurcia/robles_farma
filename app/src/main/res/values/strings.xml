@@ -13,4 +13,6 @@
     <string name="title_perfil">Perfil</string>
 
     <string name="title_detalle_cita">Detalles de la cita</string>
+    <string name="title_cancelar_cita">Cancelar cita</string>
+    <string name="title_reprogramar_cita">Reprogramar cita</string>
 </resources>

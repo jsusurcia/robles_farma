@@ -48,7 +48,8 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
         holder.textSpecialty.setText(cita.getEspecialidad());
         holder.textDate.setText(cita.getFecha());
         holder.textHour.setText(cita.getHora());
-        holder.textLocation.setText(cita.getUbicacion());
+        //holder.textLocation.setText(cita.getUbicacion());
+        holder.textLocation.setText(cita.getUbicacion() != null ? cita.getUbicacion() : "Centro Médico");
         holder.chipStatus.setText(cita.getEstado());
 
         // Colores según estado
@@ -103,6 +104,8 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
             if (position == RecyclerView.NO_POSITION) return;
 
             CitasData cita = listaCitas.get(position);
+            int idCita = cita.getIdCita();
+            int idPersonal = cita.getIdPersonal();
             String doctorName = cita.getNombrePersonal();
             String specialty = cita.getEspecialidad();
             String date = cita.getFecha();
@@ -111,6 +114,8 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
 
             if (v.getId() == R.id.iconInfo) {
                 Bundle args = new Bundle();
+                args.putInt("idCita", idCita);
+                args.putInt("idPersonal", idPersonal);
                 args.putString("doctorName", doctorName);
                 args.putString("specialty", specialty);
                 args.putString("date", date);

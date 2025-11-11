@@ -3,6 +3,8 @@ package com.example.robles_farma.model;
 import com.google.gson.annotations.SerializedName;
 
 public class CitasData {
+    @SerializedName("id_cita")
+    private int idCita;
     @SerializedName("id_personal_especialidad")
     private int idPersonal;
     @SerializedName("nombre_personal")
@@ -26,6 +28,14 @@ public class CitasData {
         this.hora = hora;
         this.ubicacion = ubicacion;
         this.estado = estado;
+    }
+
+    public int getIdCita() {
+        return idCita;
+    }
+
+    public void setIdCita(int idCita) {
+        this.idCita = idCita;
     }
 
     public int getIdPersonal() {
