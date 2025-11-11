@@ -47,6 +47,11 @@ public class DetalleCitaFragment extends Fragment {
             Toast.makeText(getContext(), "Aquí se supone que va la lógica para abrir el chat", Toast.LENGTH_SHORT).show();
         });
 
+        // Configurar el botón "Editar Ubicación
+        binding.btnEditarUbicacion.setOnClickListener(v -> {
+
+        });
+
         // Configurar el botón "Cancelar"
         binding.btnCancelar.setOnClickListener(v -> {
             redirigirFragmentCancelar(v, idCita, idPersonal);

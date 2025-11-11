@@ -101,6 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginBottom="12dp"
                 android:gravity="top">
 
                 <ImageView
@@ -132,6 +133,24 @@
                         android:textColor="#000000" />
                 </LinearLayout>
             </LinearLayout>
+
+            <!-- Botón Enviar mensaje -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditarUbicacion"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="EDITAR UBICACION"
+                android:textSize="14sp"
+                android:textColor="@color/principal_bg"
+                app:icon="@drawable/ic_ubicacion_actual"
+                app:iconTint="@color/principal_bg"
+                app:iconPadding="8dp"
+                app:strokeColor="@color/principal_bg"
+                app:strokeWidth="1dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
