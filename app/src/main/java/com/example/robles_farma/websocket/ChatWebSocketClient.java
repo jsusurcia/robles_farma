@@ -1,8 +1,6 @@
 package com.example.robles_farma.websocket;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -25,7 +23,6 @@ public class ChatWebSocketClient {
     private WebSocket webSocket;
     private final OkHttpClient client = new OkHttpClient();
     private final MutableLiveData<String> receivedMessages = new MutableLiveData<>();
-
     private ChatWebSocketListener.OnMessageReceivedListener messageListener;
 
     public LiveData<String> getReceivedMessages() {
@@ -36,12 +33,12 @@ public class ChatWebSocketClient {
         this.messageListener = listener;
     }
 
-    // ✅ Conectar al WebSocket con token
+    //  Conectar al WebSocket con token JWT
     public void connect(Context context) {
         try {
             String jwtToken = LoginStorage.getToken(context);
             if (jwtToken == null || jwtToken.isEmpty()) {
-                Log.e(TAG, "❌ Token no encontrado");
+                Log.e(TAG, "Token no encontrado. No se puede establecer conexión WebSocket.");
                 return;
             }
 
@@ -53,26 +50,21 @@ public class ChatWebSocketClient {
                     .build();
 
             ChatWebSocketListener listener = new ChatWebSocketListener(message -> {
-                Log.d(TAG, "📩 Mensaje recibido: " + message);
                 receivedMessages.postValue(message);
-
-                if (messageListener != null) {
-                    messageListener.onMessageReceived(message);
-                }
+                if (messageListener != null) messageListener.onMessageReceived(message);
             });
 
             webSocket = client.newWebSocket(request, listener);
-            Log.d(TAG, "✅ Conectando a WebSocket en codestar.space...");
-
+            Log.i(TAG, "Conectado a WebSocket");
         } catch (Exception e) {
-            Log.e(TAG, "❌ Error al conectar WebSocket: " + e.getMessage());
+            Log.e(TAG, "Error al conectar WebSocket: " + e.getMessage());
         }
     }
 
-    // ✅ Enviar mensaje
+    //  Enviar mensaje al servidor
     public void sendMessage(String text, String chatId, List<String> recipientIds) {
         if (webSocket == null) {
-            Log.e(TAG, "❌ No hay conexión WebSocket activa");
+            Log.e(TAG, "No hay conexión WebSocket activa. No se pudo enviar el mensaje.");
             return;
         }
 
@@ -82,25 +74,23 @@ public class ChatWebSocketClient {
             json.put("chat_id", chatId);
             json.put("recipient_ids", new JSONArray(recipientIds));
 
-            String jsonMessage = json.toString();
-            webSocket.send(jsonMessage);
-            Log.d(TAG, "📤 Mensaje enviado: " + jsonMessage);
+            webSocket.send(json.toString());
+            Log.i(TAG, "Mensaje enviado al chat: " + chatId);
         } catch (Exception e) {
-            Log.e(TAG, "❌ Error al crear mensaje JSON: " + e.getMessage());
+            Log.e(TAG, "Error al crear/enviar mensaje: " + e.getMessage());
         }
     }
 
-    // ✅ Cargar historial de mensajes - MEJORADO
+    //  Cargar historial de mensajes
     public void loadChatHistory(Context context, String chatId, OnMessagesLoadedListener listener) {
         new Thread(() -> {
             try {
                 String jwtToken = LoginStorage.getToken(context);
                 if (jwtToken == null || jwtToken.isEmpty()) {
-                    Log.e(TAG, "❌ Token no encontrado");
+                    Log.e(TAG, "Token no encontrado. No se puede cargar historial.");
                     return;
                 }
 
-                // ✅ URL correcta (Railway backend)
                 String url = "https://citassalud-production.up.railway.app/chats/" + chatId + "/messages/";
 
                 Request request = new Request.Builder()
@@ -109,33 +99,30 @@ public class ChatWebSocketClient {
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {
-                    if (response.isSuccessful()) {
+                    if (response.isSuccessful() && response.body() != null) {
                         String json = response.body().string();
-                        Log.d(TAG, "✅ Historial recibido: " + json);
                         listener.onMessagesLoaded(json);
+                        Log.i(TAG, "Historial cargado correctamente para chatId: " + chatId);
                     } else {
-                        Log.e(TAG, "❌ Error HTTP al obtener historial: " + response.code());
+                        Log.e(TAG, "Error HTTP al obtener historial. Código: " + response.code());
                     }
                 }
             } catch (Exception e) {
-                Log.e(TAG, "❌ Error al cargar historial: " + e.getMessage());
-                e.printStackTrace();
+                Log.e(TAG, "Error al cargar historial: " + e.getMessage());
             }
         }).start();
     }
 
-
-
-    // ✅ Desconectar
+    //  Desconectar
     public void disconnect() {
         if (webSocket != null) {
             webSocket.close(1000, "Desconectado por el usuario");
-            Log.i(TAG, "🔌 WebSocket desconectado");
             webSocket = null;
+            Log.i(TAG, "WebSocket desconectado correctamente 🔌");
         }
     }
 
-    // 👂 Interfaz para callback
+    // 👂 Interfaz para callback del historial
     public interface OnMessagesLoadedListener {
         void onMessagesLoaded(String jsonResponse);
     }

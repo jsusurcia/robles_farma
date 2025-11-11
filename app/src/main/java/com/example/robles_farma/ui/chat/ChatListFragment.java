@@ -33,7 +33,7 @@ public class ChatListFragment extends Fragment {
     private static final String TAG = "ChatListFragment";
     private RecyclerView recyclerView;
     private ChatListAdapter adapter;
-    private List<ChatItem> chatList = new ArrayList<>();
+    private final List<ChatItem> chatList = new ArrayList<>();
 
     public ChatListFragment() {
         // Constructor vacío
@@ -54,29 +54,17 @@ public class ChatListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rvChatList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Inicializar adapter vacío
         adapter = new ChatListAdapter(chatList, chat -> {
             Bundle bundle = new Bundle();
             bundle.putString("chatId", chat.getId());
             bundle.putString("doctorName", chat.getName());
-
-            // 🔥 CRÍTICO: Extraer y pasar doctorId correctamente
-            // El nombre viene como "Dr. ID: 123" o "Paciente ID: 456"
-            String doctorId = extractIdFromName(chat.getName());
-            bundle.putString("doctorId", doctorId);
-
-            Log.d(TAG, "📤 Navegando al chat:");
-            Log.d(TAG, "  - chatId: " + chat.getId());
-            Log.d(TAG, "  - doctorId: " + doctorId);
-            Log.d(TAG, "  - doctorName: " + chat.getName());
+            bundle.putString("doctorId", extractIdFromName(chat.getName()));
 
             NavController navController = Navigation.findNavController(view);
             navController.navigate(R.id.action_navigation_chat_to_chat_detail, bundle);
         });
 
         recyclerView.setAdapter(adapter);
-
-        // Cargar los chats desde el backend
         loadChats();
     }
 
@@ -96,7 +84,6 @@ public class ChatListFragment extends Fragment {
                         String otherName = "Desconocido";
                         String otherRol = "";
 
-                        // Verificar si pertenezco al chat
                         for (ChatResponse.Participant participant : chat.getParticipants()) {
                             if (participant.getUserId().equals(currentUserId)) {
                                 belongsToUser = true;
@@ -105,13 +92,11 @@ public class ChatListFragment extends Fragment {
                         }
 
                         if (belongsToUser) {
-                            // 🔥 Buscar al OTRO participante
                             for (ChatResponse.Participant participant : chat.getParticipants()) {
                                 if (!participant.getUserId().equals(currentUserId)) {
                                     otherUserId = participant.getUserId();
                                     otherRol = participant.getRol();
 
-                                    // Construir nombre descriptivo
                                     if ("personal_medico".equalsIgnoreCase(otherRol)) {
                                         otherName = "Dr. (ID: " + otherUserId + ")";
                                     } else if ("paciente".equalsIgnoreCase(otherRol)) {
@@ -121,32 +106,24 @@ public class ChatListFragment extends Fragment {
                                 }
                             }
 
-                            // 🔥 CREAR ChatItem con ID guardado en el nombre (temporal)
-                            // O mejor aún: modifica ChatItem para tener un campo doctorId
                             chatList.add(new ChatItem(
                                     chat.getChatId(),
                                     otherName,
                                     "Sin mensajes aún 💬"
                             ));
-
-                            Log.d(TAG, "✅ Chat agregado:");
-                            Log.d(TAG, "  - chatId: " + chat.getChatId());
-                            Log.d(TAG, "  - otherUserId: " + otherUserId);
-                            Log.d(TAG, "  - otherName: " + otherName);
-                            Log.d(TAG, "  - otherRol: " + otherRol);
                         }
                     }
 
                     adapter.notifyDataSetChanged();
-                    Log.i(TAG, "✅ Chats cargados correctamente: " + chatList.size());
+                    Log.i(TAG, "Chats cargados: " + chatList.size());
                 } else {
-                    Log.e(TAG, "❌ Error en la respuesta: " + response.code());
+                    Log.e(TAG, "Error al obtener chats: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<ChatResponse>> call, Throwable t) {
-                Log.e(TAG, "⚠️ Error cargando chats: " + t.getMessage());
+                Log.e(TAG, "Error cargando chats: " + t.getMessage());
             }
         });
     }
@@ -159,14 +136,11 @@ public class ChatListFragment extends Fragment {
             if (name != null && name.contains("(ID: ") && name.contains(")")) {
                 int start = name.indexOf("(ID: ") + 5;
                 int end = name.indexOf(")", start);
-                String id = name.substring(start, end).trim();
-                Log.d(TAG, "🔍 ID extraído: '" + id + "' desde nombre: '" + name + "'");
-                return id;
+                return name.substring(start, end).trim();
             }
         } catch (Exception e) {
-            Log.e(TAG, "❌ Error extrayendo ID del nombre: " + e.getMessage());
+            Log.e(TAG, "Error extrayendo ID: " + e.getMessage());
         }
-        Log.w(TAG, "⚠️ No se pudo extraer ID del nombre: " + name);
         return "";
     }
 }
