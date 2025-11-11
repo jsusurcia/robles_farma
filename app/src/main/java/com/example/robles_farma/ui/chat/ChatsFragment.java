@@ -1,39 +1,60 @@
 package com.example.robles_farma.ui.chat;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.robles_farma.R;
+import com.example.robles_farma.adapter.ChatMessagesAdapter;
+import com.example.robles_farma.model.ChatMessage;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
 import com.example.robles_farma.websocket.ChatWebSocketClient;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ChatsFragment extends Fragment {
 
+    private static final String TAG = "ChatsFragment";
     private ChatWebSocketClient wsClient;
     private EditText etMessage;
-    private Button btnSend;
-    private TextView tvMessages;
+    private ImageButton btnSend;
+    private RecyclerView recyclerViewMessages;
+    private ChatMessagesAdapter adapter;
 
+    private String chatId;
     private String doctorId;
     private String doctorName;
+    private String currentUserId;
 
-    public ChatsFragment() {
-        // Constructor vacío
-    }
+    private final Set<String> shownMessageIds = new HashSet<>();
+    private boolean isHistoryLoaded = false;
+    private boolean isViewCreated = false;
+
+    private static final String KEY_CHAT_ID = "chatId";
+    private static final String KEY_DOCTOR_ID = "doctorId";
+    private static final String KEY_DOCTOR_NAME = "doctorName";
+
+    public ChatsFragment() { }
 
     @Nullable
     @Override
@@ -47,51 +68,162 @@ public class ChatsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 🔹 Vincula todos los elementos del layout
         etMessage = view.findViewById(R.id.etMessage);
         btnSend = view.findViewById(R.id.btnSend);
-        tvMessages = view.findViewById(R.id.tvMessages);
+        recyclerViewMessages = view.findViewById(R.id.recyclerViewMessages);
+        TextView chatHeader = view.findViewById(R.id.tvChatHeader);
 
+        adapter = new ChatMessagesAdapter();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
+        layoutManager.setStackFromEnd(true);
+        recyclerViewMessages.setLayoutManager(layoutManager);
+        recyclerViewMessages.setAdapter(adapter);
 
-        // 🔹 Recupera los datos del doctor
-        if (getArguments() != null) {
-            doctorId = getArguments().getString("doctorId");
-            doctorName = getArguments().getString("doctorName");
+        currentUserId = String.valueOf(LoginStorage.getUserId(requireContext()));
+
+        // Recuperar argumentos
+        if (savedInstanceState != null) {
+            chatId = savedInstanceState.getString(KEY_CHAT_ID);
+            doctorId = savedInstanceState.getString(KEY_DOCTOR_ID);
+            doctorName = savedInstanceState.getString(KEY_DOCTOR_NAME);
+        } else if (getArguments() != null) {
+            chatId = getArguments().getString(KEY_CHAT_ID);
+            doctorId = getArguments().getString(KEY_DOCTOR_ID);
+            doctorName = getArguments().getString(KEY_DOCTOR_NAME);
         }
 
-        // 🔹 Inicializa y conecta el WebSocket
-        wsClient = new ChatWebSocketClient();
-        String token = LoginStorage.getToken(getContext());
-        wsClient.connect(token);
+        chatHeader.setText(doctorName != null ? doctorName : "Doctor");
 
-        // 🔹 Observa los mensajes recibidos
+        // Iniciar WebSocket
+        if (!isViewCreated) {
+            wsClient = new ChatWebSocketClient();
+            wsClient.connect(requireContext());
+            isViewCreated = true;
+        }
+
+        // Escuchar mensajes en tiempo real
         wsClient.getReceivedMessages().observe(getViewLifecycleOwner(), raw -> {
             try {
                 JSONObject obj = new JSONObject(raw);
-                String sender = obj.optString("sender_rol", "otro");
-                String text = obj.optString("text", raw);
-                tvMessages.append(sender + ": " + text + "\n");
+
+                String messageId = obj.optString("id", String.valueOf(System.currentTimeMillis()));
+                String text = obj.optString("text", "");
+                String timestamp = obj.optString("timestamp", getCurrentTimestamp());
+                String senderRol = obj.optString("sender_rol", "");
+                String senderId = obj.optString("sender_id", "");
+
+                if (shownMessageIds.contains(messageId)) return;
+                shownMessageIds.add(messageId);
+
+                boolean isSentByMe = senderId.equals(currentUserId);
+                String senderName = isSentByMe ? "Tú" :
+                        (doctorName != null ? doctorName : "Doctor");
+
+                ChatMessage message = new ChatMessage(
+                        messageId, text, senderId, senderName, timestamp, isSentByMe
+                );
+
+                requireActivity().runOnUiThread(() -> {
+                    adapter.addMessage(message);
+                    recyclerViewMessages.smoothScrollToPosition(adapter.getItemCount() - 1);
+                });
+
             } catch (JSONException e) {
-                tvMessages.append("📩 " + raw + "\n");
+                Log.e(TAG, "Error al procesar mensaje en tiempo real: " + e.getMessage());
             }
         });
 
-        // 🔹 Enviar mensaje
+        // Enviar mensaje
         btnSend.setOnClickListener(v -> {
             String message = etMessage.getText().toString().trim();
             if (!message.isEmpty()) {
-                wsClient.sendMessage(message, "69ff160b88bb331e43513fb", Arrays.asList("1", "3"));
-                tvMessages.append("Tú: " + message + "\n");
+                wsClient.sendMessage(message, chatId, Arrays.asList(currentUserId, doctorId));
                 etMessage.setText("");
+                Log.i(TAG, "Mensaje enviado → Chat: " + chatId);
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_CHAT_ID, chatId);
+        outState.putString(KEY_DOCTOR_ID, doctorId);
+        outState.putString(KEY_DOCTOR_NAME, doctorName);
+    }
+
+    private void loadChatHistory() {
+        wsClient.loadChatHistory(requireContext(), chatId, json -> {
+            try {
+                JSONArray messagesArray = new JSONArray(json);
+                List<ChatMessage> historyMessages = new ArrayList<>();
+
+                requireActivity().runOnUiThread(() -> {
+                    shownMessageIds.clear();
+                    adapter.setMessages(new ArrayList<>());
+
+                    for (int i = 0; i < messagesArray.length(); i++) {
+                        JSONObject msg = messagesArray.optJSONObject(i);
+                        if (msg == null) continue;
+
+                        String messageId = msg.optString("id", String.valueOf(i));
+                        String text = msg.optString("text", "");
+                        String timestamp = msg.optString("timestamp", "");
+                        String senderRol = msg.optString("sender_rol", "");
+                        String senderId = msg.optString("sender_id", "");
+
+                        boolean isSentByMe = senderId.equals(currentUserId);
+                        String senderName = isSentByMe ? "Tú" :
+                                (doctorName != null ? doctorName : "Doctor");
+
+                        historyMessages.add(new ChatMessage(
+                                messageId, text, senderId, senderName, timestamp, isSentByMe
+                        ));
+                    }
+
+                    adapter.setMessages(historyMessages);
+                    recyclerViewMessages.scrollToPosition(adapter.getItemCount() - 1);
+                    isHistoryLoaded = true;
+
+                    Log.i(TAG, "Historial cargado: " + messagesArray.length() + " mensajes");
+                });
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error al cargar historial: " + e.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (chatId != null && !chatId.isEmpty() && !isHistoryLoaded) {
+            loadChatHistory();
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (wsClient != null) {
+            wsClient.getReceivedMessages().removeObservers(getViewLifecycleOwner());
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        shownMessageIds.clear();
+        isHistoryLoaded = false;
+        isViewCreated = false;
+        if (wsClient != null) {
             wsClient.disconnect();
         }
+        Log.i(TAG, "Chat cerrado correctamente 🧹");
+    }
+
+    private String getCurrentTimestamp() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.getDefault());
+        return sdf.format(new java.util.Date());
     }
 }

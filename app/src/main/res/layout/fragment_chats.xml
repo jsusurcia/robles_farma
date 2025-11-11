@@ -1,58 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="12dp"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F9F9F9">
+    android:background="#F5F5F5">
 
-
-
-    <!-- 🔹 Mensajes -->
-    <ScrollView
-        android:id="@+id/scrollViewMessages"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="8dp">
-
-        <TextView
-            android:id="@+id/tvMessages"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="#000"
-             />
-    </ScrollView>
-
-    <!-- 🔹 Entrada de texto -->
-    <LinearLayout
+    <!-- 🔹 Header con el nombre del doctor -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chatHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="#FFFFFF"
-        android:padding="6dp"
-        android:elevation="2dp">
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:padding="12dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imgDoctor"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:src="@drawable/default_doctor_image"
+            android:contentDescription="Foto del doctor"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/tvChatHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Dr. Gregory House"
+            android:textColor="#212121"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginStart="12dp"
+            app:layout_constraintStart_toEndOf="@id/imgDoctor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 🔹 RecyclerView para mensajes -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/chatHeader"
+        app:layout_constraintBottom_toTopOf="@id/messageInputContainer"
+        tools:listitem="@layout/item_message_sent" />
+
+    <!-- 🔹 Contenedor de entrada de texto -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/messageInputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="8dp"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <EditText
             android:id="@+id/etMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:hint="Escribe un mensaje..."
-            android:padding="10dp"
-            android:background="@android:drawable/edit_text"
-            android:textSize="15sp" />
+            android:padding="12dp"
+            android:background="@drawable/bg_message_input"
+            android:textSize="15sp"
+            android:maxLines="4"
+            android:inputType="textMultiLine|textCapSentences"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnSend"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="8dp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enviar"
-            android:padding="8dp"
-            android:backgroundTint="#1976D2"
-            android:textColor="@android:color/white" />
-    </LinearLayout>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_menu_send"
+            android:background="@drawable/bg_send_button"
+            android:tint="@android:color/white"
+            android:contentDescription="Enviar mensaje"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-</LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

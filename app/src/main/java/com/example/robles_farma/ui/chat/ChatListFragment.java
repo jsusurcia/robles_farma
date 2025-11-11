@@ -30,9 +30,10 @@ import retrofit2.Response;
 
 public class ChatListFragment extends Fragment {
 
+    private static final String TAG = "ChatListFragment";
     private RecyclerView recyclerView;
     private ChatListAdapter adapter;
-    private List<ChatItem> chatList = new ArrayList<>();
+    private final List<ChatItem> chatList = new ArrayList<>();
 
     public ChatListFragment() {
         // Constructor vacío
@@ -53,25 +54,23 @@ public class ChatListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rvChatList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Inicializar adapter vacío
         adapter = new ChatListAdapter(chatList, chat -> {
             Bundle bundle = new Bundle();
             bundle.putString("chatId", chat.getId());
             bundle.putString("doctorName", chat.getName());
+            bundle.putString("doctorId", extractIdFromName(chat.getName()));
 
             NavController navController = Navigation.findNavController(view);
             navController.navigate(R.id.action_navigation_chat_to_chat_detail, bundle);
         });
 
         recyclerView.setAdapter(adapter);
-
-        // Cargar los chats desde el backend
         loadChats();
     }
 
     private void loadChats() {
         ChatService chatService = RetrofitClient.createService(requireContext(), ChatService.class);
-        String currentUserId = LoginStorage.getUserId(requireContext()); // 👈 Tu método que devuelve el ID del usuario logueado
+        String currentUserId = LoginStorage.getUserId(requireContext());
 
         chatService.getChats().enqueue(new Callback<List<ChatResponse>>() {
             @Override
@@ -81,23 +80,29 @@ public class ChatListFragment extends Fragment {
 
                     for (ChatResponse chat : response.body()) {
                         boolean belongsToUser = false;
+                        String otherUserId = "";
                         String otherName = "Desconocido";
+                        String otherRol = "";
 
                         for (ChatResponse.Participant participant : chat.getParticipants()) {
                             if (participant.getUserId().equals(currentUserId)) {
                                 belongsToUser = true;
+                                break;
                             }
                         }
 
                         if (belongsToUser) {
-                            // Buscar al otro participante para mostrarlo
                             for (ChatResponse.Participant participant : chat.getParticipants()) {
                                 if (!participant.getUserId().equals(currentUserId)) {
-                                    if ("personal_medico".equalsIgnoreCase(participant.getRol())) {
-                                        otherName = "Dr. ID: " + participant.getUserId();
-                                    } else if ("paciente".equalsIgnoreCase(participant.getRol())) {
-                                        otherName = "Paciente ID: " + participant.getUserId();
+                                    otherUserId = participant.getUserId();
+                                    otherRol = participant.getRol();
+
+                                    if ("personal_medico".equalsIgnoreCase(otherRol)) {
+                                        otherName = "Dr. (ID: " + otherUserId + ")";
+                                    } else if ("paciente".equalsIgnoreCase(otherRol)) {
+                                        otherName = "Paciente (ID: " + otherUserId + ")";
                                     }
+                                    break;
                                 }
                             }
 
@@ -110,16 +115,32 @@ public class ChatListFragment extends Fragment {
                     }
 
                     adapter.notifyDataSetChanged();
-                    Log.i("ChatListFragment", "✅ Chats cargados correctamente: " + chatList.size());
+                    Log.i(TAG, "Chats cargados: " + chatList.size());
                 } else {
-                    Log.e("ChatListFragment", "❌ Error en la respuesta: " + response.code());
+                    Log.e(TAG, "Error al obtener chats: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<List<ChatResponse>> call, Throwable t) {
-                Log.e("ChatListFragment", "⚠️ Error cargando chats: " + t.getMessage());
+                Log.e(TAG, "Error cargando chats: " + t.getMessage());
             }
         });
+    }
+
+    /**
+     * Extrae el ID del nombre que viene en formato "Dr. (ID: 123)" o "Paciente (ID: 456)"
+     */
+    private String extractIdFromName(String name) {
+        try {
+            if (name != null && name.contains("(ID: ") && name.contains(")")) {
+                int start = name.indexOf("(ID: ") + 5;
+                int end = name.indexOf(")", start);
+                return name.substring(start, end).trim();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error extrayendo ID: " + e.getMessage());
+        }
+        return "";
     }
 }
