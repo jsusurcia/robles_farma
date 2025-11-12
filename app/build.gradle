@@ -54,6 +54,7 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.analytics
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
 
     implementation libs.core.ktx
     implementation libs.swiperefreshlayout
