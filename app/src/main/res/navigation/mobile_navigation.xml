@@ -86,6 +86,9 @@
         <action
             android:id="@+id/action_navigation_detalle_cita_to_navigation_reprogramar_cita"
             app:destination="@id/navigation_reprogramar_cita" />
+        <action
+            android:id="@+id/action_navigation_detalle_cita_to_navigation_editar_ubicacion_cita"
+            app:destination="@id/navigation_editar_ubicacion_cita" />
     </fragment>
 
     <fragment
@@ -110,5 +113,11 @@
         android:name="com.example.robles_farma.ui.citas.ReprogramarCitaFragment"
         android:label="@string/title_reprogramar_cita"
         tools:layout="@layout/fragment_reprogramar_cita" />
+
+    <fragment
+        android:id="@+id/navigation_editar_ubicacion_cita"
+        android:name="com.example.robles_farma.ui.citas.EditarUbicacionCitaFragment"
+        android:label="@string/title_editar_ubicacion_cita"
+        tools:layout="@layout/fragment_editar_ubicacion_cita" />
 
 </navigation>

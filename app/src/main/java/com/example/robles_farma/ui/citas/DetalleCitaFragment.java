@@ -49,7 +49,7 @@ public class DetalleCitaFragment extends Fragment {
 
         // Configurar el botón "Editar Ubicación
         binding.btnEditarUbicacion.setOnClickListener(v -> {
-
+            redirigirFragmentEditarUbicacion(v, idCita, idPersonal);
         });
 
         // Configurar el botón "Cancelar"
@@ -62,6 +62,13 @@ public class DetalleCitaFragment extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    private void redirigirFragmentEditarUbicacion(View v, int idCita, int idPersonal) {
+        Bundle argsEditarUbicacion = new Bundle();
+        argsEditarUbicacion.putInt("idCita", idCita);
+        argsEditarUbicacion.putInt("idPersonal", idPersonal);
+        Navigation.findNavController(v).navigate(R.id.action_navigation_detalle_cita_to_navigation_editar_ubicacion_cita);
     }
 
     private void redirigirFragmentCancelar(View v, int idCita, int idPersonal) {
