@@ -1,7 +1,10 @@
 package com.example.robles_farma;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.example.robles_farma.ui.auth.AuthActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -14,21 +17,34 @@ import com.example.robles_farma.sharedpreferences.LoginStorage;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private LoginStorage loginStorage; // 1. Declara una instancia de LoginStorage
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // 2. Inicializa LoginStorage PRIMERO
+        loginStorage = new LoginStorage(this);
+
+        if (!loginStorage.isUserLoggedIn()) {
+
+            Log.w("TOKEN_MAIN", "No hay sesión válida o token expirado. Redirigiendo a LoginActivity.");
+
+            Intent intent = new Intent(this, AuthActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+
+            finish();
+            return;
+        }
+
+        // --- Si llegamos aquí, el usuario SÍ está logueado ---
+        Log.d("TOKEN_MAIN", "Sesión válida encontrada. Cargando MainActivity.");
+
+        // 7. Ahora sí, inflamos la vista y configuramos el resto
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        // 🔹 Verificar si hay token guardado - iniciando comprobación
-        String token = LoginStorage.getToken(this);
-        if (token != null && !token.isEmpty()) {
-            Log.d("TOKEN_MAIN", "Token cargado correctamente desde SharedPreferences");
-        } else {
-            Log.w("TOKEN_MAIN", "No se encontró token, usuario debe iniciar sesión");
-        }
 
         // 🔹 Toolbar
         setSupportActionBar(binding.toolbar);

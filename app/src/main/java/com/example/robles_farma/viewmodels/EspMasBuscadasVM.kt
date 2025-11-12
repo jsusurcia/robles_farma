@@ -15,6 +15,9 @@ import retrofit2.Response
 import com.example.robles_farma.model.BusquedaEspecialidadData
 import com.example.robles_farma.response.BusquedaEspecialidadResponse
 import java.io.IOException
+import com.example.robles_farma.sharedpreferences.LoginStorage
+
+
 
 class EspMasBuscadasVM(application: Application) : AndroidViewModel(application) {
     private val apiService: ApiService = RetrofitClient.createService()
@@ -47,29 +50,44 @@ class EspMasBuscadasVM(application: Application) : AndroidViewModel(application)
         // Marcamos que está cargando
         _isLoading.value = true
 
-        apiService.getEspecialidades().enqueue(object : Callback<EspecialidadResponse> {
+        val context = getApplication<Application>().applicationContext
+        val token = LoginStorage.getToken(context)
+
+        // 3. VALIDAR EL TOKEN
+        if (token == null) {
+            _errorMessage.value = "Error: No hay sesión activa."
+            _isLoading.value = false
+            Log.e("ViewModel", "Token es nulo, no se puede llamar a la API.")
+            return // Detener la ejecución si no hay token
+        }
+
+        val authToken = "Bearer $token"
+
+        apiService.getEspecialidades(authToken).enqueue(object : Callback<EspecialidadResponse> {
             override fun onResponse(
                 call: Call<EspecialidadResponse>,
                 response: Response<EspecialidadResponse>
             ) {
                 // terminó la carga
                 _isLoading.value = false
-
                 if (response.isSuccessful) {
-                    // Si la respuesta fue exitosa, actualizamos el LiveData
-                    // con la lista de datos (response.body()?.data)
                     _especialidades.value = response.body()?.data
                 } else {
-                    // Si hubo un error en el servidor (ej: 404, 500)
-                    _errorMessage.value = "Error: ${response.code()}"
+                    // Manejar errores de autenticación (ej. 401, 403)
+                    if (response.code() == 401 || response.code() == 403) {
+                        _errorMessage.value = "Error de autorización. Inicie sesión de nuevo."
+                        Log.w("ViewModel", "Error 401/403: Token inválido o expirado.")
+                        // Opcional: limpiando el token
+                        LoginStorage(context).clearLoginCredentials()
+                    } else {
+                        _errorMessage.value = "Error: ${response.code()}"
+                    }
                     Log.e("ViewModel", "Error en la respuesta: ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<EspecialidadResponse>, t: Throwable) {
-                // terminó la carga
                 _isLoading.value = false
-                // Si hubo un error de red o al procesar la respuesta
                 _errorMessage.value = "Fallo en la conexión: ${t.message}"
                 Log.e("ViewModel", "Fallo de Retrofit: ${t.message}")
             }
@@ -87,17 +105,26 @@ class EspMasBuscadasVM(application: Application) : AndroidViewModel(application)
             return
         }
 
-        if (searchCall != null) {
-            Log.d("ViewModel", "Cancelando búsqueda anterior...")
-            searchCall?.cancel()
+        searchCall?.cancel()
+
+        val context = getApplication<Application>().applicationContext
+        val token = LoginStorage.getToken(context)
+
+        if (token == null) {
+            Log.e("ViewModel", "Token es nulo, no se puede buscar.")
+            // Opcional: mostrar error en la UI de búsqueda
+            _searchResults.value = emptyList() // Limpia resultados
+            return
         }
+
+        val authToken = "Bearer $token"
 
         //  Cancela cualquier búsqueda anterior que aún esté en progreso
         searchCall?.cancel()
 
         //  Crea la nueva llamada
         Log.d("ViewModel", "Creando nueva llamada a la API para: \"$query\"")
-        searchCall = apiService.getBusquedaEspecialidad(query)
+        searchCall = apiService.getBusquedaEspecialidad(query, authToken)
         searchCall?.enqueue(object : Callback<BusquedaEspecialidadResponse> {
             override fun onResponse(
                 call: Call<BusquedaEspecialidadResponse>,
