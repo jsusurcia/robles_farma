@@ -10,10 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.robles_farma.R;
 import com.example.robles_farma.adapter.CitasRecyclerViewAdapter;
 import com.example.robles_farma.databinding.FragmentPasadasCitasBinding;
-import com.example.robles_farma.model.CitasData;
+import com.example.robles_farma.model.CitasPacienteData;
 import com.example.robles_farma.response.CitasPacienteResponse;
 import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.retrofit.ApiService;
@@ -24,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +34,7 @@ import retrofit2.Response;
 public class PasadasCitasFragment extends Fragment {
     private FragmentPasadasCitasBinding binding;
     private CitasRecyclerViewAdapter adapter;
-    private List<CitasData> listaCitasPasadas = new ArrayList<>();
+    private List<CitasPacienteData> listaCitasPasadas = new ArrayList<>();
     private LoginStorage loginStorage;
     PacienteResponse paciente;
 
@@ -102,7 +100,7 @@ public class PasadasCitasFragment extends Fragment {
     }
 
     private void cargarCitasEjemplo() {
-        listaCitasPasadas.add(new CitasData(
+        listaCitasPasadas.add(new CitasPacienteData(
                 "Dr. Atendida",
                 "Cardiología",
                 "15 Nov 2024",
@@ -111,7 +109,7 @@ public class PasadasCitasFragment extends Fragment {
                 "Atendida"
         ));
 
-        listaCitasPasadas.add(new CitasData(
+        listaCitasPasadas.add(new CitasPacienteData(
                 "Dra. Atendida",
                 "Pediatría",
                 "20 Nov 2024",

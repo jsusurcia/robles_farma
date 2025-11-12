@@ -15,7 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.robles_farma.R;
-import com.example.robles_farma.model.CitasData;
+import com.example.robles_farma.model.CitasPacienteData;
 import com.example.robles_farma.retrofit.ChatService;
 import com.google.android.material.chip.Chip;
 
@@ -24,10 +24,10 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecyclerViewAdapter.ViewHolder> {
-    private final List<CitasData> listaCitas;
+    private final List<CitasPacienteData> listaCitas;
     private final Context context;
 
-    public CitasRecyclerViewAdapter(List<CitasData> listaCitas, Context context) {
+    public CitasRecyclerViewAdapter(List<CitasPacienteData> listaCitas, Context context) {
         this.listaCitas = listaCitas;
         this.context = context;
     }
@@ -41,7 +41,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
 
     @Override
     public void onBindViewHolder(@NonNull CitasRecyclerViewAdapter.ViewHolder holder, int position) {
-        CitasData cita = listaCitas.get(position);
+        CitasPacienteData cita = listaCitas.get(position);
 
         holder.imageDoctor.setImageResource(R.drawable.default_doctor_image);
         holder.textDoctorName.setText(cita.getNombrePersonal());
@@ -103,7 +103,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
             int position = getAdapterPosition();
             if (position == RecyclerView.NO_POSITION) return;
 
-            CitasData cita = listaCitas.get(position);
+            CitasPacienteData cita = listaCitas.get(position);
             int idCita = cita.getIdCita();
             int idPersonal = cita.getIdPersonal();
             String doctorName = cita.getNombrePersonal();

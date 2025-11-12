@@ -5,68 +5,62 @@ import com.google.gson.annotations.SerializedName;
 public class CitasData {
     @SerializedName("id_cita")
     private int idCita;
+    @SerializedName("id_paciente")
+    private int idPaciente;
     @SerializedName("id_personal_especialidad")
-    private int idPersonal;
-    @SerializedName("nombre_personal")
-    private String nombrePersonal;
-    @SerializedName("nombre_especialidad")
-    private String especialidad;
-    @SerializedName("fecha")
-    private String fecha;
-    @SerializedName("hora_inicio")
-    private String hora;
+    private int idPersonalEspecialidad;
+    @SerializedName("id_horario")
+    private int idHorario;
     @SerializedName("direccion_domicilio")
-    private String ubicacion;
+    private String direccionDomicilio;
     @SerializedName("estado_cita")
-    private String estado;
-
-
-    public CitasData(String nombrePersonal, String especialidad, String fecha, String hora, String ubicacion, String estado) {
-        this.nombrePersonal = nombrePersonal;
-        this.especialidad = especialidad;
-        this.fecha = fecha;
-        this.hora = hora;
-        this.ubicacion = ubicacion;
-        this.estado = estado;
-    }
+    private String estadoCita;
+    @SerializedName("estado_viaje")
+    private String estadoViaje;
+    @SerializedName("fecha_creacion")
+    private String fechaCreacion;
+    @SerializedName("fecha_modificacion")
+    private String fechaModificacion;
+    @SerializedName("codigo_qr")
+    private String codigoQr;
 
     public int getIdCita() {
         return idCita;
     }
 
-    public void setIdCita(int idCita) {
-        this.idCita = idCita;
+    public int getIdPaciente() {
+        return idPaciente;
     }
 
-    public int getIdPersonal() {
-        return idPersonal;
+    public int getIdPersonalEspecialidad() {
+        return idPersonalEspecialidad;
     }
 
-    public void setIdPersonal(int idPersonal) {
-        this.idPersonal = idPersonal;
+    public int getIdHorario() {
+        return idHorario;
     }
 
-    public String getNombrePersonal() {
-        return nombrePersonal;
+    public String getDireccionDomicilio() {
+        return direccionDomicilio;
     }
 
-    public String getEspecialidad() {
-        return especialidad;
+    public String getEstadoCita() {
+        return estadoCita;
     }
 
-    public String getFecha() {
-        return fecha;
+    public String getEstadoViaje() {
+        return estadoViaje;
     }
 
-    public String getHora() {
-        return hora;
+    public String getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public String getUbicacion() {
-        return ubicacion;
+    public String getFechaModificacion() {
+        return fechaModificacion;
     }
 
-    public String getEstado() {
-        return estado;
+    public String getCodigoQr() {
+        return codigoQr;
     }
 }

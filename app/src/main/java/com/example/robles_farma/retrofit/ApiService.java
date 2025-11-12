@@ -1,11 +1,11 @@
 package com.example.robles_farma.retrofit;
 
-import com.example.robles_farma.model.CitasData;
 import com.example.robles_farma.request.LoginRequest;
 import com.example.robles_farma.request.PacienteUpdatePassRequest;
 import com.example.robles_farma.request.PacienteUpdateRequest;
 import com.example.robles_farma.request.RegisterRequest;
 import com.example.robles_farma.response.BusquedaEspecialidadResponse;
+import com.example.robles_farma.response.CancelarCitaResponse;
 import com.example.robles_farma.response.CitasPacienteResponse;
 import com.example.robles_farma.response.FotoUploadResponse;
 import com.example.robles_farma.response.ItemResponse;
@@ -13,10 +13,7 @@ import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.response.EspecialidadResponse;
 import com.example.robles_farma.response.PacienteUpdatePassResponse;
-import com.example.robles_farma.response.PacienteUpdateResponse;
 
-
-import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -60,6 +57,13 @@ public interface ApiService {
     // 🔹 Obtener citas pasadas de un paciente
     @GET("cita/pasadas_paciente/{id_paciente}")
     Call<CitasPacienteResponse> getCitasPasadas(@Path("id_paciente") int idPaciente);
+
+    // 🔹 Cancelar una cita
+    @POST("cita/{id_cita}/cancelar")
+    Call<CancelarCitaResponse> cancelarCita(@Path("id_cita") int idCita);
+
+    // 🔹 Reprogramar una cita
+
 
     @Streaming
     @GET("pacientes/foto")

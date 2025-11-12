@@ -5,18 +5,15 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.robles_farma.R;
 import com.example.robles_farma.adapter.CitasRecyclerViewAdapter;
 import com.example.robles_farma.databinding.FragmentProximasCitasBinding;
-import com.example.robles_farma.model.CitasData;
+import com.example.robles_farma.model.CitasPacienteData;
 import com.example.robles_farma.response.CitasPacienteResponse;
-import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.retrofit.ApiService;
 import com.example.robles_farma.retrofit.RetrofitClient;
@@ -37,7 +34,7 @@ import retrofit2.Response;
 public class ProximasCitasFragment extends Fragment {
     private FragmentProximasCitasBinding binding;
     private CitasRecyclerViewAdapter adapter;
-    private List<CitasData> listaProxCitas = new ArrayList<>();
+    private List<CitasPacienteData> listaProxCitas = new ArrayList<>();
     private LoginStorage loginStorage;
     PacienteResponse paciente;
 

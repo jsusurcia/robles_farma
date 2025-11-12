@@ -1,17 +1,17 @@
 package com.example.robles_farma.response;
 
-import com.example.robles_farma.model.CitasPacienteData;
+import com.example.robles_farma.model.CitasData;
 
-public class CitasPacienteResponse {
-    private CitasPacienteData[] data;
+public class CancelarCitaResponse {
+    private CitasData data;
     private String message;
     private String status;
 
-    public CitasPacienteData[] getData() {
+    public CitasData getData() {
         return data;
     }
 
-    public void setData(CitasPacienteData[] data) {
+    public void setData(CitasData data) {
         this.data = data;
     }
 
