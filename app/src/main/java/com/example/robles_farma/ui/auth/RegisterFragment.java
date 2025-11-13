@@ -41,7 +41,7 @@ public class RegisterFragment extends Fragment {
     private AutoCompleteTextView autoTipoDocumento, autoSexo;
     private TextInputEditText etDNI, etNombres, etApellidoPaterno, etApellidoMaterno, etFechaNacimiento, etClave;
     private Button btnRegistrar;
-    private CheckBox chkTerminos;
+    private CheckBox chkTerminos, chkSeguroSalud;
     private ApiService apiService;
 
     @Override
@@ -61,6 +61,9 @@ public class RegisterFragment extends Fragment {
         etClave = view.findViewById(R.id.etClave);
         btnRegistrar = view.findViewById(R.id.btnRegistrar);
         chkTerminos = view.findViewById(R.id.chkTerminos);
+        chkSeguroSalud = view.findViewById(R.id.chkSeguroSalud);
+
+        //Inicializar el servicio
 
         apiService = RetrofitClient.createService();
 
@@ -130,6 +133,10 @@ public class RegisterFragment extends Fragment {
         String clave = etClave.getText().toString().trim();
         String tipoDocumento = autoTipoDocumento.getText().toString();
         String sexoStr = autoSexo.getText().toString();
+        boolean esAsegurado = chkSeguroSalud.isChecked();
+
+
+
 
         if (TextUtils.isEmpty(nroDocumento) || TextUtils.isEmpty(nombres) || TextUtils.isEmpty(apellidoPaterno) || TextUtils.isEmpty(apellidoMaterno) || TextUtils.isEmpty(fechaNacimiento) || TextUtils.isEmpty(clave) || TextUtils.isEmpty(tipoDocumento) || TextUtils.isEmpty(sexoStr)) {
             Toast.makeText(getContext(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
@@ -144,7 +151,8 @@ public class RegisterFragment extends Fragment {
         int idTipoDocumento = 1; // Ajustar según la selección del usuario
         boolean sexo = sexoStr.equals("Masculino");
 
-        RegisterRequest registerRequest = new RegisterRequest(nroDocumento, clave, nombres, apellidoPaterno, apellidoMaterno, fechaNacimiento, sexo, idTipoDocumento, null, null, null);
+
+        RegisterRequest registerRequest = new RegisterRequest(nroDocumento, clave, nombres, apellidoPaterno, apellidoMaterno, fechaNacimiento, sexo, idTipoDocumento, null, null, null, esAsegurado);
 
         apiService.registerPaciente(registerRequest).enqueue(new Callback<ItemResponse<PacienteResponse>>() {
             @Override
