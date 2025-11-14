@@ -54,6 +54,8 @@ dependencies {
     androidTestImplementation libs.espresso.core
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.analytics
+    implementation (libs.firebase.messaging)
+    implementation (libs.firebase.messaging.directboot)
     implementation 'com.google.android.gms:play-services-location:21.3.0'
 
     implementation libs.core.ktx

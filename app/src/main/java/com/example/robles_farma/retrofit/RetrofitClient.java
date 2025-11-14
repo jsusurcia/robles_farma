@@ -24,7 +24,7 @@ public class RetrofitClient {
             Request.Builder requestBuilder = original.newBuilder().header("Content-Type", "application/json");
 
             String token = API_TOKEN;
-            Log.e("INTERCEPTOR", "Token enviado: " + token);
+            //Log.e("INTERCEPTOR", "Token enviado: " + token);
 
             if (token != null && !token.isEmpty()) {
                 requestBuilder.header("Authorization", "Bearer " + token);

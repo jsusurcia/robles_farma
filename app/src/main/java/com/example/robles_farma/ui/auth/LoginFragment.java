@@ -40,7 +40,7 @@ public class LoginFragment extends Fragment {
         });
 
         // Cargar credenciales si existen
-        if (loginStorage.isUserLoggedIn()) {
+        if (loginStorage.isRememberMeEnabled()) {
             binding.etDniLogin.setText(loginStorage.getDni());
             binding.etClaveLogin.setText(loginStorage.getClave());
             binding.chkRecordarme.setChecked(true);
@@ -86,18 +86,23 @@ public class LoginFragment extends Fragment {
                     RetrofitClient.API_TOKEN = loginResponse.getAccessToken();
                     Log.e("TOKEN_GUARDADO", loginResponse.getAccessToken());
 
+
+                    // --- INICIO DE CAMBIOS ---
                     if (recordarme) {
+                        // Esto está bien: guarda todo, incluyendo 'rememberMe = true'
                         loginStorage.saveLoginCredentials(dni, clave, loginResponse.getAccessToken(), loginResponse.getPaciente());
-
-
                     } else {
-                        loginStorage.clearLoginCredentials();
-                        // Guardar solo el token y datos de sesión actual
+                        // CAMBIO 1: No borres las credenciales.
+                        // Usa 'saveSession' para guardar el token actual pero con 'rememberMe = false'.
                         loginStorage.saveSession(loginResponse.getAccessToken(), loginResponse.getPaciente());
                     }
 
                     Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), MainActivity.class);
+
+                    // CAMBIO 2: Añadimos un "flag" para que MainActivity sepa
+                    // que venimos de un login exitoso.
+                    intent.putExtra("JUST_LOGGED_IN", true);
 
                     startActivity(intent);
                     getActivity().finish();
