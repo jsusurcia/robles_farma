@@ -26,15 +26,33 @@ public class MainActivity extends AppCompatActivity {
         // 2. Inicializa LoginStorage PRIMERO
         loginStorage = new LoginStorage(this);
 
-        if (!loginStorage.isUserLoggedIn()) {
+        boolean justLoggedIn = getIntent().getBooleanExtra("JUST_LOGGED_IN", false);
 
-            Log.w("TOKEN_MAIN", "No hay sesión válida o token expirado. Redirigiendo a LoginActivity.");
+        // 4. Verificamos si el usuario pidió ser recordado en un inicio anterior.
+        boolean rememberMe = loginStorage.isRememberMeEnabled();
+
+        if (!rememberMe && !justLoggedIn) {
+
+            Log.w("TOKEN_MAIN", "No hay sesión 'Recuérdame' activa y no es un inicio de sesión nuevo. Redirigiendo a AuthActivity.");
 
             Intent intent = new Intent(this, AuthActivity.class);
-
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            finish();
+            return; // Importante: no continuar con el onCreate
+        }
 
+        // 6. Verificación de validez del Token:
+        // Si pasaste el filtro (porque tienes "Recuérdame" O "Acabas de Iniciar Sesión"),
+        // AÚN DEBEMOS validar que el token no esté expirado.
+        // Tu método isUserLoggedIn() ya hace esto perfectamente.
+        if (!loginStorage.isUserLoggedIn()) {
+            // isUserLoggedIn() ya valida el token y lo limpia si está expirado
+            Log.w("TOKEN_MAIN", "Token expirado. Redirigiendo a AuthActivity.");
+
+            Intent intent = new Intent(this, AuthActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             finish();
             return;
         }

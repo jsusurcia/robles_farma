@@ -18,6 +18,7 @@ public class LoginStorage {
     private static final String KEY_PACIENTE = "paciente";
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_LOGGED_IN = "isLoggedIn";
+    private static final String KEY_REMEMBER_ME = "rememberMe";
 
     private SharedPreferences sharedPreferences;
     private Gson gson;
@@ -35,6 +36,7 @@ public class LoginStorage {
         editor.putString(KEY_PACIENTE, gson.toJson(paciente));
         editor.putInt(KEY_USER_ID, paciente.getIdPaciente());
         editor.putBoolean(KEY_LOGGED_IN, true);
+        editor.putBoolean(KEY_REMEMBER_ME, true);
         editor.apply();
     }
 
@@ -43,9 +45,8 @@ public class LoginStorage {
         editor.putString(KEY_TOKEN, token);
         editor.putString(KEY_PACIENTE, gson.toJson(paciente));
         editor.putInt(KEY_USER_ID, paciente.getIdPaciente());
-        editor.remove(KEY_DNI);
-        editor.remove(KEY_CLAVE);
-        editor.remove(KEY_LOGGED_IN);
+        editor.putBoolean(KEY_LOGGED_IN, true);
+        editor.putBoolean(KEY_REMEMBER_ME, false);
         editor.apply();
     }
 
@@ -126,6 +127,10 @@ public class LoginStorage {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean isRememberMeEnabled() {
+        return sharedPreferences.getBoolean(KEY_REMEMBER_ME, false);
     }
 
     public String getDni() {

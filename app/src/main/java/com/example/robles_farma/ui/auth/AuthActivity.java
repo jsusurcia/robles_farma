@@ -22,26 +22,24 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 🔹 Verificar si hay sesión activa Y si el token es válido (no expirado)
         LoginStorage loginStorage = new LoginStorage(this);
 
-        if (loginStorage.isUserLoggedIn()) {
-            //  Este método ya valida si el token está vigente
-            String token = LoginStorage.getToken(this);
+        if (loginStorage.isRememberMeEnabled() && loginStorage.isUserLoggedIn()) {
 
-            if (token != null && !token.isEmpty()) {
-                Log.i("AuthActivity", "✅ Token válido encontrado, redirigiendo a MainActivity");
+            Log.i("AuthActivity", "✅ Sesión 'Recuérdame' válida encontrada, redirigiendo a MainActivity");
 
-                startActivity(new Intent(this, MainActivity.class));
-                finish(); // Importante: cerrar AuthActivity para no volver al login
-                return;
-            }
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+
+        } else if (loginStorage.isRememberMeEnabled() && !loginStorage.isUserLoggedIn()) {
+            Log.w("AuthActivity", "⚠️ Sesión 'Recuérdame' expirada. Mostrando login.");
+
         } else {
-            Log.w("AuthActivity", "⚠️ No hay sesión válida o el token expiró");
+            Log.i("AuthActivity", "ℹ️ No hay sesión 'Recuérdame'. Mostrando login.");
         }
 
-
-        // 🔹 Si no hay sesión válida o el token expiró, mostrar el login
+        // Si no hay sesión válida o el token expiró, mostrar el login
         setContentView(R.layout.activity_auth);
 
         tabLayout = findViewById(R.id.tabLayout);
