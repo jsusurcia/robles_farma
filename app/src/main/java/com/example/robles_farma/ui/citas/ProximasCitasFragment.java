@@ -18,6 +18,7 @@ import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.retrofit.ApiService;
 import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
+import com.example.robles_farma.ui.chat.ChatListFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +63,7 @@ public class ProximasCitasFragment extends Fragment {
     private void cargarProximasCitas(int idPaciente) {
         ApiService apiService = RetrofitClient.createService();
         Call<CitasPacienteResponse> call = apiService.getCitasProximas(idPaciente);
+
         call.enqueue(new Callback<CitasPacienteResponse>() {
             @Override
             public void onResponse(Call<CitasPacienteResponse> call, Response<CitasPacienteResponse> response) {
@@ -69,15 +71,34 @@ public class ProximasCitasFragment extends Fragment {
                     listaProxCitas.clear();
 
                     CitasPacienteResponse citasResponse = response.body();
+
                     if (citasResponse != null && citasResponse.getData() != null && citasResponse.getData().length > 0) {
+
                         binding.recyclerViewProximas.setVisibility(View.VISIBLE);
                         binding.emptyView.setVisibility(View.GONE);
-                        listaProxCitas.addAll(Arrays.asList(citasResponse.getData()));
+
+                        // 🚀 Nuevo: guardar nombres de doctores para los chats
+                        CitasPacienteData[] citas = citasResponse.getData();
+
+                        for (CitasPacienteData c : citas) {
+
+                            if (c.getIdPersonal() != 0 && c.getNombrePersonal() != null) {
+                                ChatListFragment.doctorNames.put(
+                                        String.valueOf(c.getIdPersonal()),
+                                        c.getNombrePersonal()
+                                );
+                            }
+
+                            listaProxCitas.add(c);
+                        }
+
                         adapter.notifyDataSetChanged();
+
                     } else {
                         binding.recyclerViewProximas.setVisibility(View.GONE);
                         binding.emptyView.setVisibility(View.VISIBLE);
                     }
+
                 } else {
                     Toast.makeText(getContext(), "Error al acceder a las citas: " + response.message(), Toast.LENGTH_SHORT).show();
                     try {
@@ -86,7 +107,7 @@ public class ProximasCitasFragment extends Fragment {
                         Toast.makeText(getContext(), "Error al acceder a las citas: " + error, Toast.LENGTH_SHORT).show();
                         binding.recyclerViewProximas.setVisibility(View.GONE);
                         binding.emptyView.setVisibility(View.VISIBLE);
-                    }catch (IOException | JSONException e){
+                    } catch (IOException | JSONException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -100,5 +121,6 @@ public class ProximasCitasFragment extends Fragment {
             }
         });
     }
+
 
 }

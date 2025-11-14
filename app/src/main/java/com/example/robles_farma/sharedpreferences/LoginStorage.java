@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public class LoginStorage {
     private static final String PREFS_NAME = "LoginPrefs";
     private static final String KEY_DNI = "dni";
@@ -175,6 +177,10 @@ public class LoginStorage {
             return null;
         }
         return String.valueOf(id);
+    }
+
+    public interface DoctorNamesCallback {
+        void onLoaded(Map<String, String> nombres);
     }
 
 }

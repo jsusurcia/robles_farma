@@ -51,18 +51,31 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
     static class ChatViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imgDoctor;
-        TextView tvDoctorName, tvLastMessage;
+        TextView tvDoctorName, tvLastMessage, tvTimestamp; // 👈 NUEVO
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             imgDoctor = itemView.findViewById(R.id.imgDoctor);
             tvDoctorName = itemView.findViewById(R.id.tvDoctorName);
             tvLastMessage = itemView.findViewById(R.id.tvLastMessage);
+            tvTimestamp = itemView.findViewById(R.id.tvTimestamp); // 👈 NUEVO
         }
 
         public void bind(ChatItem chat, OnChatClickListener listener) {
             tvDoctorName.setText(chat.getName());
             tvLastMessage.setText(chat.getLastMessage());
+
+            // 👇 NUEVO: Mostrar timestamp si existe
+            if (tvTimestamp != null) {
+                String timestamp = chat.getTimestamp();
+                if (timestamp != null && !timestamp.isEmpty()) {
+                    tvTimestamp.setText(timestamp);
+                    tvTimestamp.setVisibility(View.VISIBLE);
+                } else {
+                    tvTimestamp.setVisibility(View.GONE);
+                }
+            }
+
             itemView.setOnClickListener(v -> listener.onChatClick(chat));
         }
     }

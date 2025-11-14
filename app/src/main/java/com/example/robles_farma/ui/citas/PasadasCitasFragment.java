@@ -18,6 +18,7 @@ import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.retrofit.ApiService;
 import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
+import com.example.robles_farma.ui.chat.ChatListFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +63,7 @@ public class PasadasCitasFragment extends Fragment {
     private void cargarPasadasCitas(int idPaciente) {
         ApiService apiService = RetrofitClient.createService();
         Call<CitasPacienteResponse> call = apiService.getCitasPasadas(idPaciente);
+
         call.enqueue(new Callback<CitasPacienteResponse>() {
             @Override
             public void onResponse(Call<CitasPacienteResponse> call, Response<CitasPacienteResponse> response) {
@@ -69,15 +71,34 @@ public class PasadasCitasFragment extends Fragment {
                     listaCitasPasadas.clear();
 
                     CitasPacienteResponse citasResponse = response.body();
+
                     if (citasResponse != null && citasResponse.getData() != null && citasResponse.getData().length > 0) {
+
                         binding.recyclerViewPasadas.setVisibility(View.VISIBLE);
                         binding.emptyView.setVisibility(View.GONE);
-                        listaCitasPasadas.addAll(Arrays.asList(citasResponse.getData()));
+
+                        CitasPacienteData[] citas = citasResponse.getData();
+
+                        // 🚀 Guardar nombres para los chats
+                        for (CitasPacienteData c : citas) {
+
+                            if (c.getIdPersonal() != 0 && c.getNombrePersonal() != null) {
+                                ChatListFragment.doctorNames.put(
+                                        String.valueOf(c.getIdPersonal()),
+                                        c.getNombrePersonal()
+                                );
+                            }
+
+                            listaCitasPasadas.add(c);
+                        }
+
                         adapter.notifyDataSetChanged();
+
                     } else {
                         binding.recyclerViewPasadas.setVisibility(View.GONE);
                         binding.emptyView.setVisibility(View.VISIBLE);
                     }
+
                 } else {
                     Toast.makeText(getContext(), "Error al acceder a las citas: " + response.message(), Toast.LENGTH_SHORT).show();
                     try {
@@ -86,7 +107,7 @@ public class PasadasCitasFragment extends Fragment {
                         Toast.makeText(getContext(), "Error al acceder a las citas: " + error, Toast.LENGTH_SHORT).show();
                         binding.recyclerViewPasadas.setVisibility(View.GONE);
                         binding.emptyView.setVisibility(View.VISIBLE);
-                    }catch (IOException | JSONException e){
+                    } catch (IOException | JSONException e) {
                         throw new RuntimeException(e);
                     }
                 }
@@ -94,10 +115,11 @@ public class PasadasCitasFragment extends Fragment {
 
             @Override
             public void onFailure(Call<CitasPacienteResponse> call, Throwable t) {
-
+                // Puedes mostrar un error si deseas
             }
         });
     }
+
 
     private void cargarCitasEjemplo() {
         listaCitasPasadas.add(new CitasPacienteData(

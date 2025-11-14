@@ -1,9 +1,7 @@
 package com.example.robles_farma.response;
-
 import com.google.gson.annotations.SerializedName;
 
 public class MessageResponse {
-
     @SerializedName("id")
     private String id;
 
@@ -29,9 +27,28 @@ public class MessageResponse {
     }
 
     // 🔹 Getters
-    public String getId() { return id; }
-    public String getText() { return text; }
-    public String getSenderId() { return senderId; }
-    public String getReceiverId() { return receiverId; }
-    public String getCreatedAt() { return createdAt; }
+    public String getId() {
+        return id;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public String getReceiverId() {
+        return receiverId;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    // 👇 NUEVO: Método para compatibilidad con ChatListFragment
+    public String getTimestamp() {
+        return createdAt; // Retorna created_at como timestamp
+    }
 }
