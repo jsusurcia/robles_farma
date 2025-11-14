@@ -14,10 +14,19 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.robles_farma.databinding.ActivityMainBinding;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import androidx.annotation.NonNull;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private LoginStorage loginStorage; // 1. Declara una instancia de LoginStorage
+    private static final int REQUEST_CODE_POST_NOTIFICATIONS = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         // 6. Verificación de validez del Token:
         // Si pasaste el filtro (porque tienes "Recuérdame" O "Acabas de Iniciar Sesión"),
         // AÚN DEBEMOS validar que el token no esté expirado.
-        // Tu método isUserLoggedIn() ya hace esto perfectamente.
+        // Tu metodo isUserLoggedIn() ya hace esto perfectamente.
         if (!loginStorage.isUserLoggedIn()) {
             // isUserLoggedIn() ya valida el token y lo limpia si está expirado
             Log.w("TOKEN_MAIN", "Token expirado. Redirigiendo a AuthActivity.");
@@ -56,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        askForNotificationPermission();
 
         // --- Si llegamos aquí, el usuario SÍ está logueado ---
         Log.d("TOKEN_MAIN", "Sesión válida encontrada. Cargando MainActivity.");
@@ -89,6 +100,46 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(itemId);
             return true;
         });
+    }
+
+    /**
+     * Pide permiso para notificaciones en Android 13+
+     */
+    private void askForNotificationPermission() {
+        // Solo aplica para Android 13 (API 33) y superior
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+
+            // Verifica si el permiso AÚN NO ha sido concedido
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_DENIED) {
+
+                // Muestra el diálogo de solicitud de permiso
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_CODE_POST_NOTIFICATIONS);
+            }
+            // Si el permiso ya fue concedido, no hace nada.
+        }
+    }
+
+    /**
+     * Maneja la respuesta del usuario al diálogo de permiso
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permiso concedido
+                Log.d("MainActivity", "Permiso POST_NOTIFICATIONS concedido.");
+            } else {
+                // Permiso denegado
+                Log.w("MainActivity", "Permiso POST_NOTIFICATIONS denegado.");
+                // Opcional: Mostrar un mensaje al usuario explicando por qué
+                // se necesitan las notificaciones.
+            }
+        }
     }
 
     @Override
