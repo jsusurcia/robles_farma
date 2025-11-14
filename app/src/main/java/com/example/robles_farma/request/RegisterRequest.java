@@ -24,10 +24,14 @@ public class RegisterRequest {
     @SerializedName("contacto_emergencia_telefono")
     private String contactoEmergenciaTelefono;
 
+    @SerializedName("es_asegurado")
+    private boolean esAsegurado;
+
+
 
     // Constructor, getters y setters
 
-    public RegisterRequest(String nroDocumento, String clave, String nombres, String apellidoPaterno, String apellidoMaterno, String fechaNacimiento, boolean sexo, int idTipoDocumento, String fotoPerfilUrl, String contactoEmergenciaNombre, String contactoEmergenciaTelefono) {
+    public RegisterRequest(String nroDocumento, String clave, String nombres, String apellidoPaterno, String apellidoMaterno, String fechaNacimiento, boolean sexo, int idTipoDocumento, String fotoPerfilUrl, String contactoEmergenciaNombre, String contactoEmergenciaTelefono, boolean esAsegurado) {
         this.nroDocumento = nroDocumento;
         this.clave = clave;
         this.nombres = nombres;
@@ -39,6 +43,7 @@ public class RegisterRequest {
         this.fotoPerfilUrl = fotoPerfilUrl;
         this.contactoEmergenciaNombre = contactoEmergenciaNombre;
         this.contactoEmergenciaTelefono = contactoEmergenciaTelefono;
+        this.esAsegurado = esAsegurado;
     }
 
     // Getters y Setters para todos los campos...

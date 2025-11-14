@@ -179,6 +179,17 @@
                 android:inputType="phone" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <CheckBox
+            android:id="@+id/chkSeguroSalud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:buttonTint="@color/principal_bg"
+            android:text="¿Cuentas con seguro de salud?"
+            android:linksClickable="true" />
+
         <!-- Términos y Condiciones -->
         <CheckBox
             android:id="@+id/chkTerminos"
