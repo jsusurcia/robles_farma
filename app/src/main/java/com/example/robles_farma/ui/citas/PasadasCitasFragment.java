@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,16 +80,23 @@ public class PasadasCitasFragment extends Fragment {
                         binding.emptyView.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    Toast.makeText(getContext(), "Error al acceder a las citas: " + response.message(), Toast.LENGTH_SHORT).show();
-                    try {
-                        JSONObject jsonError = new JSONObject(response.errorBody().string());
-                        String error = jsonError.getString("message");
-                        Toast.makeText(getContext(), "Error al acceder a las citas: " + error, Toast.LENGTH_SHORT).show();
-                        binding.recyclerViewPasadas.setVisibility(View.GONE);
-                        binding.emptyView.setVisibility(View.VISIBLE);
-                    }catch (IOException | JSONException e){
-                        throw new RuntimeException(e);
+                    String errorMessage = "Error desconocido";
+                    if (response.errorBody() != null) {
+                        try {
+                            JSONObject jsonError = new JSONObject(response.errorBody().string());
+                            if (jsonError.has("detail")) {
+                                errorMessage = jsonError.getString("detail");
+                            } else {
+                                errorMessage = response.message();
+                            }
+                        } catch (IOException | JSONException e) {
+                            errorMessage = "Error al procesar la respuesta";
+                            Log.e("CitasError", "Error al parsear el cuerpo del error", e);
+                        }
                     }
+                    Log.e("CitasError", "Error al parsear el cuerpo del error: " + errorMessage);
+                    binding.recyclerViewPasadas.setVisibility(View.GONE);
+                    binding.emptyView.setVisibility(View.VISIBLE);
                 }
             }
 

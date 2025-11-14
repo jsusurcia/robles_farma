@@ -3,13 +3,17 @@ package com.example.robles_farma.ui.citas;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.robles_farma.R;
 import com.example.robles_farma.adapter.CitasRecyclerViewAdapter;
 import com.example.robles_farma.databinding.FragmentProximasCitasBinding;
 import com.example.robles_farma.model.CitasPacienteData;
@@ -55,7 +59,14 @@ public class ProximasCitasFragment extends Fragment {
             int idPaciente = paciente.getIdPaciente();
             cargarProximasCitas(idPaciente);
         }
-        
+
+        //Configurar botón "Reservar cita" (Solo redirige al inicio)
+        binding.btnReservarCita.setOnClickListener(v -> {
+            //requireActivity().onBackPressed();
+            NavController navController = NavHostFragment.findNavController(ProximasCitasFragment.this);
+            navController.navigate(R.id.navigation_home);
+        });
+
         return binding.getRoot();
     }
 
@@ -79,16 +90,24 @@ public class ProximasCitasFragment extends Fragment {
                         binding.emptyView.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    Toast.makeText(getContext(), "Error al acceder a las citas: " + response.message(), Toast.LENGTH_SHORT).show();
-                    try {
-                        JSONObject jsonError = new JSONObject(response.errorBody().string());
-                        String error = jsonError.getString("message");
-                        Toast.makeText(getContext(), "Error al acceder a las citas: " + error, Toast.LENGTH_SHORT).show();
-                        binding.recyclerViewProximas.setVisibility(View.GONE);
-                        binding.emptyView.setVisibility(View.VISIBLE);
-                    }catch (IOException | JSONException e){
-                        throw new RuntimeException(e);
+                    String errorMessage = "Error desconocido";
+                    if (response.errorBody() != null) {
+                        try {
+                            JSONObject jsonError = new JSONObject(response.errorBody().string());
+                            // Aquí leemos "detail" en lugar de "message"
+                            if (jsonError.has("detail")) {
+                                errorMessage = jsonError.getString("detail");
+                            } else {
+                                errorMessage = response.message(); // Usar mensaje HTTP si no hay "detail"
+                            }
+                        } catch (IOException | JSONException e) {
+                            errorMessage = "Error al procesar la respuesta.";
+                            Log.e("CitasError", "Error al parsear el cuerpo del error", e);
+                        }
                     }
+                    Log.e("CitasError", "Error al parsear el cuerpo del error: " + errorMessage);
+                    binding.recyclerViewProximas.setVisibility(View.GONE);
+                    binding.emptyView.setVisibility(View.VISIBLE);
                 }
             }
 
