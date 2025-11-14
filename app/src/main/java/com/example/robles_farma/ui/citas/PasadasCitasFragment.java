@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,6 +33,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PasadasCitasFragment extends Fragment {
+
     private FragmentPasadasCitasBinding binding;
     private CitasRecyclerViewAdapter adapter;
     private List<CitasPacienteData> listaCitasPasadas = new ArrayList<>();
@@ -40,9 +41,8 @@ public class PasadasCitasFragment extends Fragment {
     PacienteResponse paciente;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         binding = FragmentPasadasCitasBinding.inflate(inflater, container, false);
         loginStorage = new LoginStorage(getContext());
         paciente = loginStorage.getPaciente();
@@ -51,25 +51,25 @@ public class PasadasCitasFragment extends Fragment {
         binding.recyclerViewPasadas.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewPasadas.setAdapter(adapter);
 
-        //Obtener el ID del paciente
         if (paciente != null) {
-            int idPaciente = paciente.getIdPaciente();
-            cargarPasadasCitas(idPaciente);
+            cargarPasadasCitas(paciente.getIdPaciente());
         }
 
         return binding.getRoot();
     }
 
     private void cargarPasadasCitas(int idPaciente) {
+
         ApiService apiService = RetrofitClient.createService();
         Call<CitasPacienteResponse> call = apiService.getCitasPasadas(idPaciente);
 
         call.enqueue(new Callback<CitasPacienteResponse>() {
             @Override
             public void onResponse(Call<CitasPacienteResponse> call, Response<CitasPacienteResponse> response) {
-                if (response.isSuccessful()) {
-                    listaCitasPasadas.clear();
 
+                if (response.isSuccessful()) {
+
+                    listaCitasPasadas.clear();
                     CitasPacienteResponse citasResponse = response.body();
 
                     if (citasResponse != null && citasResponse.getData() != null && citasResponse.getData().length > 0) {
@@ -77,10 +77,7 @@ public class PasadasCitasFragment extends Fragment {
                         binding.recyclerViewPasadas.setVisibility(View.VISIBLE);
                         binding.emptyView.setVisibility(View.GONE);
 
-                        CitasPacienteData[] citas = citasResponse.getData();
-
-                        // 🚀 Guardar nombres para los chats
-                        for (CitasPacienteData c : citas) {
+                        for (CitasPacienteData c : citasResponse.getData()) {
 
                             if (c.getIdPersonal() != 0 && c.getNombrePersonal() != null) {
                                 ChatListFragment.doctorNames.put(
@@ -100,46 +97,38 @@ public class PasadasCitasFragment extends Fragment {
                     }
 
                 } else {
-                    Toast.makeText(getContext(), "Error al acceder a las citas: " + response.message(), Toast.LENGTH_SHORT).show();
-                    try {
-                        JSONObject jsonError = new JSONObject(response.errorBody().string());
-                        String error = jsonError.getString("message");
-                        Toast.makeText(getContext(), "Error al acceder a las citas: " + error, Toast.LENGTH_SHORT).show();
-                        binding.recyclerViewPasadas.setVisibility(View.GONE);
-                        binding.emptyView.setVisibility(View.VISIBLE);
-                    } catch (IOException | JSONException e) {
-                        throw new RuntimeException(e);
+
+                    String errorMessage = "Error desconocido";
+
+                    if (response.errorBody() != null) {
+                        try {
+                            JSONObject jsonError = new JSONObject(response.errorBody().string());
+
+                            if (jsonError.has("detail")) {
+                                errorMessage = jsonError.getString("detail");
+                            } else {
+                                errorMessage = response.message();
+                            }
+
+                        } catch (IOException | JSONException e) {
+                            errorMessage = "Error al procesar la respuesta.";
+                        }
                     }
+
+                    Log.e("CitasError", errorMessage);
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+
+                    binding.recyclerViewPasadas.setVisibility(View.GONE);
+                    binding.emptyView.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<CitasPacienteResponse> call, Throwable t) {
-                // Puedes mostrar un error si deseas
+                Toast.makeText(getContext(), "Error general de la API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                binding.recyclerViewPasadas.setVisibility(View.GONE);
+                binding.emptyView.setVisibility(View.VISIBLE);
             }
         });
-    }
-
-
-    private void cargarCitasEjemplo() {
-        listaCitasPasadas.add(new CitasPacienteData(
-                "Dr. Atendida",
-                "Cardiología",
-                "15 Nov 2024",
-                "10:00",
-                "Consultorio 301",
-                "Atendida"
-        ));
-
-        listaCitasPasadas.add(new CitasPacienteData(
-                "Dra. Atendida",
-                "Pediatría",
-                "20 Nov 2024",
-                "14:00",
-                "Consultorio 205",
-                "Atendida"
-        ));
-
-        adapter.notifyDataSetChanged();
     }
 }

@@ -3,13 +3,17 @@ package com.example.robles_farma.ui.citas;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.robles_farma.R;
 import com.example.robles_farma.adapter.CitasRecyclerViewAdapter;
 import com.example.robles_farma.databinding.FragmentProximasCitasBinding;
 import com.example.robles_farma.model.CitasPacienteData;
@@ -40,9 +44,8 @@ public class ProximasCitasFragment extends Fragment {
     PacienteResponse paciente;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         binding = FragmentProximasCitasBinding.inflate(inflater, container, false);
         loginStorage = new LoginStorage(getContext());
         paciente = loginStorage.getPaciente();
@@ -51,25 +54,30 @@ public class ProximasCitasFragment extends Fragment {
         binding.recyclerViewProximas.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewProximas.setAdapter(adapter);
 
-        //Obtener el ID del paciente
         if (paciente != null) {
-            int idPaciente = paciente.getIdPaciente();
-            cargarProximasCitas(idPaciente);
+            cargarProximasCitas(paciente.getIdPaciente());
         }
-        
+
+        binding.btnReservarCita.setOnClickListener(v -> {
+            NavController navController = NavHostFragment.findNavController(ProximasCitasFragment.this);
+            navController.navigate(R.id.navigation_home);
+        });
+
         return binding.getRoot();
     }
 
     private void cargarProximasCitas(int idPaciente) {
+
         ApiService apiService = RetrofitClient.createService();
         Call<CitasPacienteResponse> call = apiService.getCitasProximas(idPaciente);
 
         call.enqueue(new Callback<CitasPacienteResponse>() {
             @Override
             public void onResponse(Call<CitasPacienteResponse> call, Response<CitasPacienteResponse> response) {
-                if (response.isSuccessful()) {
-                    listaProxCitas.clear();
 
+                if (response.isSuccessful()) {
+
+                    listaProxCitas.clear();
                     CitasPacienteResponse citasResponse = response.body();
 
                     if (citasResponse != null && citasResponse.getData() != null && citasResponse.getData().length > 0) {
@@ -77,11 +85,11 @@ public class ProximasCitasFragment extends Fragment {
                         binding.recyclerViewProximas.setVisibility(View.VISIBLE);
                         binding.emptyView.setVisibility(View.GONE);
 
-                        // 🚀 Nuevo: guardar nombres de doctores para los chats
                         CitasPacienteData[] citas = citasResponse.getData();
 
                         for (CitasPacienteData c : citas) {
 
+                            // 💾 Guardar nombre de doctor para chats
                             if (c.getIdPersonal() != 0 && c.getNombrePersonal() != null) {
                                 ChatListFragment.doctorNames.put(
                                         String.valueOf(c.getIdPersonal()),
@@ -100,16 +108,28 @@ public class ProximasCitasFragment extends Fragment {
                     }
 
                 } else {
-                    Toast.makeText(getContext(), "Error al acceder a las citas: " + response.message(), Toast.LENGTH_SHORT).show();
-                    try {
-                        JSONObject jsonError = new JSONObject(response.errorBody().string());
-                        String error = jsonError.getString("message");
-                        Toast.makeText(getContext(), "Error al acceder a las citas: " + error, Toast.LENGTH_SHORT).show();
-                        binding.recyclerViewProximas.setVisibility(View.GONE);
-                        binding.emptyView.setVisibility(View.VISIBLE);
-                    } catch (IOException | JSONException e) {
-                        throw new RuntimeException(e);
+
+                    // 🧠 Mantengo mejoras del servidor (leer "detail")
+                    String errorMessage = "Error desconocido";
+
+                    if (response.errorBody() != null) {
+                        try {
+                            JSONObject jsonError = new JSONObject(response.errorBody().string());
+                            if (jsonError.has("detail")) {
+                                errorMessage = jsonError.getString("detail");
+                            } else {
+                                errorMessage = response.message();
+                            }
+                        } catch (IOException | JSONException e) {
+                            errorMessage = "Error al procesar la respuesta.";
+                        }
                     }
+
+                    Log.e("CitasError", "Error API: " + errorMessage);
+
+                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+                    binding.recyclerViewProximas.setVisibility(View.GONE);
+                    binding.emptyView.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -121,6 +141,5 @@ public class ProximasCitasFragment extends Fragment {
             }
         });
     }
-
 
 }
