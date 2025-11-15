@@ -12,13 +12,16 @@ import androidx.fragment.app.Fragment;
 
 import com.example.robles_farma.MainActivity;
 import com.example.robles_farma.databinding.FragmentLoginBinding;
+import com.example.robles_farma.model.CitasPacienteData;
 import com.example.robles_farma.request.LoginRequest;
+import com.example.robles_farma.response.CitasPacienteResponse;
 import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.retrofit.ApiService;
 import com.example.robles_farma.retrofit.FCMClient;
 import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
+import com.example.robles_farma.ui.chat.ChatListFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -98,7 +101,11 @@ public class LoginFragment extends Fragment {
                         loginStorage.saveSession(loginResponse.getAccessToken(), loginResponse.getPaciente());
                     }
 
+
                     FCMClient.registrarDispositivoFCM(requireContext());
+
+                    preCargarNombresDoctores(loginResponse.getPaciente().getIdPaciente());
+
 
                     Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), MainActivity.class);
@@ -126,4 +133,38 @@ public class LoginFragment extends Fragment {
             }
         });
     }
+
+    private void preCargarNombresDoctores(int idPaciente) {
+        ApiService apiService = RetrofitClient.createService();
+        Call<CitasPacienteResponse> call = apiService.getCitasProximas(idPaciente);
+
+        call.enqueue(new Callback<CitasPacienteResponse>() {
+            @Override
+            public void onResponse(Call<CitasPacienteResponse> call, Response<CitasPacienteResponse> response) {
+
+                if (!response.isSuccessful() || response.body() == null) return;
+
+                CitasPacienteData[] citas = response.body().getData();
+                if (citas == null) return;
+
+                for (CitasPacienteData c : citas) {
+                    if (c.getIdPersonal() != 0 && c.getNombrePersonal() != null) {
+                        // Guardamos en el mapa global del módulo de chat
+                        ChatListFragment.doctorNames.put(
+                                String.valueOf(c.getIdPersonal()),
+                                c.getNombrePersonal()
+                        );
+                    }
+                }
+
+                Log.d("PRECARGA", "Doctor names loaded: " + ChatListFragment.doctorNames.size());
+            }
+
+            @Override
+            public void onFailure(Call<CitasPacienteResponse> call, Throwable t) {
+                Log.e("PRECARGA", "Error precargando doctores: " + t.getMessage());
+            }
+        });
+    }
+
 }
