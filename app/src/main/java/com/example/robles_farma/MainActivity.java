@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.robles_farma.retrofit.FCMClient;
+import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.ui.auth.AuthActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,11 +67,14 @@ public class MainActivity extends AppCompatActivity {
             finish();
             return;
         }
-
-        askForNotificationPermission();
-
         // --- Si llegamos aquí, el usuario SÍ está logueado ---
         Log.d("TOKEN_MAIN", "Sesión válida encontrada. Cargando MainActivity.");
+
+        if (!justLoggedIn) {
+            FCMClient.registrarDispositivoFCM(this);
+        }
+
+        askForNotificationPermission();
 
         // 7. Ahora sí, inflamos la vista y configuramos el resto
         binding = ActivityMainBinding.inflate(getLayoutInflater());

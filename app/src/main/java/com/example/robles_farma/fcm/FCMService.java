@@ -13,6 +13,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
+import com.example.robles_farma.CargaActivity;
 import com.example.robles_farma.MainActivity;
 import com.example.robles_farma.R;
 import com.example.robles_farma.sharedpreferences.FirebaseTokenManager;
@@ -78,7 +79,9 @@ public class FCMService extends FirebaseMessagingService {
     private void sendNotification(String messageTitle, String messageBody) {
         // 1. Define qué pasa cuando el usuario TOCA la notificación
         // (En este caso, abrir la MainActivity)
-        Intent intent = new Intent(this, MainActivity.class);
+        // Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, CargaActivity.class);
+        intent.putExtra("NAVIGATE_TO", "HOME_FRAGMENT");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
@@ -93,7 +96,7 @@ public class FCMService extends FirebaseMessagingService {
                 new NotificationCompat.Builder(this, channelId)
                         // ¡IMPORTANTE! Debes tener un icono en res/drawable
                         // Usa R.mipmap.ic_launcher si no tienes uno para probar
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.citas_salud_logo)
                         .setContentTitle(messageTitle)
                         .setContentText(messageBody)
                         .setAutoCancel(true) // La notificación se cierra al tocarla

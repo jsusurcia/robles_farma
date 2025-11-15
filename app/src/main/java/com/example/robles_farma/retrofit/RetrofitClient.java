@@ -1,8 +1,6 @@
 package com.example.robles_farma.retrofit;
 
 import android.content.Context;
-import android.util.Log;
-
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -11,6 +9,9 @@ import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import com.example.robles_farma.MyApplication;
+import com.example.robles_farma.sharedpreferences.LoginStorage;
 
 public class RetrofitClient {
     public static final String URL_API_SERVICE = "https://citassalud-production.up.railway.app/";
@@ -21,13 +22,17 @@ public class RetrofitClient {
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request original = chain.request();
-            Request.Builder requestBuilder = original.newBuilder().header("Content-Type", "application/json");
+            Request.Builder requestBuilder = original.newBuilder()
+                    .header("Content-Type", "application/json");
 
-            String token = API_TOKEN;
-            //Log.e("INTERCEPTOR", "Token enviado: " + token);
+            Context appContext = MyApplication.getAppContext();
+            if (appContext != null) {
+                LoginStorage loginStorage = new LoginStorage(appContext);
+                String token = loginStorage.getToken();
 
-            if (token != null && !token.isEmpty()) {
-                requestBuilder.header("Authorization", "Bearer " + token);
+                if (token != null && !token.isEmpty()) {
+                    requestBuilder.header("Authorization", "Bearer " + token);
+                }
             }
 
             Request request = requestBuilder.build();

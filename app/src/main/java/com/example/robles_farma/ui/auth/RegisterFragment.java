@@ -9,6 +9,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,7 +122,6 @@ public class RegisterFragment extends Fragment {
         //Mostrar el calendario
         datePickerDialog.show();
 
-
     }
 
     private void registrarPaciente() {
@@ -134,9 +134,6 @@ public class RegisterFragment extends Fragment {
         String tipoDocumento = autoTipoDocumento.getText().toString();
         String sexoStr = autoSexo.getText().toString();
         boolean esAsegurado = chkSeguroSalud.isChecked();
-
-
-
 
         if (TextUtils.isEmpty(nroDocumento) || TextUtils.isEmpty(nombres) || TextUtils.isEmpty(apellidoPaterno) || TextUtils.isEmpty(apellidoMaterno) || TextUtils.isEmpty(fechaNacimiento) || TextUtils.isEmpty(clave) || TextUtils.isEmpty(tipoDocumento) || TextUtils.isEmpty(sexoStr)) {
             Toast.makeText(getContext(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
@@ -162,10 +159,12 @@ public class RegisterFragment extends Fragment {
 
                     //Luego de registrar envia al main
 
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    startActivity(intent);
-                    getActivity().finish();
-
+                    //Intent intent = new Intent(getActivity(), MainActivity.class);
+                    //startActivity(intent);
+                    //getActivity().finish();
+                    if (getActivity() instanceof AuthActivity) {
+                        ((AuthActivity) getActivity()).switchToTab(0);
+                    }
 
                 } else {
                     Toast.makeText(getContext(), "Error en el registro. Inténtelo de nuevo.", Toast.LENGTH_SHORT).show();
@@ -174,10 +173,12 @@ public class RegisterFragment extends Fragment {
 
             @Override
             public void onFailure(Call<ItemResponse<PacienteResponse>> call, Throwable t) {
+                Log.e("FATAL", "Error de conexión: " + t.getMessage());
+                t.printStackTrace(); // Esto imprime el stacktrace completo en Logcat
+
                 Toast.makeText(getContext(), "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
         });
     }
-
-
 }

@@ -16,6 +16,7 @@ import com.example.robles_farma.request.LoginRequest;
 import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.retrofit.ApiService;
+import com.example.robles_farma.retrofit.FCMClient;
 import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
 
@@ -83,8 +84,8 @@ public class LoginFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("success")) {
                     LoginResponse loginResponse = response.body().getData();
 
-                    RetrofitClient.API_TOKEN = loginResponse.getAccessToken();
-                    Log.e("TOKEN_GUARDADO", loginResponse.getAccessToken());
+                    //RetrofitClient.API_TOKEN = loginResponse.getAccessToken();
+                    //Log.e("TOKEN_GUARDADO", loginResponse.getAccessToken());
 
 
                     // --- INICIO DE CAMBIOS ---
@@ -96,6 +97,8 @@ public class LoginFragment extends Fragment {
                         // Usa 'saveSession' para guardar el token actual pero con 'rememberMe = false'.
                         loginStorage.saveSession(loginResponse.getAccessToken(), loginResponse.getPaciente());
                     }
+
+                    FCMClient.registrarDispositivoFCM(requireContext());
 
                     Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), MainActivity.class);

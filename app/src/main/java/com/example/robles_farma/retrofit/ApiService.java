@@ -7,13 +7,14 @@ import com.example.robles_farma.request.RegisterRequest;
 import com.example.robles_farma.response.BusquedaEspecialidadResponse;
 import com.example.robles_farma.response.CancelarCitaResponse;
 import com.example.robles_farma.response.CitasPacienteResponse;
+import com.example.robles_farma.response.DispositivoUsuarioResponse;
 import com.example.robles_farma.response.FotoUploadResponse;
 import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.response.EspecialidadResponse;
 import com.example.robles_farma.response.PacienteUpdatePassResponse;
-
+import com.example.robles_farma.request.DispositivoPacienteRequest;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -78,4 +79,12 @@ public interface ApiService {
     @Multipart
     @PUT("pacientes/update_foto")
     Call<FotoUploadResponse> updateFotoPerfil(@Part MultipartBody.Part file);
+
+    // Registrar el token del paciente
+    @POST("dispositivos/crear")
+    Call<DispositivoUsuarioResponse> registrarToken(@Body DispositivoPacienteRequest request);
+
+    // Registrar dispositivo paciente
+    @POST("pacientes/registrar-token-fcm")
+    Call<ResponseBody> registrarDispositivo(@Body DispositivoPacienteRequest request);
 }
