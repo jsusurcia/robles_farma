@@ -19,31 +19,33 @@ public class CitasPacienteData {
     private String ubicacion;
     @SerializedName("estado_cita")
     private String estado;
+    @SerializedName("id_paciente")
+    private int idPaciente;
+    @SerializedName("nombre_paciente")
+    private String nombrePaciente;
+    @SerializedName("apellido_paciente")
+    private String apellidoPaciente;
 
-
-    public CitasPacienteData(String nombrePersonal, String especialidad, String fecha, String hora, String ubicacion, String estado) {
+    public CitasPacienteData(int idCita, int idPersonal, String nombrePersonal, String especialidad, String fecha, String hora, String ubicacion, String estado, int idPaciente, String nombrePaciente, String apellidoPaciente) {
+        this.idCita = idCita;
+        this.idPersonal = idPersonal;
         this.nombrePersonal = nombrePersonal;
         this.especialidad = especialidad;
         this.fecha = fecha;
         this.hora = hora;
         this.ubicacion = ubicacion;
         this.estado = estado;
+        this.idPaciente = idPaciente;
+        this.nombrePaciente = nombrePaciente;
+        this.apellidoPaciente = apellidoPaciente;
     }
 
     public int getIdCita() {
         return idCita;
     }
 
-    public void setIdCita(int idCita) {
-        this.idCita = idCita;
-    }
-
     public int getIdPersonal() {
         return idPersonal;
-    }
-
-    public void setIdPersonal(int idPersonal) {
-        this.idPersonal = idPersonal;
     }
 
     public String getNombrePersonal() {
@@ -68,5 +70,17 @@ public class CitasPacienteData {
 
     public String getEstado() {
         return estado;
+    }
+
+    public int getIdPaciente() {
+        return idPaciente;
+    }
+
+    public String getNombrePaciente() {
+        return nombrePaciente;
+    }
+
+    public String getApellidoPaciente() {
+        return apellidoPaciente;
     }
 }
