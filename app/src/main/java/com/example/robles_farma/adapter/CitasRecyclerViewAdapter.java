@@ -26,10 +26,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecyclerViewAdapter.ViewHolder> {
     private final List<CitasPacienteData> listaCitas;
     private final Context context;
+    private final boolean isPastCitas;
+
 
     public CitasRecyclerViewAdapter(List<CitasPacienteData> listaCitas, Context context) {
+        this(listaCitas, context, false);
+    }
+
+    public CitasRecyclerViewAdapter(List<CitasPacienteData> listaCitas, Context context, boolean isPastCitas) {
         this.listaCitas = listaCitas;
         this.context = context;
+        this.isPastCitas = isPastCitas;
     }
 
     @NonNull
@@ -51,6 +58,12 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
         //holder.textLocation.setText(cita.getUbicacion());
         holder.textLocation.setText(cita.getUbicacion() != null ? cita.getUbicacion() : "Centro Médico");
         holder.chipStatus.setText(cita.getEstado());
+
+        if (isPastCitas) {
+            holder.iconInfo.setVisibility(View.GONE);
+        } else {
+            holder.iconInfo.setVisibility(View.VISIBLE);
+        }
 
         // Colores según estado
         int colorResId;
