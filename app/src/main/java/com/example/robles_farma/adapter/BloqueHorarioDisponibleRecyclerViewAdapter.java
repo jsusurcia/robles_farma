@@ -39,7 +39,7 @@ public class BloqueHorarioDisponibleRecyclerViewAdapter extends RecyclerView.Ada
 
     @Override
     public int getItemCount() {
-        return 0;
+        return listaHorarios.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

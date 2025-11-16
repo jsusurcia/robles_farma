@@ -9,6 +9,8 @@ public class CitasPacienteData {
     private int idPersonal;
     @SerializedName("nombre_personal")
     private String nombrePersonal;
+    @SerializedName("id_especialidad")
+    private int idEspecialidad;
     @SerializedName("nombre_especialidad")
     private String especialidad;
     @SerializedName("fecha")
@@ -53,6 +55,10 @@ public class CitasPacienteData {
 
     public String getNombrePersonal() {
         return nombrePersonal;
+    }
+
+    public int getIdEspecialidad() {
+        return idEspecialidad;
     }
 
     public String getEspecialidad() {

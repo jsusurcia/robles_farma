@@ -119,6 +119,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
             CitasPacienteData cita = listaCitas.get(position);
             int idCita = cita.getIdCita();
             int idPersonal = cita.getIdPersonal();
+            int idEspecialidad = cita.getIdEspecialidad();
             String doctorName = cita.getNombrePersonal();
             String specialty = cita.getEspecialidad();
             String date = cita.getFecha();
@@ -130,6 +131,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
                 Bundle args = new Bundle();
                 args.putInt("idCita", idCita);
                 args.putInt("idPersonal", idPersonal);
+                args.putInt("idEspecialidad", idEspecialidad);
                 args.putString("doctorName", doctorName);
                 args.putString("specialty", specialty);
                 args.putString("date", date);

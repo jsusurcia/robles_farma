@@ -9,6 +9,7 @@ import com.example.robles_farma.response.CancelarCitaResponse;
 import com.example.robles_farma.response.CitasPacienteResponse;
 import com.example.robles_farma.response.DispositivoUsuarioResponse;
 import com.example.robles_farma.response.FotoUploadResponse;
+import com.example.robles_farma.response.HorarioEspecialidadResponse;
 import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.response.PacienteResponse;
@@ -27,6 +28,7 @@ import retrofit2.http.GET;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 
 
@@ -70,6 +72,16 @@ public interface ApiService {
     Call<CancelarCitaResponse> cancelarCita(@Path("id_cita") int idCita);
 
     // 🔹 Reprogramar una cita
+
+
+    // Obtener horarios disponibles por fecha y especialidad
+    @GET("horarios_disponibles/especialidad/{idEspecialidad}")
+    Call<HorarioEspecialidadResponse> getHorariosDisponibles(
+            @Path("idEspecialidad") int idEspecialidad,
+            @Query("fecha") String fecha,
+            @Query("en_centro_medico") boolean enCentroMedico,
+            @Header("Authorization") String token
+    );
 
 
     @Streaming
