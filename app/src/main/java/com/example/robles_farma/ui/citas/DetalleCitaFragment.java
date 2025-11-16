@@ -34,6 +34,12 @@ public class DetalleCitaFragment extends Fragment {
         String date = args.getString("date", "");
         String hour = args.getString("hour", "");
         String location = args.getString("location", "Centro Médico");
+        boolean enCentroMedico = args.getBoolean("enCentroMedico", false);
+
+        //Lógica para ocultar el botón "Enviar Mensaje"
+        if (!enCentroMedico) {
+            binding.btnEditarUbicacion.setVisibility(View.GONE);
+        }
 
         // Mostrar los detalles en el layout
         binding.tvNombreMedico.setText(doctorName);

@@ -124,6 +124,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
             String date = cita.getFecha();
             String hour = cita.getHora();
             String location = cita.getUbicacion();
+            boolean enCentroMedico = cita.isEnCentroMedico();
 
             if (v.getId() == R.id.iconInfo) {
                 Bundle args = new Bundle();
@@ -134,6 +135,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
                 args.putString("date", date);
                 args.putString("hour", hour);
                 args.putString("location", location);
+                args.putBoolean("enCentroMedico", enCentroMedico);
 
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_citas_to_navigation_detalle_cita, args);
