@@ -56,6 +56,7 @@ dependencies {
     implementation libs.firebase.analytics
     implementation (libs.firebase.messaging)
     implementation (libs.firebase.messaging.directboot)
+    implementation libs.google.firebase.messaging
     implementation 'com.google.android.gms:play-services-location:21.3.0'
 
     implementation libs.core.ktx
