@@ -86,8 +86,6 @@ public class ReprogramarCitaFragment extends Fragment {
             enCentroMedico = args.getBoolean("enCentroMedico", false);
 
             mostrarInformacionActual();
-
-            cargarHorarios(idEspecialidad, "2025-11-15", enCentroMedico);
         }
 
         return binding.getRoot();
@@ -104,13 +102,16 @@ public class ReprogramarCitaFragment extends Fragment {
             fechaSeleccionada.set(year, month, dayOfMonth);
 
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-            binding.editTextFecha.setText(format.format(fechaSeleccionada.getTime()));
+            String fechaFormateada = format.format(fechaSeleccionada.getTime());
+            binding.editTextFecha.setText(fechaFormateada);
+
+            cargarHorarios(idEspecialidad, fechaFormateada, enCentroMedico);
         }, anio, mes, dia);
 
         // Evitar que se seleccionen fechas pasadas
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-
         datePickerDialog.show();
+
     }
 
     private void mostrarInformacionActual() {
