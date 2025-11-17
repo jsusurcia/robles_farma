@@ -23,6 +23,8 @@ public class CitasData {
     private String fechaModificacion;
     @SerializedName("codigo_qr")
     private String codigoQr;
+    @SerializedName("duracion_minutos")
+    private int duracionMinutos;
 
     public int getIdCita() {
         return idCita;
@@ -62,5 +64,9 @@ public class CitasData {
 
     public String getCodigoQr() {
         return codigoQr;
+    }
+
+    public int getDuracionMinutos() {
+        return duracionMinutos;
     }
 }

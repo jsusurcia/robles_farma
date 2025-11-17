@@ -38,7 +38,7 @@ public class DetalleCitaFragment extends Fragment {
         boolean enCentroMedico = args.getBoolean("enCentroMedico", false);
 
         //Lógica para ocultar el botón "Enviar Mensaje"
-        if (!enCentroMedico) {
+        if (enCentroMedico) {
             binding.btnEditarUbicacion.setVisibility(View.GONE);
         }
 
