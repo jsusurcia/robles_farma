@@ -18,6 +18,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.ArrayAdapter
+import androidx.navigation.fragment.findNavController
+import com.example.robles_farma.R
 import com.example.robles_farma.sharedpreferences.LoginStorage
 
 class HomeFragment : Fragment() {
@@ -62,10 +64,27 @@ class HomeFragment : Fragment() {
     private fun setupEspecialidadRecyclerView() {
         // Inicializa el adapter y le decimos qué hacer al hacer clic
         especialidadAdapter = EspMasBuscadasAdapter { specialty ->
-            // Aquí va la lógica del clic
-            // Por ejemplo, navegar a otra pantalla con los doctores de esa especialidad
-            Toast.makeText(requireContext(), "Clic en: ${specialty.nombre}", Toast.LENGTH_SHORT)
-                .show()
+
+            // 1. Obtener datos
+            val nombreEspecialidad = specialty.nombre
+            val idEspecialidad = specialty.idEspecialidad // <--- OBTENER ID
+
+            // 2. Crear Bundle
+            val bundle = Bundle()
+            bundle.putString("nombre_especialidad", nombreEspecialidad)
+            bundle.putInt("id_especialidad", idEspecialidad) // <--- AGREGAR ID AL BUNDLE
+
+            // 3. Navegamos al fragmento de reservar cita, pasándole el bundle
+            try {
+                findNavController().navigate(
+                    R.id.action_home_to_reservar_cita, // ¡IMPORTANTE! Ver explicación abajo
+                    bundle
+                )
+            } catch (e: Exception) {
+                // Manejar error si la navegación falla
+                Log.e("HomeFragment", "Error al navegar", e)
+                Toast.makeText(requireContext(), "No se pudo abrir la pantalla de citas.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.recyclerViewSpecialties.apply {
@@ -78,50 +97,30 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupBusquedaAutoComplete() {
-        // 1. Inicializa el adapter de búsqueda (al inicio vacío)
-        //busquedaAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, mutableListOf<String>())
-
+        // ---------------------------------------------------------
+        // 1. DEFINICIÓN DEL ADAPTADOR (Tu código correcto)
+        // ---------------------------------------------------------
         busquedaAdapter = object : ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_dropdown_item_1line,
             mutableListOf<String>()
         ) {
-            // Mantenemos una referencia al adapter mismo
             private val thisAdapter = this
 
             override fun getFilter(): android.widget.Filter {
                 return object : android.widget.Filter() {
-
-                    // Esta función se ejecuta en un hilo de fondo
                     override fun performFiltering(constraint: CharSequence?): FilterResults {
                         val results = FilterResults()
-
-                        // 1. Creamos una lista con TODOS los items
-                        //    que están *actualmente* en el adapter (los que puso el observer)
                         val currentItems = mutableListOf<String>()
                         for (i in 0 until thisAdapter.count) {
-                            thisAdapter.getItem(i)?.let {
-                                currentItems.add(it)
-                            }
+                            thisAdapter.getItem(i)?.let { currentItems.add(it) }
                         }
-
-                        // 2. Asignamos esa lista COMPLETA a los resultados
                         results.values = currentItems
-
-                        // 3. ESTA ES LA CORRECCIÓN:
-                        //    El 'count' es el tamaño de la lista que acabamos de crear.
                         results.count = currentItems.size
-
                         return results
                     }
 
-                    // Esta función se ejecuta en el hilo principal (UI)
-                    override fun publishResults(
-                        constraint: CharSequence?,
-                        results: FilterResults?
-                    ) {
-                        // Esta función es necesaria para que 'overrides' funcione.
-                        // Simplemente le decimos al adapter que se actualice.
+                    override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
                         if (results != null && results.count > 0) {
                             thisAdapter.notifyDataSetChanged()
                         } else {
@@ -132,17 +131,20 @@ class HomeFragment : Fragment() {
             }
         }
 
+        // 2. ASIGNAR EL ADAPTADOR A LA VISTA
         binding.autoCompleteSearch.setAdapter(busquedaAdapter)
 
-        // 2. Configura el listener de texto (con debouncing)
+        // ---------------------------------------------------------
+        // 3. TEXT WATCHER (Para llamar a la API al escribir)
+        // ---------------------------------------------------------
         binding.autoCompleteSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(editable: Editable?) {
-                // Cancela la búsqueda anterior
+                // Cancela la búsqueda anterior si el usuario sigue escribiendo
                 busquedaHandler.removeCallbacksAndMessages(null)
-                // Programa una nueva búsqueda después del retraso
+                // Programa una nueva búsqueda después del retraso (800ms)
                 busquedaHandler.postDelayed({
                     val query = editable.toString()
                     viewModel.buscarEspecialidades(query)
@@ -150,23 +152,37 @@ class HomeFragment : Fragment() {
             }
         })
 
-        // 3. Configura el listener de CLIC en una sugerencia
+        // ---------------------------------------------------------
+        // 4. CLICK LISTENER (¡CRUCIAL! Navegación con ID)
+        // ---------------------------------------------------------
         binding.autoCompleteSearch.setOnItemClickListener { parent, view, position, id ->
             val selectedName = parent.getItemAtPosition(position) as String
 
-            // Busca la especialidad completa en la lista de resultados
-            val selectedEspecialidad =
-                viewModel.searchResults.value?.find { it.nombre == selectedName }
+            // Busca el objeto completo en la lista del ViewModel para sacar el ID
+            val selectedEspecialidad = viewModel.searchResults.value?.find { it.nombre == selectedName }
 
             if (selectedEspecialidad != null) {
-                // Aquí va tu lógica (navegar, etc.)
-                Toast.makeText(
-                    requireContext(),
-                    "Seleccionado: ${selectedEspecialidad.nombre} (ID: ${selectedEspecialidad.idEspecialidad})",
-                    Toast.LENGTH_SHORT
-                ).show()
+                // A. Obtenemos los datos
+                val nombreEspecialidad = selectedEspecialidad.nombre
+                val idEspecialidad = selectedEspecialidad.idEspecialidad // <--- EL ID ES IMPORTANTE
 
-                // Opcional: Limpiar el buscador después de seleccionar
+                // B. Creamos el Bundle
+                val bundle = Bundle()
+                bundle.putString("nombre_especialidad", nombreEspecialidad)
+                bundle.putInt("id_especialidad", idEspecialidad) // <--- ENVIAMOS EL ID
+
+                // C. Navegamos
+                try {
+                    findNavController().navigate(
+                        R.id.action_home_to_reservar_cita, // Asegúrate que este ID sea el real de tu nav_graph
+                        bundle
+                    )
+                } catch (e: Exception) {
+                    Log.e("HomeFragment", "Error al navegar desde el buscador", e)
+                    Toast.makeText(requireContext(), "Error al abrir la pantalla de citas.", Toast.LENGTH_SHORT).show()
+                }
+
+                // Limpiar el buscador después de seleccionar
                 binding.autoCompleteSearch.setText("", false)
             }
         }

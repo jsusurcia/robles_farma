@@ -9,8 +9,10 @@ import com.example.robles_farma.response.CancelarCitaResponse;
 import com.example.robles_farma.response.CitasPacienteResponse;
 import com.example.robles_farma.response.DispositivoUsuarioResponse;
 import com.example.robles_farma.response.FotoUploadResponse;
+import com.example.robles_farma.response.ItemListResponse;
 import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
+import com.example.robles_farma.response.MedicoConHorariosResponse;
 import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.response.EspecialidadResponse;
 import com.example.robles_farma.response.PacienteUpdatePassResponse;
@@ -28,6 +30,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Streaming;
+import retrofit2.http.Query;
 
 
 public interface ApiService {
@@ -87,4 +90,12 @@ public interface ApiService {
     // Registrar dispositivo paciente
     @POST("pacientes/registrar-token-fcm")
     Call<ResponseBody> registrarDispositivo(@Body DispositivoPacienteRequest request);
+
+
+    @GET("horarios_disponibles/especialidad/{id_especialidad}")
+    Call<ItemListResponse<MedicoConHorariosResponse>> getHorariosPorEspecialidad(
+            @Path("id_especialidad") int idEspecialidad,
+            @Query("fecha") String fecha,          // Formato YYYY-MM-DD
+            @Query("en_centro_medico") boolean enCentroMedico
+    );
 }
