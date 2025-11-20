@@ -1,5 +1,6 @@
 package com.example.robles_farma.retrofit;
 
+import com.example.robles_farma.request.EditarUbicacionCitaRequest;
 import com.example.robles_farma.request.LoginRequest;
 import com.example.robles_farma.request.PacienteUpdatePassRequest;
 import com.example.robles_farma.request.PacienteUpdateRequest;
@@ -8,8 +9,10 @@ import com.example.robles_farma.response.BusquedaEspecialidadResponse;
 import com.example.robles_farma.response.CancelarCitaResponse;
 import com.example.robles_farma.response.CitasPacienteResponse;
 import com.example.robles_farma.response.DispositivoUsuarioResponse;
+import com.example.robles_farma.response.EditarUbicacionCitaResponse;
 import com.example.robles_farma.response.FotoUploadResponse;
 import com.example.robles_farma.response.ItemListResponse;
+import com.example.robles_farma.response.HorarioEspecialidadResponse;
 import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.response.MedicoConHorariosResponse;
@@ -24,6 +27,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.GET;
 import retrofit2.http.PUT;
@@ -72,7 +76,22 @@ public interface ApiService {
     @POST("cita/{id_cita}/cancelar")
     Call<CancelarCitaResponse> cancelarCita(@Path("id_cita") int idCita);
 
-    // 🔹 Reprogramar una cita
+    // 🔹 Editar ubicación de cita
+    @PATCH("cita/{id_cita}/direccion")
+    Call<EditarUbicacionCitaResponse> editarUbicacionCita(
+            @Path("id_cita") int idCita,
+            @Body EditarUbicacionCitaRequest request
+    );
+
+
+    // 🔹 Obtener horarios disponibles por fecha y especialidad
+    @GET("horarios_disponibles/especialidad/{idEspecialidad}")
+    Call<HorarioEspecialidadResponse> getHorariosDisponibles(
+            @Path("idEspecialidad") int idEspecialidad,
+            @Query("fecha") String fecha,
+            @Query("en_centro_medico") boolean enCentroMedico,
+            @Header("Authorization") String token
+    );
 
 
     @Streaming

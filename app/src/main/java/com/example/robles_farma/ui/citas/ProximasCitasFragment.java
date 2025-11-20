@@ -108,8 +108,6 @@ public class ProximasCitasFragment extends Fragment {
                     }
 
                 } else {
-
-                    // 🧠 Mantengo mejoras del servidor (leer "detail")
                     String errorMessage = "Error desconocido";
 
                     if (response.errorBody() != null) {
@@ -126,8 +124,8 @@ public class ProximasCitasFragment extends Fragment {
                     }
 
                     Log.e("CitasError", "Error API: " + errorMessage);
-
                     Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+
                     binding.recyclerViewProximas.setVisibility(View.GONE);
                     binding.emptyView.setVisibility(View.VISIBLE);
                 }
@@ -135,7 +133,7 @@ public class ProximasCitasFragment extends Fragment {
 
             @Override
             public void onFailure(Call<CitasPacienteResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Error general de la API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("CitasError", "Error general de la API (Proximas): " + t.getMessage());
                 binding.recyclerViewProximas.setVisibility(View.GONE);
                 binding.emptyView.setVisibility(View.VISIBLE);
             }

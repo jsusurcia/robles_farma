@@ -26,10 +26,17 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecyclerViewAdapter.ViewHolder> {
     private final List<CitasPacienteData> listaCitas;
     private final Context context;
+    private final boolean isPastCitas;
+
 
     public CitasRecyclerViewAdapter(List<CitasPacienteData> listaCitas, Context context) {
+        this(listaCitas, context, false);
+    }
+
+    public CitasRecyclerViewAdapter(List<CitasPacienteData> listaCitas, Context context, boolean isPastCitas) {
         this.listaCitas = listaCitas;
         this.context = context;
+        this.isPastCitas = isPastCitas;
     }
 
     @NonNull
@@ -51,6 +58,12 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
         //holder.textLocation.setText(cita.getUbicacion());
         holder.textLocation.setText(cita.getUbicacion() != null ? cita.getUbicacion() : "Centro Médico");
         holder.chipStatus.setText(cita.getEstado());
+
+        if (isPastCitas) {
+            holder.iconInfo.setVisibility(View.GONE);
+        } else {
+            holder.iconInfo.setVisibility(View.VISIBLE);
+        }
 
         // Colores según estado
         int colorResId;
@@ -106,21 +119,25 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
             CitasPacienteData cita = listaCitas.get(position);
             int idCita = cita.getIdCita();
             int idPersonal = cita.getIdPersonal();
+            int idEspecialidad = cita.getIdEspecialidad();
             String doctorName = cita.getNombrePersonal();
             String specialty = cita.getEspecialidad();
             String date = cita.getFecha();
             String hour = cita.getHora();
             String location = cita.getUbicacion();
+            boolean enCentroMedico = cita.isEnCentroMedico();
 
             if (v.getId() == R.id.iconInfo) {
                 Bundle args = new Bundle();
                 args.putInt("idCita", idCita);
                 args.putInt("idPersonal", idPersonal);
+                args.putInt("idEspecialidad", idEspecialidad);
                 args.putString("doctorName", doctorName);
                 args.putString("specialty", specialty);
                 args.putString("date", date);
                 args.putString("hour", hour);
                 args.putString("location", location);
+                args.putBoolean("enCentroMedico", enCentroMedico);
 
                 Navigation.findNavController(v)
                         .navigate(R.id.action_navigation_citas_to_navigation_detalle_cita, args);

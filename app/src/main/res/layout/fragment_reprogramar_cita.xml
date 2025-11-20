@@ -14,6 +14,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <!-- CARD: Detalles actuales de la cita -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -181,6 +182,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- CARD: Seleccionar nueva fecha y hora -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -204,7 +206,7 @@
                     android:textColor="@color/black"
                     android:layout_marginBottom="16dp"/>
 
-                <!-- Campo editar para nueva fecha -->
+                <!-- Campo para seleccionar nueva fecha -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutFecha"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -217,41 +219,115 @@
                         android:id="@+id/editTextFecha"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="25 de diciembre de 2025"
                         android:focusable="false"
                         android:clickable="true" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Campo editar para nueva hora -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/inputLayoutHora"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <!-- Sección de horarios disponibles -->
+                <LinearLayout
+                    android:id="@+id/layoutHorariosContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:layout_marginTop="16dp"
-                    android:hint="Nueva Hora"
-                    app:startIconDrawable="@drawable/ic_hora">
+                    android:visibility="gone">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/editTextHora"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Horarios disponibles"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="12dp"/>
+
+                    <!-- RecyclerView para mostrar los horarios -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewHorarios"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="03:00 PM"
-                        android:focusable="false"
-                        android:clickable="true" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        android:nestedScrollingEnabled="false"
+                        tools:listitem="@layout/card_bloque_horario"
+                        tools:itemCount="6"/>
+
+                </LinearLayout>
+
+                <!-- Mensaje cuando no hay horarios disponibles -->
+                <LinearLayout
+                    android:id="@+id/layoutNoHorarios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/ic_hora"
+                        app:tint="@color/gray"
+                        android:layout_marginBottom="12dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="No hay horarios disponibles"
+                        android:textSize="16sp"
+                        android:textColor="@color/gray"
+                        android:textAlignment="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Por favor, selecciona otra fecha"
+                        android:textSize="14sp"
+                        android:textColor="@color/gray"
+                        android:layout_marginTop="4dp"
+                        android:textAlignment="center"/>
+
+                </LinearLayout>
+
+                <!-- ProgressBar mientras se cargan los horarios -->
+                <LinearLayout
+                    android:id="@+id/layoutCargandoHorarios"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone">
+
+                    <ProgressBar
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:indeterminateTint="@color/teal_500"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cargando horarios disponibles..."
+                        android:textSize="14sp"
+                        android:textColor="@color/gray"
+                        android:layout_marginTop="12dp"/>
+
+                </LinearLayout>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Botones de acción -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConfirmarCita"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:padding="14dp"
-            android:text="Confirmar cita"
+            android:text="Confirmar reprogramación"
             android:textColor="@color/white"
+            android:enabled="false"
             app:backgroundTint="@color/teal_500"
             app:cornerRadius="12dp" />
 

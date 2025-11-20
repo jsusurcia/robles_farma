@@ -29,11 +29,18 @@ public class DetalleCitaFragment extends Fragment {
 
         int idCita = args.getInt("idCita", 0);
         int idPersonal = args.getInt("idPersonal", 0);
+        int idEspecialidad = args.getInt("idEspecialidad", 0);
         String doctorName = args.getString("doctorName", "");
         String specialty = args.getString("specialty", "");
         String date = args.getString("date", "");
         String hour = args.getString("hour", "");
         String location = args.getString("location", "Centro Médico");
+        boolean enCentroMedico = args.getBoolean("enCentroMedico", false);
+
+        //Lógica para ocultar el botón "Enviar Mensaje"
+        if (enCentroMedico) {
+            binding.btnEditarUbicacion.setVisibility(View.GONE);
+        }
 
         // Mostrar los detalles en el layout
         binding.tvNombreMedico.setText(doctorName);
@@ -58,7 +65,7 @@ public class DetalleCitaFragment extends Fragment {
         });
 
         binding.btnReprogramar.setOnClickListener(v -> {
-            redirigirFragmentReprogramar(v, idCita, idPersonal, doctorName, specialty, date, hour, location);
+            redirigirFragmentReprogramar(v, idCita, idPersonal, idEspecialidad, doctorName, specialty, date, hour, location, enCentroMedico);
         });
 
         return binding.getRoot();
@@ -78,15 +85,17 @@ public class DetalleCitaFragment extends Fragment {
         Navigation.findNavController(v).navigate(R.id.action_navigation_detalle_cita_to_navigation_cancelar_cita, argsCancelar);
     }
 
-    private void redirigirFragmentReprogramar(View v, int idCita, int idPersonal, String doctorName, String specialty, String date, String hour, String location) {
+    private void redirigirFragmentReprogramar(View v, int idCita, int idPersonal, int idEspecialidad, String doctorName, String specialty, String date, String hour, String location, boolean enCentroMedico) {
         Bundle argsReprogramar = new Bundle();
         argsReprogramar.putInt("idCita", idCita);
         argsReprogramar.putInt("idPersonal", idPersonal);
+        argsReprogramar.putInt("idEspecialidad", idEspecialidad);
         argsReprogramar.putString("doctorName", doctorName);
         argsReprogramar.putString("specialty", specialty);
         argsReprogramar.putString("date", date);
         argsReprogramar.putString("hour", hour);
         argsReprogramar.putString("location", location);
+        argsReprogramar.putBoolean("enCentroMedico", enCentroMedico);
         Navigation.findNavController(v).navigate(R.id.action_navigation_detalle_cita_to_navigation_reprogramar_cita, argsReprogramar);
     }
 }

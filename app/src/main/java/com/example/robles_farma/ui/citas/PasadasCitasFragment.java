@@ -46,7 +46,7 @@ public class PasadasCitasFragment extends Fragment {
         binding = FragmentPasadasCitasBinding.inflate(inflater, container, false);
         loginStorage = new LoginStorage(getContext());
         paciente = loginStorage.getPaciente();
-        adapter = new CitasRecyclerViewAdapter(listaCitasPasadas, getContext());
+        adapter = new CitasRecyclerViewAdapter(listaCitasPasadas, getContext(), true);
 
         binding.recyclerViewPasadas.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerViewPasadas.setAdapter(adapter);
@@ -125,7 +125,7 @@ public class PasadasCitasFragment extends Fragment {
 
             @Override
             public void onFailure(Call<CitasPacienteResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Error general de la API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("CitasError", "Error general de la API (Pasadas): " + t.getMessage());
                 binding.recyclerViewPasadas.setVisibility(View.GONE);
                 binding.emptyView.setVisibility(View.VISIBLE);
             }

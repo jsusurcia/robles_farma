@@ -18,16 +18,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import com.example.robles_farma.R;
 import com.example.robles_farma.databinding.FragmentEditarUbicacionCitaBinding;
+import com.example.robles_farma.request.EditarUbicacionCitaRequest;
+import com.example.robles_farma.response.EditarUbicacionCitaResponse;
+import com.example.robles_farma.retrofit.ApiService;
+import com.example.robles_farma.retrofit.RetrofitClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.CancellationTokenSource;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditarUbicacionCitaFragment extends Fragment {
     private FragmentEditarUbicacionCitaBinding binding;
@@ -257,6 +270,42 @@ public class EditarUbicacionCitaFragment extends Fragment {
 
         // Mostrar los datos obtenidos
         mostrarDatosUbicacion();
+        editaUbicacion();
+    }
+
+    private void editaUbicacion() {
+        ApiService apiService = RetrofitClient.createService();
+        Call<EditarUbicacionCitaResponse> call = apiService.editarUbicacionCita(idCita, new EditarUbicacionCitaRequest(direccionTexto));
+        call.enqueue(new Callback<EditarUbicacionCitaResponse>() {
+            @Override
+            public void onResponse(Call<EditarUbicacionCitaResponse> call, Response<EditarUbicacionCitaResponse> response) {
+                if (response.isSuccessful()) {
+                    EditarUbicacionCitaResponse editarUbicacionCitaResponse = response.body();
+                    if (editarUbicacionCitaResponse != null && editarUbicacionCitaResponse.getData() != null) {
+                        String message = editarUbicacionCitaResponse.getMessage();
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                        Navigation.findNavController(binding.getRoot()).popBackStack(R.id.navigation_citas, false);
+                    } else {
+                        String error = response.errorBody().toString();
+                        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Error al editar la ubicación de la cita: " + response.message(), Toast.LENGTH_SHORT).show();
+                    try {
+                        JSONObject jsonError = new JSONObject(response.errorBody().string());
+                        String error = jsonError.getString("message");
+                        Toast.makeText(getContext(), "Error al editar la ubicación de la cita: " + error, Toast.LENGTH_SHORT).show();
+                    }catch (IOException | JSONException e){
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EditarUbicacionCitaResponse> call, Throwable t) {
+                Toast.makeText(getContext(), "Error general de la API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void mostrarDatosUbicacion() {
