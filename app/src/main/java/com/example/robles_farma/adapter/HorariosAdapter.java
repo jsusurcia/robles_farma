@@ -18,10 +18,12 @@ public class HorariosAdapter extends RecyclerView.Adapter<HorariosAdapter.Horari
     public static class HorarioDisplay {
         public HorarioItem horario;
         public String nombreDoctor;
+        public double precio;
 
-        public HorarioDisplay(HorarioItem horario, String nombreDoctor) {
+        public HorarioDisplay(HorarioItem horario, String nombreDoctor, double precio) {
             this.horario = horario;
             this.nombreDoctor = nombreDoctor;
+            this.precio = precio;
         }
     }
 

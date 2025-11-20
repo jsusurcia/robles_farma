@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 
 import com.example.robles_farma.R;
-import com.example.robles_farma.adapter.BloqueHorarioDisponibleRecyclerViewAdapter;
+//import com.example.robles_farma.adapter.BloqueHorarioDisponibleRecyclerViewAdapter;
 import com.example.robles_farma.databinding.FragmentReprogramarCitaBinding;
 import com.example.robles_farma.model.BloqueHorarioDisponibleData;
 import com.example.robles_farma.model.HorarioEspecialidadData;
@@ -36,7 +36,7 @@ import retrofit2.Response;
 
 public class ReprogramarCitaFragment extends Fragment {
     private FragmentReprogramarCitaBinding binding;
-    private BloqueHorarioDisponibleRecyclerViewAdapter adapter;
+    //private BloqueHorarioDisponibleRecyclerViewAdapter adapter;
     private List<BloqueHorarioDisponibleData> listaHorarios = new ArrayList<>();
     private LoginStorage loginStorage;
     private PacienteResponse paciente;
@@ -64,8 +64,8 @@ public class ReprogramarCitaFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         binding.recyclerViewHorarios.setLayoutManager(gridLayoutManager);
 
-        adapter = new BloqueHorarioDisponibleRecyclerViewAdapter(listaHorarios, getContext());
-        binding.recyclerViewHorarios.setAdapter(adapter);
+        //adapter = new BloqueHorarioDisponibleRecyclerViewAdapter(listaHorarios, getContext());
+        //binding.recyclerViewHorarios.setAdapter(adapter);
 
         // Configurar calendario picker
         binding.editTextFecha.setOnClickListener(v -> {
@@ -201,7 +201,7 @@ public class ReprogramarCitaFragment extends Fragment {
         binding.layoutCargandoHorarios.setVisibility(View.GONE);
         binding.layoutHorariosContainer.setVisibility(View.VISIBLE);
         binding.layoutNoHorarios.setVisibility(View.GONE);
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
 
         Log.d("UI_STATE", "Mostrando estado: CON DATOS (" + listaHorarios.size() + " horarios)");
     }

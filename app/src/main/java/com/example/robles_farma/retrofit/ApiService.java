@@ -1,5 +1,6 @@
 package com.example.robles_farma.retrofit;
 
+import com.example.robles_farma.request.CitaCreateRequest;
 import com.example.robles_farma.request.EditarUbicacionCitaRequest;
 import com.example.robles_farma.request.LoginRequest;
 import com.example.robles_farma.request.PacienteUpdatePassRequest;
@@ -7,6 +8,7 @@ import com.example.robles_farma.request.PacienteUpdateRequest;
 import com.example.robles_farma.request.RegisterRequest;
 import com.example.robles_farma.response.BusquedaEspecialidadResponse;
 import com.example.robles_farma.response.CancelarCitaResponse;
+import com.example.robles_farma.response.CitaResponse;
 import com.example.robles_farma.response.CitasPacienteResponse;
 import com.example.robles_farma.response.DispositivoUsuarioResponse;
 import com.example.robles_farma.response.EditarUbicacionCitaResponse;
@@ -117,4 +119,7 @@ public interface ApiService {
             @Query("fecha") String fecha,          // Formato YYYY-MM-DD
             @Query("en_centro_medico") boolean enCentroMedico
     );
+    // 🔹 Crear una nueva cita
+    @POST("cita/")
+    Call<ItemResponse<CitaResponse>> createCita(@Body CitaCreateRequest request);
 }

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +54,8 @@ public class ReservarCitaFragment extends Fragment {
     private ApiService apiService;
     private HorariosAdapter adapter;
 
+    private HorariosAdapter.HorarioDisplay horarioSeleccionado = null;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentReservarCitaBinding.inflate(inflater, container, false);
@@ -82,13 +85,44 @@ public class ReservarCitaFragment extends Fragment {
 
         // 6. Configurar Toggle (Centro Médico vs Domicilio)
         configurarToggle();
+        // En onViewCreated...
+        binding.btnContinuar.setOnClickListener(v -> {
+            if (horarioSeleccionado == null) {
+                Toast.makeText(getContext(), "Por favor, seleccione un horario.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Preparar el paquete de datos
+            Bundle bundle = new Bundle();
+            bundle.putInt("id_horario", horarioSeleccionado.horario.getId_horario());
+            bundle.putString("nombre_doctor", horarioSeleccionado.nombreDoctor);
+            bundle.putString("especialidad", especialidadNombre);
+
+            // Formatear fecha para mostrar bonito (opcional)
+            bundle.putString("fecha", "Fecha seleccionada"); // Deberías guardar la fecha seleccionada en una variable global también
+            bundle.putString("hora", horarioSeleccionado.horario.getHora_inicio());
+            bundle.putDouble("precio_consulta", horarioSeleccionado.precio);
+            // Datos del lugar
+            bundle.putBoolean("en_centro_medico", enCentroMedico);
+            bundle.putString("nombre_centro", horarioSeleccionado.horario.getNombre_centro_medico());
+            bundle.putString("direccion_centro", horarioSeleccionado.horario.getDireccion_centro_medico());
+
+            // Navegar
+            try {
+                // Asegúrate de importar: androidx.navigation.Navigation
+                Navigation.findNavController(view).navigate(R.id.action_reservar_to_resumen, bundle);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void setupRecyclerView() {
         adapter = new HorariosAdapter();
         adapter.setOnItemClickListener(item -> {
+            this.horarioSeleccionado=item;
             // TODO: Guardar horario seleccionado y pasar a confirmar
-            Toast.makeText(getContext(), "Hora: " + item.horario.getHora_inicio() + " con " + item.nombreDoctor, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Seleccionado: " + item.horario.getHora_inicio(), Toast.LENGTH_SHORT).show();
         });
         rvHorarios.setLayoutManager(new GridLayoutManager(getContext(), 2)); // Grid 2 columnas
         //Con esto se desactiva el scroll interno
@@ -179,7 +213,7 @@ public class ReservarCitaFragment extends Fragment {
                     if (medicos != null) {
                         for (MedicoConHorariosResponse medico : medicos) {
                             for (HorarioItem h : medico.getHorarios()) {
-                                listaPlana.add(new HorariosAdapter.HorarioDisplay(h, medico.getNombre_completo()));
+                                listaPlana.add(new HorariosAdapter.HorarioDisplay(h, medico.getNombreCompleto(),medico.getPrecio()));
                             }
                         }
                     }
