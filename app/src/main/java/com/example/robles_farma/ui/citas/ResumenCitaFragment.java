@@ -40,7 +40,8 @@ public class ResumenCitaFragment extends Fragment {
     private String nombreCentro;
     private String direccionCentro;
     private double precioReal; // Variable global
-
+    private String piso;
+    private String sala;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentResumenCitaBinding.inflate(inflater, container, false);
@@ -78,6 +79,8 @@ public class ResumenCitaFragment extends Fragment {
 
             nombreCentro = getArguments().getString("nombre_centro");
             direccionCentro = getArguments().getString("direccion_centro");
+            piso = getArguments().getString("piso");
+            sala = getArguments().getString("sala");
         }
     }
 
@@ -104,7 +107,8 @@ public class ResumenCitaFragment extends Fragment {
 
             binding.tvNombreCentroMedico.setText(nombreCentro != null ? nombreCentro : "Centro Médico");
             binding.tvDireccionCentro.setText(direccionCentro != null ? direccionCentro : "-");
-
+            String textoUbicacion = (piso != null ? piso : "-") + " / " + (sala != null ? sala : "-");
+            binding.tvPisoSala.setText(textoUbicacion);
 
         }
     }
@@ -141,9 +145,22 @@ public class ResumenCitaFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     // ÉXITO
                     Toast.makeText(getContext(), "¡Cita reservada con éxito!", Toast.LENGTH_LONG).show();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("nombre_doctor", nombreDoctor);
+                    bundle.putString("fecha", fecha);
+                    bundle.putString("hora", hora);
 
-                    // Navegar al Home (Asegúrate que R.id.navigation_home exista en tu grafo)
-                    Navigation.findNavController(requireView()).navigate(R.id.navigation_home);
+                    // Ubicación depende de la lógica
+                    String ubi = esDomicilio ? binding.etDireccionDomicilio.getText().toString() : direccionCentro;                    bundle.putString("ubicacion", ubi);
+
+                    // Precio y el QR que viene de la respuesta de la API
+                    bundle.putDouble("precio", precioReal); // O el precio que mostraste
+                    bundle.putString("codigo_qr_data", response.body().getData().getCodigoQr()); // <-- QR de la API
+                    try {
+                        Navigation.findNavController(requireView()).navigate(R.id.action_resumen_to_confirmada, bundle);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     // ERROR DEL SERVIDOR (Ej. 409 Horario Ocupado)
                     String errorMsg = "Error al reservar";

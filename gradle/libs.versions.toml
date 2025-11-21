@@ -2,6 +2,7 @@
 agp = "8.12.3"
 circleimageview = "3.1.0"
 compiler = "5.0.5"
+core = "3.5.4"
 coreKtx = "1.17.0"
 firebaseBom = "34.5.0"
 firebaseBomVersion = "33.4.0"
@@ -24,11 +25,13 @@ navigationUi = "2.9.5"
 kotlin = "2.0.21"
 retrofit = "2.9.0"
 swiperefreshlayout = "1.2.0-beta01"
+zxingAndroidEmbedded = "4.3.0"
 
 [libraries]
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+core = { module = "com.google.zxing:core", version.ref = "core" }
 core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "googleFirebaseBomVersion" }
@@ -51,6 +54,7 @@ navigation-fragment = { group = "androidx.navigation", name = "navigation-fragme
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
+zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
