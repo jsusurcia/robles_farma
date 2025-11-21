@@ -91,7 +91,9 @@ public class ReservarCitaFragment extends Fragment {
                 Toast.makeText(getContext(), "Por favor, seleccione un horario.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
+            Calendar fechaSeleccionada= calendarView.getFirstSelectedDate();
+            SimpleDateFormat  spdf =    new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String fechaFormateada = spdf.format(fechaSeleccionada.getTime());
             // Preparar el paquete de datos
             Bundle bundle = new Bundle();
             bundle.putInt("id_horario", horarioSeleccionado.horario.getId_horario());
@@ -99,14 +101,15 @@ public class ReservarCitaFragment extends Fragment {
             bundle.putString("especialidad", especialidadNombre);
 
             // Formatear fecha para mostrar bonito (opcional)
-            bundle.putString("fecha", "Fecha seleccionada"); // Deberías guardar la fecha seleccionada en una variable global también
+            bundle.putString("fecha", fechaFormateada); // Deberías guardar la fecha seleccionada en una variable global también
             bundle.putString("hora", horarioSeleccionado.horario.getHora_inicio());
             bundle.putDouble("precio_consulta", horarioSeleccionado.precio);
             // Datos del lugar
             bundle.putBoolean("en_centro_medico", enCentroMedico);
             bundle.putString("nombre_centro", horarioSeleccionado.horario.getNombre_centro_medico());
             bundle.putString("direccion_centro", horarioSeleccionado.horario.getDireccion_centro_medico());
-
+            bundle.putString("piso", horarioSeleccionado.horario.getPiso());
+            bundle.putString("sala", horarioSeleccionado.horario.getSala());
             // Navegar
             try {
                 // Asegúrate de importar: androidx.navigation.Navigation

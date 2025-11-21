@@ -136,6 +136,16 @@
         android:id="@+id/navigation_resumen_cita"
         android:name="com.example.robles_farma.ui.citas.ResumenCitaFragment"
         android:label="Resumen Cita"
-        tools:layout="@layout/fragment_resumen_cita" />
-
+        tools:layout="@layout/fragment_resumen_cita">
+        <action
+            android:id="@+id/action_resumen_to_confirmada"
+            app:destination="@id/navigation_cita_confirmada"
+            app:popUpTo="@id/navigation_home"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_cita_confirmada"
+        android:name="com.example.robles_farma.ui.citas.CitaConfirmadaFragment"
+        android:label="Cita Confirmada"
+        tools:layout="@layout/fragment_cita_confirmada" />
 </navigation>
