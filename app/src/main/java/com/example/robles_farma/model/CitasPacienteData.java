@@ -19,7 +19,7 @@ public class CitasPacienteData {
     private String hora;
     @SerializedName("en_centro_medico")
     private boolean enCentroMedico;
-    @SerializedName("direccion_domicilio")
+    @SerializedName("direccion_cita")
     private String ubicacion;
     @SerializedName("estado_cita")
     private String estado;
