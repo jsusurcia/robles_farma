@@ -89,7 +89,7 @@ public class ProximasCitasFragment extends Fragment {
 
                         for (CitasPacienteData c : citas) {
 
-                            // 💾 Guardar nombre de doctor para chats
+                            // Guardar nombre de doctor para chats
                             if (c.getIdPersonal() != 0 && c.getNombrePersonal() != null) {
                                 ChatListFragment.doctorNames.put(
                                         String.valueOf(c.getIdPersonal()),

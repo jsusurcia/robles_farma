@@ -34,6 +34,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Clave"
                 android:layout_width="match_parent"
+                app:passwordToggleEnabled="true"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.textfield.TextInputEditText
