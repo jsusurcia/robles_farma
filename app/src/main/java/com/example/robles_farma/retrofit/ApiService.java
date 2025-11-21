@@ -49,6 +49,9 @@ public interface ApiService {
     @POST("pacientes/")
     Call<ItemResponse<PacienteResponse>> registerPaciente(@Body RegisterRequest request);
 
+    @GET("pacientes/")
+    Call<ItemListResponse<PacienteResponse>> getPacientes();
+
     @GET("especialidades/")
     Call<EspecialidadResponse> getEspecialidades(
             @Header("Authorization") String token

@@ -1,24 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="?attr/colorSurface">
+    android:background="?attr/colorSurface"
+    android:isScrollContainer="true"
+    android:scrollbars="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:paddingBottom="200dp">  <!-- ✅ AUMENTADO A 200dp -->
 
         <!-- Tipo de documento (ComboBox) -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilTipoDocumento"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:hint="Tipo de documento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <AutoCompleteTextView
                 android:id="@+id/autoTipoDocumento"
@@ -27,19 +32,24 @@
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- DNI -->
+        <!-- Número de documento -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilDni"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:hint="DNI"
+            android:hint="Número de documento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp"
+            app:errorEnabled="true"
+            app:helperText="Según tipo seleccionado"
+            app:helperTextTextColor="@android:color/darker_gray">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDni"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number" />
+                android:inputType="textCapCharacters"
+                android:maxLength="12" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Nombres -->
@@ -48,13 +58,13 @@
             android:hint="Nombres"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNombres"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName|textCapWords" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Apellido Paterno -->
@@ -63,13 +73,13 @@
             android:hint="Apellido Paterno"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etApellidoPaterno"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName|textCapWords" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Apellido Materno -->
@@ -78,22 +88,22 @@
             android:hint="Apellido Materno"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etApellidoMaterno"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName|textCapWords" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Fecha de nacimiento (Selector de fecha) -->
+        <!-- Fecha de nacimiento -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Fecha de nacimiento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFechaNacimiento"
@@ -101,7 +111,8 @@
                 android:layout_height="wrap_content"
                 android:focusable="false"
                 android:clickable="true"
-                android:inputType="none" />
+                android:inputType="none"
+                android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Domicilio -->
@@ -110,22 +121,23 @@
             android:hint="Domicilio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDomicilio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPostalAddress" />
+                android:inputType="textPostalAddress|textCapSentences"
+                android:maxLines="2" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Sexo (ComboBox) -->
+        <!-- Sexo -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:hint="Sexo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <AutoCompleteTextView
                 android:id="@+id/autoSexo"
@@ -134,16 +146,39 @@
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Clave -->
+        <!-- Contraseña -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilClave"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Clave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true"
+            app:helperText="Mín. 8 caracteres: 1 mayúscula, 1 minúscula, 1 número, 1 especial"
+            app:helperTextTextColor="@android:color/darker_gray">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etClave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Confirmar contraseña -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilConfirmarClave"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="Confirmar clave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:errorEnabled="true"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etConfirmarClave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword" />
@@ -155,13 +190,13 @@
             android:hint="Contacto de Emergencia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="12dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etContactoEmergenciaNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName|textCapWords" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Contacto emergencia numero -->
@@ -170,48 +205,59 @@
             android:hint="Número de Emergencia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp">
+            android:layout_marginBottom="16dp"
+            app:prefixText="+51 "
+            app:prefixTextColor="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNumeroEmergencia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone" />
+                android:inputType="phone"
+                android:maxLength="9"
+                android:imeOptions="actionNext" />  <!-- ✅ AGREGADO -->
         </com.google.android.material.textfield.TextInputLayout>
 
-        <CheckBox
+        <!--  CHECKBOX DE SEGURO MEJORADO -->
+        <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/chkSeguroSalud"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:buttonTint="@color/principal_bg"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="12dp"
             android:text="¿Cuentas con seguro de salud?"
-            android:linksClickable="true" />
-
-        <!-- Términos y Condiciones -->
-        <CheckBox
-            android:id="@+id/chkTerminos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            android:buttonTint="@color/principal_bg"
-            android:text="Acepto los T&amp;C y las Políticas de privacidad"
-            android:linksClickable="true" />
+            android:textSize="15sp"
+            android:padding="8dp"
+            app:buttonTint="@color/principal_bg"
+            app:useMaterialThemeColors="true" />
+
+        <!--  CHECKBOX DE TÉRMINOS MEJORADO -->
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/chkTerminos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="Acepto los Términos y Condiciones y las Políticas de privacidad"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:padding="8dp"
+            app:buttonTint="@color/principal_bg"
+            app:useMaterialThemeColors="true" />
 
         <!-- Botón Registrarse -->
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegistrar"
-            android:text="Registrarse"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@color/principal_bg"
-            android:textColor="@android:color/white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="56dp"
+            android:text="Registrarse"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/principal_bg"
+            android:layout_marginBottom="80dp"
+            app:cornerRadius="8dp"
+            app:elevation="4dp" />
 
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

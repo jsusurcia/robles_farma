@@ -4,28 +4,54 @@ import com.google.gson.annotations.SerializedName;
 
 public class PacienteResponse {
 
-    @SerializedName("id")
+    @SerializedName("id_paciente")
     private int idPaciente;
+
     @SerializedName("nro_documento")
     private String nroDocumento;
+
     private String nombres;
+
     @SerializedName("apellido_paterno")
     private String apellidoPaterno;
+
     @SerializedName("apellido_materno")
     private String apellidoMaterno;
+
     @SerializedName("fecha_nacimiento")
     private String fechaNacimiento;
+
     @SerializedName("sexo")
     private boolean sexo;
+
+    @SerializedName("estado")
+    private boolean estado;
+
     @SerializedName("foto_perfil_url")
     private String fotoPerfilUrl;
+
     @SerializedName("contacto_emergencia_nombre")
     private String contactoEmergenciaNombre;
+
     @SerializedName("contacto_emergencia_telefono")
     private String contactoEmergenciaTelefono;
-    private String rol;
 
-    // Getters y Setters
+    @SerializedName("id_tipo_documento")
+    private int idTipoDocumento;
+
+    @SerializedName("fecha_creacion")
+    private String fechaCreacion;
+
+    @SerializedName("fecha_modificacion")
+    private String fechaModificacion;
+
+    @SerializedName("es_asegurado")
+    private boolean esAsegurado;
+
+    private String rol;  // Este campo puede no venir del backend
+
+    // ===== GETTERS Y SETTERS =====
+
     public int getIdPaciente() {
         return idPaciente;
     }
@@ -46,8 +72,8 @@ public class PacienteResponse {
         return nombres;
     }
 
-    public void setNombres(String nombre) {
-        this.nombres = nombre;
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
     }
 
     public String getApellidoPaterno() {
@@ -82,6 +108,15 @@ public class PacienteResponse {
         this.sexo = sexo;
     }
 
+
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
     public String getFotoPerfilUrl() {
         return fotoPerfilUrl;
     }
@@ -106,6 +141,42 @@ public class PacienteResponse {
         this.contactoEmergenciaTelefono = contactoEmergenciaTelefono;
     }
 
+
+    public int getIdTipoDocumento() {
+        return idTipoDocumento;
+    }
+
+    public void setIdTipoDocumento(int idTipoDocumento) {
+        this.idTipoDocumento = idTipoDocumento;
+    }
+
+
+    public String getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(String fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+
+    public String getFechaModificacion() {
+        return fechaModificacion;
+    }
+
+    public void setFechaModificacion(String fechaModificacion) {
+        this.fechaModificacion = fechaModificacion;
+    }
+
+    // NUEVO
+    public boolean isEsAsegurado() {
+        return esAsegurado;
+    }
+
+    public void setEsAsegurado(boolean esAsegurado) {
+        this.esAsegurado = esAsegurado;
+    }
+
     public String getRol() {
         return rol;
     }
@@ -113,5 +184,4 @@ public class PacienteResponse {
     public void setRol(String rol) {
         this.rol = rol;
     }
-
 }
