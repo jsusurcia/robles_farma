@@ -2,26 +2,24 @@ package com.example.robles_farma.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.robles_farma.MainActivity;
 import com.example.robles_farma.databinding.FragmentLoginBinding;
-import com.example.robles_farma.model.CitasPacienteData;
 import com.example.robles_farma.request.LoginRequest;
-import com.example.robles_farma.response.CitasPacienteResponse;
 import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.retrofit.ApiService;
 import com.example.robles_farma.retrofit.FCMClient;
 import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
-import com.example.robles_farma.ui.chat.ChatListFragment;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -33,7 +31,7 @@ public class LoginFragment extends Fragment {
     private LoginStorage loginStorage;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         apiService = RetrofitClient.createService();
@@ -80,42 +78,33 @@ public class LoginFragment extends Fragment {
         LoginRequest loginRequest = new LoginRequest(dni, clave);
         apiService.login(loginRequest).enqueue(new Callback<ItemResponse<LoginResponse>>() {
             @Override
-            public void onResponse(Call<ItemResponse<LoginResponse>> call, Response<ItemResponse<LoginResponse>> response) {
+            public void onResponse(@NonNull Call<ItemResponse<LoginResponse>> call, @NonNull Response<ItemResponse<LoginResponse>> response) {
                 binding.btnIniciarSesion.setEnabled(true);
                 binding.progressBar.setVisibility(View.GONE);
 
-                if (response.isSuccessful() && response.body() != null && response.body().getStatus().equals("success")) {
+                if (response.isSuccessful() && response.body() != null && "success".equals(response.body().getStatus())) {
                     LoginResponse loginResponse = response.body().getData();
 
-                    //RetrofitClient.API_TOKEN = loginResponse.getAccessToken();
-                    //Log.e("TOKEN_GUARDADO", loginResponse.getAccessToken());
-
-
-                    // --- INICIO DE CAMBIOS ---
+                    // Guardar sesión
                     if (recordarme) {
-                        // Esto está bien: guarda todo, incluyendo 'rememberMe = true'
                         loginStorage.saveLoginCredentials(dni, clave, loginResponse.getAccessToken(), loginResponse.getPaciente());
                     } else {
-                        // CAMBIO 1: No borres las credenciales.
-                        // Usa 'saveSession' para guardar el token actual pero con 'rememberMe = false'.
                         loginStorage.saveSession(loginResponse.getAccessToken(), loginResponse.getPaciente());
                     }
 
-
+                    // Registrar token FCM para notificaciones
                     FCMClient.registrarDispositivoFCM(requireContext());
 
-                    preCargarNombresDoctores(loginResponse.getPaciente().getIdPaciente());
-
+                    // ✅ ELIMINADO: preCargarNombresDoctores(...) ya no es necesario.
 
                     Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), MainActivity.class);
-
-                    // CAMBIO 2: Añadimos un "flag" para que MainActivity sepa
-                    // que venimos de un login exitoso.
                     intent.putExtra("JUST_LOGGED_IN", true);
 
                     startActivity(intent);
-                    getActivity().finish();
+                    if (getActivity() != null) {
+                        getActivity().finish();
+                    }
                 } else {
                     String errorMessage = "Error en el inicio de sesión";
                     if (response.body() != null && response.body().getMessage() != null){
@@ -126,7 +115,7 @@ public class LoginFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ItemResponse<LoginResponse>> call, Throwable t) {
+            public void onFailure(@NonNull Call<ItemResponse<LoginResponse>> call, @NonNull Throwable t) {
                 binding.btnIniciarSesion.setEnabled(true);
                 binding.progressBar.setVisibility(View.GONE);
                 Toast.makeText(getContext(), "Error de red: " + t.getMessage(), Toast.LENGTH_LONG).show();
@@ -134,37 +123,9 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    private void preCargarNombresDoctores(int idPaciente) {
-        ApiService apiService = RetrofitClient.createService();
-        Call<CitasPacienteResponse> call = apiService.getCitasProximas(idPaciente);
-
-        call.enqueue(new Callback<CitasPacienteResponse>() {
-            @Override
-            public void onResponse(Call<CitasPacienteResponse> call, Response<CitasPacienteResponse> response) {
-
-                if (!response.isSuccessful() || response.body() == null) return;
-
-                CitasPacienteData[] citas = response.body().getData();
-                if (citas == null) return;
-
-                for (CitasPacienteData c : citas) {
-                    if (c.getIdPersonal() != 0 && c.getNombrePersonal() != null) {
-                        // Guardamos en el mapa global del módulo de chat
-                        ChatListFragment.doctorNames.put(
-                                String.valueOf(c.getIdPersonal()),
-                                c.getNombrePersonal()
-                        );
-                    }
-                }
-
-                Log.d("PRECARGA", "Doctor names loaded: " + ChatListFragment.doctorNames.size());
-            }
-
-            @Override
-            public void onFailure(Call<CitasPacienteResponse> call, Throwable t) {
-                Log.e("PRECARGA", "Error precargando doctores: " + t.getMessage());
-            }
-        });
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
-
 }

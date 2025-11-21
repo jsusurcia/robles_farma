@@ -57,6 +57,10 @@ public interface ApiService {
             @Header("Authorization") String token
     );
 
+    // obtener el top de especialidades
+    @GET("especialidades/mas-solicitadas")
+    Call<EspecialidadResponse> getEspecialidadesMasSolicitadas(@Header("Authorization") String token);
+
     @GET("especialidades/{busqueda}")
     Call<BusquedaEspecialidadResponse> getBusquedaEspecialidad(
             @Path("busqueda") String busqueda,

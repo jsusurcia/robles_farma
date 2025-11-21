@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -79,7 +80,18 @@ public class ChatsFragment extends Fragment {
         recyclerViewMessages.setLayoutManager(layoutManager);
         recyclerViewMessages.setAdapter(adapter);
 
-        currentUserId = String.valueOf(LoginStorage.getUserId(requireContext()));
+        // CORRECCIÓN AQUÍ: Manejo seguro del ID
+        String storedId = LoginStorage.getUserId(requireContext());
+        if (storedId == null) {
+            Log.e(TAG, "❌ Error CRÍTICO: User ID es nulo o 0. Por favor cierra sesión y vuelve a entrar.");
+            Toast.makeText(getContext(), "Error de sesión. Reingresa.", Toast.LENGTH_LONG).show();
+            currentUserId = "0"; // Evita crash, pero la app no funcionará bien
+            btnSend.setEnabled(false); // Desactivar envío
+        } else {
+            currentUserId = storedId;
+        }
+
+        Log.i(TAG, "✅ Current User ID: " + currentUserId);
 
         // Recuperar argumentos
         if (savedInstanceState != null) {
@@ -109,19 +121,32 @@ public class ChatsFragment extends Fragment {
                 String messageId = obj.optString("id", String.valueOf(System.currentTimeMillis()));
                 String text = obj.optString("text", "");
                 String timestamp = obj.optString("timestamp", getCurrentTimestamp());
-                String senderRol = obj.optString("sender_rol", "");
-                String senderId = obj.optString("sender_id", "");
+                String senderId = obj.optString("sender_id", "").trim();
+                String type = obj.optString("type", "text");
 
                 if (shownMessageIds.contains(messageId)) return;
                 shownMessageIds.add(messageId);
 
-                boolean isSentByMe = senderId.equals(currentUserId);
-                String senderName = isSentByMe ? "Tú" :
-                        (doctorName != null ? doctorName : "Doctor");
+                Log.d(TAG, "Procesando mensaje - SenderID: '" + senderId + "' vs CurrentUserID: '" + currentUserId + "'");
+
+                // Comparación robusta (trim y manejo de nulls)
+                boolean isSentByMe = senderId.equals(currentUserId.trim());
+
+                String senderName = isSentByMe ? "Tú" : (doctorName != null ? doctorName : "Doctor");
 
                 ChatMessage message = new ChatMessage(
                         messageId, text, senderId, senderName, timestamp, isSentByMe
                 );
+
+                if ("location".equals(type)) {
+                    JSONObject loc = obj.optJSONObject("location");
+                    if (loc != null) {
+                        message.setType("location");
+                        message.setLatitude(loc.optDouble("latitude"));
+                        message.setLongitude(loc.optDouble("longitude"));
+                        message.setText("📍 Ubicación compartida");
+                    }
+                }
 
                 requireActivity().runOnUiThread(() -> {
                     adapter.addMessage(message);
@@ -142,6 +167,38 @@ public class ChatsFragment extends Fragment {
                 Log.i(TAG, "Mensaje enviado → Chat: " + chatId);
             }
         });
+
+        // Botón de ubicación
+        ImageButton btnLocation = view.findViewById(R.id.btnLocation);
+        btnLocation.setOnClickListener(v -> shareLocation());
+    }
+
+    private void shareLocation() {
+        if (androidx.core.app.ActivityCompat.checkSelfPermission(requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1001);
+            return;
+        }
+
+        com.google.android.gms.location.FusedLocationProviderClient fusedLocationClient =
+                com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(requireActivity());
+
+        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                wsClient.sendLocation(chatId, location.getLatitude(), location.getLongitude(), Arrays.asList(currentUserId, doctorId));
+                Toast.makeText(getContext(), "Ubicación enviada 📍", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1001 && grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            shareLocation();
+        }
     }
 
     @Override
@@ -169,16 +226,27 @@ public class ChatsFragment extends Fragment {
                         String messageId = msg.optString("id", String.valueOf(i));
                         String text = msg.optString("text", "");
                         String timestamp = msg.optString("timestamp", "");
-                        String senderRol = msg.optString("sender_rol", "");
-                        String senderId = msg.optString("sender_id", "");
+                        String senderId = msg.optString("sender_id", "").trim();
+                        String type = msg.optString("type", "text");
 
-                        boolean isSentByMe = senderId.equals(currentUserId);
-                        String senderName = isSentByMe ? "Tú" :
-                                (doctorName != null ? doctorName : "Doctor");
+                        boolean isSentByMe = senderId.equals(currentUserId.trim());
+                        String senderName = isSentByMe ? "Tú" : (doctorName != null ? doctorName : "Doctor");
 
-                        historyMessages.add(new ChatMessage(
+                        ChatMessage chatMsg = new ChatMessage(
                                 messageId, text, senderId, senderName, timestamp, isSentByMe
-                        ));
+                        );
+
+                        if ("location".equals(type)) {
+                            JSONObject loc = msg.optJSONObject("location");
+                            if (loc != null) {
+                                chatMsg.setType("location");
+                                chatMsg.setLatitude(loc.optDouble("latitude"));
+                                chatMsg.setLongitude(loc.optDouble("longitude"));
+                                chatMsg.setText("📍 Ubicación compartida");
+                            }
+                        }
+
+                        historyMessages.add(chatMsg);
                     }
 
                     adapter.setMessages(historyMessages);
@@ -219,7 +287,6 @@ public class ChatsFragment extends Fragment {
         if (wsClient != null) {
             wsClient.disconnect();
         }
-        Log.i(TAG, "Chat cerrado correctamente 🧹");
     }
 
     private String getCurrentTimestamp() {

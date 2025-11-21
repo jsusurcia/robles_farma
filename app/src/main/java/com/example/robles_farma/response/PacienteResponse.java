@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class PacienteResponse {
 
-    @SerializedName("id_paciente")
+    @SerializedName("id")
     private int idPaciente;
 
     @SerializedName("nro_documento")

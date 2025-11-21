@@ -16,14 +16,13 @@ public interface ChatService {
     @POST("chats/")
     Call<ChatResponse> createOrGetChat(@Body ChatCreateRequest request);
 
-    @GET("chats/")
+    @GET("chats/paciente")
     Call<List<com.example.robles_farma.response.ChatResponse>> getChats();
 
     @GET("chats/{chatId}/messages/")
     Call<List<MessageResponse>> getMessages(@Path("chatId") String chatId);
 
-    @GET("chats/{chatId}/messages/")
+    @GET("chats/paciente/{chatId}/messages/")
     Call<List<MessageResponse>> getChatMessages(@Path("chatId") String chatId);
-
 
 }

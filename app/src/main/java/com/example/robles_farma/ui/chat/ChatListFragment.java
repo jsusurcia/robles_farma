@@ -34,11 +34,12 @@ import retrofit2.Response;
 
 public class ChatListFragment extends Fragment {
 
-    public static Map<String, String> doctorNames = new HashMap<>();
+    // ya no necesitamos el mapa estático de nombres
     private static final String TAG = "ChatListFragment";
     private RecyclerView recyclerView;
     private ChatListAdapter adapter;
     private final List<ChatItem> chatList = new ArrayList<>();
+    // Usamos un mapa para actualizar mensajes rápidamente sin duplicar chats en la lista visual
     private final Map<String, ChatItem> chatMap = new HashMap<>();
     private boolean isLoading = false;
 
@@ -59,11 +60,12 @@ public class ChatListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rvChatList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        // Configurar el adaptador
         adapter = new ChatListAdapter(chatList, chat -> {
             Bundle bundle = new Bundle();
             bundle.putString("chatId", chat.getId());
-            bundle.putString("doctorName", chat.getName());
-            bundle.putString("doctorId", chat.getDoctorId());
+            bundle.putString("doctorName", chat.getName()); // Puede ser nombre de doctor o paciente según el rol
+            bundle.putString("doctorId", chat.getDoctorId()); // ID del otro participante
 
             NavController navController = Navigation.findNavController(view);
             navController.navigate(R.id.action_navigation_chat_to_chat_detail, bundle);
@@ -71,6 +73,7 @@ public class ChatListFragment extends Fragment {
 
         recyclerView.setAdapter(adapter);
 
+        // Cargar chats si la lista está vacía
         if (!isLoading && chatList.isEmpty()) {
             loadChats();
         }
@@ -80,7 +83,7 @@ public class ChatListFragment extends Fragment {
         if (isLoading) return;
 
         String token = LoginStorage.getToken(requireContext());
-        String userId = LoginStorage.getUserId(requireContext());
+        String currentUserId = LoginStorage.getUserId(requireContext());
 
         if (token == null) {
             Toast.makeText(requireContext(), "Sesión expirada. Inicia sesión.", Toast.LENGTH_LONG).show();
@@ -94,7 +97,7 @@ public class ChatListFragment extends Fragment {
 
         chatService.getChats().enqueue(new Callback<List<ChatResponse>>() {
             @Override
-            public void onResponse(Call<List<ChatResponse>> call, Response<List<ChatResponse>> response) {
+            public void onResponse(@NonNull Call<List<ChatResponse>> call, @NonNull Response<List<ChatResponse>> response) {
                 isLoading = false;
 
                 if (!response.isSuccessful() || response.body() == null) return;
@@ -105,36 +108,46 @@ public class ChatListFragment extends Fragment {
                 for (ChatResponse chat : response.body()) {
                     String chatId = chat.getChatId();
 
-                    // Buscar el otro participante
-                    ChatResponse.Participant other = null;
+                    // 1. Identificar al "otro" participante para guardar su ID
+                    String otherUserId = "";
+                    String myRole = ""; // Para saber si soy paciente o médico
 
                     for (ChatResponse.Participant p : chat.getParticipants()) {
-                        if (!p.getUserId().equals(userId)) {
-                            other = p;
-                            break;
+                        if (p.getUserId().equals(currentUserId)) {
+                            myRole = p.getRol(); // Averiguo mi rol en este chat
+                        } else {
+                            otherUserId = p.getUserId(); // Este es el ID de la otra persona
                         }
                     }
 
-                    if (other == null) continue;
-
-                    // Obtener nombre real enviado por backend
-                    String displayName = ChatListFragment.doctorNames.get(other.getUserId());
-                    if (displayName == null || displayName.trim().isEmpty()) {
-                        displayName = "Sin nombre";
+                    // 2. Decidir qué nombre mostrar basado en MI rol
+                    String displayName;
+                    if ("paciente".equalsIgnoreCase(myRole)) {
+                        // Si yo soy paciente, muestro el nombre del médico
+                        displayName = chat.getPersonalMedicoNombre();
+                    } else {
+                        // Si yo soy médico (o cualquier otro), muestro el nombre del paciente
+                        displayName = chat.getPacienteNombre();
                     }
 
+                    // Fallback por si viene nulo
+                    if (displayName == null || displayName.trim().isEmpty()) {
+                        displayName = "Usuario Desconocido";
+                    }
+
+                    // 3. Crear el objeto para la lista
                     ChatItem item = new ChatItem(
                             chatId,
-                            displayName,             // <-- nombre REAL
-                            "Cargando...",
-                            "",
+                            displayName,
+                            "Cargando...",           // Placeholder mensaje
+                            "",                      // Placeholder hora
                             false,
-                            other.getUserId()        // doctorId / pacienteId
+                            otherUserId
                     );
 
                     chatMap.put(chatId, item);
 
-                    // Cargar último mensaje
+                    // 4. Cargar el último mensaje individualmente
                     loadLastMessage(chatId);
                 }
 
@@ -142,9 +155,10 @@ public class ChatListFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<ChatResponse>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<ChatResponse>> call, @NonNull Throwable t) {
                 isLoading = false;
                 Toast.makeText(requireContext(), "Error al cargar chats", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Error API Chats: " + t.getMessage());
             }
         });
     }
@@ -155,16 +169,17 @@ public class ChatListFragment extends Fragment {
 
         chatService.getChatMessages(chatId).enqueue(new Callback<List<MessageResponse>>() {
             @Override
-            public void onResponse(Call<List<MessageResponse>> call, Response<List<MessageResponse>> response) {
+            public void onResponse(@NonNull Call<List<MessageResponse>> call, @NonNull Response<List<MessageResponse>> response) {
                 ChatItem item = chatMap.get(chatId);
                 if (item == null) return;
 
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    // El backend devuelve ordenado por timestamp, el último es el más reciente
                     MessageResponse last = response.body().get(response.body().size() - 1);
                     item.setLastMessage(last.getText());
-                    item.setTimestamp(last.getTimestamp());
+                    item.setTimestamp(last.getTimestamp()); // Asegúrate de formatear esto si es necesario
                 } else {
-                    item.setLastMessage("Sin mensajes aún 💬");
+                    item.setLastMessage("Sin mensajes aún");
                     item.setTimestamp("");
                 }
 
@@ -172,14 +187,15 @@ public class ChatListFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<MessageResponse>> call, Throwable t) {
-                Log.e(TAG, "Error cargando mensajes: " + t.getMessage());
+            public void onFailure(@NonNull Call<List<MessageResponse>> call, @NonNull Throwable t) {
+                Log.e(TAG, "Error cargando mensajes para chat " + chatId + ": " + t.getMessage());
             }
         });
     }
 
     private void refreshList() {
-        requireActivity().runOnUiThread(() -> {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(() -> {
             chatList.clear();
             chatList.addAll(chatMap.values());
             adapter.notifyDataSetChanged();
@@ -189,10 +205,8 @@ public class ChatListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (!isLoading && !chatList.isEmpty()) {
-            chatList.clear();
-            chatMap.clear();
-            adapter.notifyDataSetChanged();
+        // Recargar al volver para actualizar últimos mensajes
+        if (!isLoading) {
             loadChats();
         }
     }
@@ -200,6 +214,7 @@ public class ChatListFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // Limpiar para evitar memory leaks o referencias viejas
         chatMap.clear();
         isLoading = false;
     }

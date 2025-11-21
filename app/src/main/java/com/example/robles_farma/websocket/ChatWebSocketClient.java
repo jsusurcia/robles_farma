@@ -61,7 +61,7 @@ public class ChatWebSocketClient {
         }
     }
 
-    //  Enviar mensaje al servidor
+    //  Enviar mensaje de texto
     public void sendMessage(String text, String chatId, List<String> recipientIds) {
         if (webSocket == null) {
             Log.e(TAG, "No hay conexión WebSocket activa. No se pudo enviar el mensaje.");
@@ -70,6 +70,7 @@ public class ChatWebSocketClient {
 
         try {
             JSONObject json = new JSONObject();
+            json.put("type", "text"); // 👈 Importante para el backend
             json.put("text", text);
             json.put("chat_id", chatId);
             json.put("recipient_ids", new JSONArray(recipientIds));
@@ -78,6 +79,31 @@ public class ChatWebSocketClient {
             Log.i(TAG, "Mensaje enviado al chat: " + chatId);
         } catch (Exception e) {
             Log.e(TAG, "Error al crear/enviar mensaje: " + e.getMessage());
+        }
+    }
+
+    //  Enviar ubicación
+    public void sendLocation(String chatId, double lat, double lng, List<String> recipientIds) {
+        if (webSocket == null) {
+            Log.e(TAG, "No hay conexión WebSocket activa.");
+            return;
+        }
+
+        try {
+            JSONObject json = new JSONObject();
+            json.put("type", "location");
+            json.put("chat_id", chatId);
+            json.put("recipient_ids", new JSONArray(recipientIds));
+
+            JSONObject location = new JSONObject();
+            location.put("latitude", lat);
+            location.put("longitude", lng);
+            json.put("location", location);
+
+            webSocket.send(json.toString());
+            Log.i(TAG, "Ubicación enviada al chat: " + chatId);
+        } catch (Exception e) {
+            Log.e(TAG, "Error al enviar ubicación: " + e.getMessage());
         }
     }
 
@@ -91,7 +117,7 @@ public class ChatWebSocketClient {
                     return;
                 }
 
-                String url = "https://citassalud-production.up.railway.app/chats/" + chatId + "/messages/";
+                String url = "https://citassalud-production.up.railway.app/chats/paciente/" + chatId + "/messages";
 
                 Request request = new Request.Builder()
                         .url(url)

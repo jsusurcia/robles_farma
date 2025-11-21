@@ -63,7 +63,7 @@ class EspMasBuscadasVM(application: Application) : AndroidViewModel(application)
 
         val authToken = "Bearer $token"
 
-        apiService.getEspecialidades(authToken).enqueue(object : Callback<EspecialidadResponse> {
+        apiService.getEspecialidadesMasSolicitadas(authToken).enqueue(object : Callback<EspecialidadResponse> {
             override fun onResponse(
                 call: Call<EspecialidadResponse>,
                 response: Response<EspecialidadResponse>
