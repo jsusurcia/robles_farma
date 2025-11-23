@@ -19,7 +19,7 @@
             android:id="@+id/imgDoctor"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:src="@drawable/ic_launcher_background"
+            android:src="@drawable/default_doctor_image"
             android:contentDescription="Foto del doctor"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -1,6 +1,7 @@
 package com.example.robles_farma.ui.citas;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,9 @@ import com.example.robles_farma.retrofit.RetrofitClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import com.example.robles_farma.response.FotoUploadResponse;
+import com.bumptech.glide.Glide;
 
 public class ResumenCitaFragment extends Fragment {
 
@@ -58,6 +62,8 @@ public class ResumenCitaFragment extends Fragment {
         recibirDatos();
         configurarUI();
 
+        cargarFotoDoctor();
+
         // 3. Configuramos el botón para llamar al método de reserva
         binding.btnConfirmarFinal.setOnClickListener(v -> {
             realizarReserva();
@@ -81,6 +87,36 @@ public class ResumenCitaFragment extends Fragment {
             direccionCentro = getArguments().getString("direccion_centro");
             piso = getArguments().getString("piso");
             sala = getArguments().getString("sala");
+        }
+    }
+
+    private void cargarFotoDoctor() {
+        if (idHorario > 0) {
+            // Usamos el endpoint que creamos: personal_medico/{id}/foto
+            apiService.getFotoPersonalPorHorario(idHorario).enqueue(new Callback<FotoUploadResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<FotoUploadResponse> call, @NonNull Response<FotoUploadResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String url = response.body().getUrl();
+
+                        // Validamos que el contexto exista (el fragmento sigue vivo)
+                        if (url != null && !url.isEmpty() && getContext() != null) {
+                            Glide.with(requireContext())
+                                    .load(url)
+                                    .placeholder(R.drawable.default_doctor_image)
+                                    .error(R.drawable.default_doctor_image)
+                                    .circleCrop() // Redondita se ve mejor
+                                    .into(binding.imgResumenDoctor); // Usamos el ID nuevo del XML
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<FotoUploadResponse> call, @NonNull Throwable t) {
+                    // Si falla no hacemos nada, se queda la imagen por defecto
+                    Log.e("ResumenCita", "Error cargando foto: " + t.getMessage());
+                }
+            });
         }
     }
 

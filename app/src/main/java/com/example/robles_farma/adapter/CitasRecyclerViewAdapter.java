@@ -14,20 +14,26 @@ import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide; // Importar Glide
 import com.example.robles_farma.R;
 import com.example.robles_farma.model.CitasPacienteData;
+import com.example.robles_farma.response.FotoUploadResponse;
+import com.example.robles_farma.retrofit.ApiService; //
 import com.example.robles_farma.retrofit.ChatService;
+import com.example.robles_farma.retrofit.RetrofitClient; //
 import com.google.android.material.chip.Chip;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecyclerViewAdapter.ViewHolder> {
     private final List<CitasPacienteData> listaCitas;
     private final Context context;
     private final boolean isPastCitas;
-
 
     public CitasRecyclerViewAdapter(List<CitasPacienteData> listaCitas, Context context) {
         this(listaCitas, context, false);
@@ -50,14 +56,51 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
     public void onBindViewHolder(@NonNull CitasRecyclerViewAdapter.ViewHolder holder, int position) {
         CitasPacienteData cita = listaCitas.get(position);
 
-        holder.imageDoctor.setImageResource(R.drawable.default_doctor_image);
+        // 1. Cargar textos
         holder.textDoctorName.setText(cita.getNombrePersonal());
         holder.textSpecialty.setText(cita.getEspecialidad());
         holder.textDate.setText(cita.getFecha());
         holder.textHour.setText(cita.getHora());
-        //holder.textLocation.setText(cita.getUbicacion());
         holder.textLocation.setText(cita.getUbicacion() != null ? cita.getUbicacion() : "Centro Médico");
         holder.chipStatus.setText(cita.getEstado());
+
+        // 2. --- NUEVO: Cargar Foto del Doctor ---
+        // Reseteamos la imagen por defecto para evitar que se mezclen al hacer scroll
+        holder.imageDoctor.setImageResource(R.drawable.default_doctor_image);
+
+        int doctorId = cita.getIdPersonal();
+        if (doctorId > 0) {
+            // Llamamos al servicio. Asumimos que usas 'getFotoMedico' que recibe el ID del doctor.
+            // Si tu backend usa el ID de "PersonalEspecialidad" para citas, cambia esto por 'getFotoPersonal'
+            ApiService apiService = RetrofitClient.createService();
+
+            Log.e("PERSONALINI", "ID: " + doctorId);
+
+            apiService.getFotoPersonal(doctorId).enqueue(new Callback<FotoUploadResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<FotoUploadResponse> call, @NonNull Response<FotoUploadResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        String url = response.body().getUrl();
+
+                        // Validar que la URL y el contexto existan
+                        if (url != null && !url.isEmpty() && context != null) {
+                            Glide.with(context)
+                                    .load(url)
+                                    .placeholder(R.drawable.default_doctor_image) // Mientras carga
+                                    .error(R.drawable.default_doctor_image)       // Si falla
+                                    .into(holder.imageDoctor);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<FotoUploadResponse> call, @NonNull Throwable t) {
+                    // Si falla, se queda la imagen por defecto
+                    Log.e("CitasAdapter", "Error cargando foto doctor: " + t.getMessage());
+                }
+            });
+        }
+        // ---------------------------------------
 
         if (isPastCitas) {
             holder.iconInfo.setVisibility(View.GONE);
@@ -67,7 +110,8 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
 
         // Colores según estado
         int colorResId;
-        switch (cita.getEstado().toLowerCase()) {
+        String estado = cita.getEstado() != null ? cita.getEstado().toLowerCase() : "";
+        switch (estado) {
             case "confirmada":
                 colorResId = R.color.confirmada_color;
                 break;

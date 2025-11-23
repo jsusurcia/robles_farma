@@ -115,6 +115,14 @@ public interface ApiService {
     @PUT("pacientes/update_foto")
     Call<FotoUploadResponse> updateFotoPerfil(@Part MultipartBody.Part file);
 
+    @Streaming
+    @GET("personal_medico/foto_por_ipe/{id_personal_especialidad}")
+    Call<FotoUploadResponse> getFotoPersonal(@Path("id_personal_especialidad") int idPersonalEspecialidadId);
+
+    @Streaming
+    @GET("personal_medico/foto_por_id_horario/{id_horario}")
+    Call<FotoUploadResponse> getFotoPersonalPorHorario(@Path("id_horario") int idHorario);
+
     // Registrar el token del paciente
     @POST("dispositivos/crear")
     Call<DispositivoUsuarioResponse> registrarToken(@Body DispositivoPacienteRequest request);

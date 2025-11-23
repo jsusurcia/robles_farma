@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +34,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.example.robles_farma.response.FotoUploadResponse;
+import com.example.robles_farma.retrofit.ApiService;
+import com.example.robles_farma.retrofit.RetrofitClient;
+import com.bumptech.glide.Glide;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class ChatsFragment extends Fragment {
 
     private static final String TAG = "ChatsFragment";
+
+    private ApiService apiService;
+    private ImageView imgDoctor;
+
     private ChatWebSocketClient wsClient;
     private EditText etMessage;
     private ImageButton btnSend;
@@ -69,10 +83,14 @@ public class ChatsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        apiService = RetrofitClient.createService();
+
         etMessage = view.findViewById(R.id.etMessage);
         btnSend = view.findViewById(R.id.btnSend);
         recyclerViewMessages = view.findViewById(R.id.recyclerViewMessages);
         TextView chatHeader = view.findViewById(R.id.tvChatHeader);
+
+        imgDoctor = view.findViewById(R.id.imgDoctor);
 
         adapter = new ChatMessagesAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
@@ -83,7 +101,7 @@ public class ChatsFragment extends Fragment {
         // CORRECCIÓN AQUÍ: Manejo seguro del ID
         String storedId = LoginStorage.getUserId(requireContext());
         if (storedId == null) {
-            Log.e(TAG, "❌ Error CRÍTICO: User ID es nulo o 0. Por favor cierra sesión y vuelve a entrar.");
+            //Log.e(TAG, "❌ Error CRÍTICO: User ID es nulo o 0. Por favor cierra sesión y vuelve a entrar.");
             Toast.makeText(getContext(), "Error de sesión. Reingresa.", Toast.LENGTH_LONG).show();
             currentUserId = "0"; // Evita crash, pero la app no funcionará bien
             btnSend.setEnabled(false); // Desactivar envío
@@ -91,7 +109,7 @@ public class ChatsFragment extends Fragment {
             currentUserId = storedId;
         }
 
-        Log.i(TAG, "✅ Current User ID: " + currentUserId);
+        //Log.i(TAG, "✅ Current User ID: " + currentUserId);
 
         // Recuperar argumentos
         if (savedInstanceState != null) {
@@ -105,6 +123,24 @@ public class ChatsFragment extends Fragment {
         }
 
         chatHeader.setText(doctorName != null ? doctorName : "Doctor");
+
+        //convirtiendo de string a int
+
+        int doctorIdInt = -1; // valor por defecto
+
+        try {
+            if (doctorId != null && !doctorId.isEmpty()) {
+                doctorIdInt = Integer.parseInt(doctorId);
+                Log.e("COMPARI", "El id del doc p compari: " + doctorIdInt); // Log para depuración")
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            // Maneja el error si no se puede convertir
+        }
+
+        if (doctorIdInt != -1) {
+            loadDoctorPhoto(doctorIdInt);
+        }
 
         // Iniciar WebSocket
         if (!isViewCreated) {
@@ -171,6 +207,34 @@ public class ChatsFragment extends Fragment {
         // Botón de ubicación
         ImageButton btnLocation = view.findViewById(R.id.btnLocation);
         btnLocation.setOnClickListener(v -> shareLocation());
+    }
+
+    private void loadDoctorPhoto(int idMedico) {
+        // Asumimos que tienes el endpoint: personal_medico/{id}/foto
+        apiService.getFotoPersonal(idMedico).enqueue(new Callback<FotoUploadResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<FotoUploadResponse> call, @NonNull Response<FotoUploadResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String url = response.body().getUrl();
+                    if (url != null && !url.isEmpty()) {
+                        // Usamos Glide para cargar la URL de Cloudinary
+                        if (getContext() != null) {
+                            Glide.with(getContext())
+                                    .load(url)
+                                    .placeholder(R.drawable.default_doctor_image) // Icono por defecto
+                                    .error(R.drawable.ic_launcher_background)
+                                    .circleCrop() // Hace la imagen redonda
+                                    .into(imgDoctor);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<FotoUploadResponse> call, @NonNull Throwable t) {
+                Log.e(TAG, "Error cargando foto doctor: " + t.getMessage());
+            }
+        });
     }
 
     private void shareLocation() {

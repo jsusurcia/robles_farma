@@ -20,12 +20,11 @@
         <!-- Imagen del doctor - USANDO ÍCONO DEL SISTEMA -->
         <ImageView
             android:id="@+id/imgDoctor"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@android:drawable/ic_menu_myplaces"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/default_doctor_image"
             android:contentDescription="Imagen del doctor"
-            android:background="@android:color/holo_blue_light"
-            android:padding="8dp"
+            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
