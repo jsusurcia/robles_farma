@@ -27,10 +27,8 @@ class EditarPerfilVM(application: Application) : AndroidViewModel(application) {
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     // LiveData para resultado de ACTUALIZAR DATOS
-    // --- CAMBIO AQUÍ ---
     private val _updateResult = MutableLiveData<ItemResponse<PacienteResponse>>()
     val updateResult: LiveData<ItemResponse<PacienteResponse>> get() = _updateResult
-    // Antes: MutableLiveData<PacienteUpdateResponse>
 
     // LiveData para resultado de CAMBIAR CLAVE
     private val _passwordResult = MutableLiveData<PacienteUpdatePassResponse>()
@@ -42,13 +40,11 @@ class EditarPerfilVM(application: Application) : AndroidViewModel(application) {
 
     fun actualizarDatos(request: PacienteUpdateRequest) {
         _isLoading.value = true
-        // --- CAMBIO AQUÍ ---
         apiService.updatePaciente(request).enqueue(object : Callback<ItemResponse<PacienteResponse>> {
             override fun onResponse(
                 call: Call<ItemResponse<PacienteResponse>>,
                 response: Response<ItemResponse<PacienteResponse>>
             ) {
-                // --- FIN DEL CAMBIO ---
                 _isLoading.value = false
                 if (response.isSuccessful && response.body() != null) {
                     _updateResult.value = response.body()
@@ -57,7 +53,6 @@ class EditarPerfilVM(application: Application) : AndroidViewModel(application) {
                 }
             }
 
-            // --- CAMBIO AQUÍ ---
             override fun onFailure(call: Call<ItemResponse<PacienteResponse>>, t: Throwable) {
                 _isLoading.value = false
                 _error.value = "Fallo de red: ${t.message}"
@@ -77,7 +72,6 @@ class EditarPerfilVM(application: Application) : AndroidViewModel(application) {
                     _passwordResult.value = response.body()
                 } else {
                     // Manejo de errores específicos de la API (clave incorrecta, etc.)
-                    // Tu API devuelve 404 para "incorrecta" o "igual", por lo que entrará aquí.
                     try {
                         val errorBody = response.errorBody()?.string()
                         if (errorBody != null) {

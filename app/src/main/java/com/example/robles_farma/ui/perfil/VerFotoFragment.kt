@@ -1,15 +1,20 @@
 package com.example.robles_farma.ui.perfil
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.load.model.LazyHeaders
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.example.robles_farma.R
-import com.example.robles_farma.databinding.FragmentVerFotoBinding // Importa el ViewBinding
+import com.example.robles_farma.databinding.FragmentVerFotoBinding
 
 class VerFotoFragment : Fragment() {
 
@@ -27,27 +32,47 @@ class VerFotoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1. Recibe los datos enviados desde PerfilFragment
+        // 1. Recibe SOLO la URL (ya no necesitamos el token para verla)
         val fotoUrl = arguments?.getString("fotoUrl")
-        val token = arguments?.getString("token")
 
-        if (fotoUrl != null && token != null) {
+        Log.d("VerFotoDebug", "Intentando cargar URL: $fotoUrl")
 
-            // 2. Prepara las cabeceras (headers) para Glide, igual que en PerfilFragment
-            val headers = LazyHeaders.Builder()
-                .addHeader("Authorization", "Bearer $token")
-                .build()
+        if (!fotoUrl.isNullOrEmpty()) {
 
-            val glideUrl = GlideUrl(fotoUrl, headers)
-
-            // 3. Carga la imagen en el ImageView usando Glide
+            // 2. Carga SIMPLE con Glide
+            // Quitamos LazyHeaders y GlideUrl porque Cloudinary es público
             Glide.with(requireContext())
-                .load(glideUrl)
-                .placeholder(R.drawable.default_user_image) // Un placeholder mientras carga
-                .error(R.drawable.default_user_image) // Una imagen de error si falla
-                .skipMemoryCache(true) // Opcional: igual que en tu PerfilFragment
-                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
-                .into(binding.imageViewFotoCompleta)
+                .load(fotoUrl)
+                .placeholder(R.drawable.default_user_image)
+                .error(R.drawable.default_user_image)
+                // Quitamos skipMemoryCache y DiskCacheStrategy.NONE
+                // Queremos que use caché para que cargue instantáneo
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.e("VerFotoDebug", "Error cargando imagen: ${e?.message}")
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        Log.d("VerFotoDebug", "Imagen cargada OK")
+                        return false
+                    }
+                })
+                .into(binding.imageViewFotoCompleta) // Asegúrate que este ID exista en tu XML
+        } else {
+            Toast.makeText(requireContext(), "Error: URL de imagen vacía", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

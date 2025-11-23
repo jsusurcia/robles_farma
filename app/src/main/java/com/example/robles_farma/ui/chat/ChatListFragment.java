@@ -19,7 +19,7 @@ import com.example.robles_farma.R;
 import com.example.robles_farma.adapter.ChatListAdapter;
 import com.example.robles_farma.response.ChatResponse;
 import com.example.robles_farma.response.MessageResponse;
-import com.example.robles_farma.retrofit.ChatService;
+import com.example.robles_farma.retrofit.ApiService;
 import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
 
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,14 +35,22 @@ import retrofit2.Response;
 
 public class ChatListFragment extends Fragment {
 
-    // ya no necesitamos el mapa estático de nombres
     private static final String TAG = "ChatListFragment";
+
+    // Constantes para navegación
+    private static final String ARG_CHAT_ID = "chatId";
+    private static final String ARG_DOC_NAME = "doctorName";
+    private static final String ARG_DOC_ID = "doctorId";
+    private static final String ROL_PACIENTE = "paciente";
+
     private RecyclerView recyclerView;
     private ChatListAdapter adapter;
+
     private final List<ChatItem> chatList = new ArrayList<>();
-    // Usamos un mapa para actualizar mensajes rápidamente sin duplicar chats en la lista visual
     private final Map<String, ChatItem> chatMap = new HashMap<>();
+
     private boolean isLoading = false;
+    private final ApiService apiService = RetrofitClient.createService();
 
     public ChatListFragment() {}
 
@@ -60,23 +69,41 @@ public class ChatListFragment extends Fragment {
         recyclerView = view.findViewById(R.id.rvChatList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Configurar el adaptador
+        setupAdapter(view);
+
+        // Cargar chats si la lista está vacía al crear la vista
+        if (!isLoading && chatList.isEmpty()) {
+            loadChats();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refrescar al volver para ver últimos mensajes actualizados
+        loadChats();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        isLoading = false;
+        // No limpiamos chatMap aquí si queremos persistencia al rotar,
+        // pero si prefieres recargar siempre, puedes descomentar:
+        // chatMap.clear();
+    }
+
+    private void setupAdapter(View view) {
         adapter = new ChatListAdapter(chatList, chat -> {
             Bundle bundle = new Bundle();
-            bundle.putString("chatId", chat.getId());
-            bundle.putString("doctorName", chat.getName()); // Puede ser nombre de doctor o paciente según el rol
-            bundle.putString("doctorId", chat.getDoctorId()); // ID del otro participante
+            bundle.putString(ARG_CHAT_ID, chat.getId());
+            bundle.putString(ARG_DOC_NAME, chat.getName());
+            bundle.putString(ARG_DOC_ID, chat.getDoctorId());
 
             NavController navController = Navigation.findNavController(view);
             navController.navigate(R.id.action_navigation_chat_to_chat_detail, bundle);
         });
-
         recyclerView.setAdapter(adapter);
-
-        // Cargar chats si la lista está vacía
-        if (!isLoading && chatList.isEmpty()) {
-            loadChats();
-        }
     }
 
     private void loadChats() {
@@ -90,132 +117,119 @@ public class ChatListFragment extends Fragment {
             return;
         }
 
-        RetrofitClient.API_TOKEN = token;
         isLoading = true;
+        String authToken = "Bearer " + token;
 
-        ChatService chatService = RetrofitClient.createService(requireContext(), ChatService.class);
-
-        chatService.getChats().enqueue(new Callback<List<ChatResponse>>() {
+        apiService.getChats(authToken).enqueue(new Callback<List<ChatResponse>>() {
             @Override
             public void onResponse(@NonNull Call<List<ChatResponse>> call, @NonNull Response<List<ChatResponse>> response) {
                 isLoading = false;
 
                 if (!response.isSuccessful() || response.body() == null) return;
 
+                // Limpiamos para evitar duplicados al recargar
                 chatList.clear();
                 chatMap.clear();
 
                 for (ChatResponse chat : response.body()) {
-                    String chatId = chat.getChatId();
-
-                    // 1. Identificar al "otro" participante para guardar su ID
-                    String otherUserId = "";
-                    String myRole = ""; // Para saber si soy paciente o médico
-
-                    for (ChatResponse.Participant p : chat.getParticipants()) {
-                        if (p.getUserId().equals(currentUserId)) {
-                            myRole = p.getRol(); // Averiguo mi rol en este chat
-                        } else {
-                            otherUserId = p.getUserId(); // Este es el ID de la otra persona
-                        }
-                    }
-
-                    // 2. Decidir qué nombre mostrar basado en MI rol
-                    String displayName;
-                    if ("paciente".equalsIgnoreCase(myRole)) {
-                        // Si yo soy paciente, muestro el nombre del médico
-                        displayName = chat.getPersonalMedicoNombre();
-                    } else {
-                        // Si yo soy médico (o cualquier otro), muestro el nombre del paciente
-                        displayName = chat.getPacienteNombre();
-                    }
-
-                    // Fallback por si viene nulo
-                    if (displayName == null || displayName.trim().isEmpty()) {
-                        displayName = "Usuario Desconocido";
-                    }
-
-                    // 3. Crear el objeto para la lista
-                    ChatItem item = new ChatItem(
-                            chatId,
-                            displayName,
-                            "Cargando...",           // Placeholder mensaje
-                            "",                      // Placeholder hora
-                            false,
-                            otherUserId
-                    );
-
-                    chatMap.put(chatId, item);
-
-                    // 4. Cargar el último mensaje individualmente
-                    loadLastMessage(chatId);
+                    processSingleChat(chat, currentUserId);
                 }
 
-                refreshList();
+                refreshListUI();
             }
 
             @Override
             public void onFailure(@NonNull Call<List<ChatResponse>> call, @NonNull Throwable t) {
                 isLoading = false;
-                Toast.makeText(requireContext(), "Error al cargar chats", Toast.LENGTH_SHORT).show();
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Error al cargar chats", Toast.LENGTH_SHORT).show();
+                }
                 Log.e(TAG, "Error API Chats: " + t.getMessage());
             }
         });
     }
 
+    private void processSingleChat(ChatResponse chat, String currentUserId) {
+        String chatId = chat.getChatId();
+        String otherUserId = "";
+        String myRole = "";
+
+        // Identificar roles
+        for (ChatResponse.Participant p : chat.getParticipants()) {
+            if (Objects.equals(p.getUserId(), currentUserId)) {
+                myRole = p.getRol();
+            } else {
+                otherUserId = p.getUserId();
+            }
+        }
+
+        // Determinar nombre a mostrar
+        String displayName;
+        if (ROL_PACIENTE.equalsIgnoreCase(myRole)) {
+            displayName = chat.getPersonalMedicoNombre();
+        } else {
+            displayName = chat.getPacienteNombre();
+        }
+
+        if (displayName == null || displayName.trim().isEmpty()) {
+            displayName = "Usuario Desconocido";
+        }
+
+        // Crear item inicial
+        ChatItem item = new ChatItem(
+                chatId,
+                displayName,
+                "Cargando...",
+                "",
+                false,
+                otherUserId
+        );
+
+        chatMap.put(chatId, item);
+
+        // Cargar último mensaje
+        loadLastMessage(chatId);
+    }
 
     private void loadLastMessage(String chatId) {
-        ChatService chatService = RetrofitClient.createService(requireContext(), ChatService.class);
+        if (getContext() == null) return;
 
-        chatService.getChatMessages(chatId).enqueue(new Callback<List<MessageResponse>>() {
+        String token = LoginStorage.getToken(requireContext());
+        String authToken = "Bearer " + token;
+
+        apiService.getChatMessages(chatId, authToken).enqueue(new Callback<List<MessageResponse>>() {
             @Override
             public void onResponse(@NonNull Call<List<MessageResponse>> call, @NonNull Response<List<MessageResponse>> response) {
                 ChatItem item = chatMap.get(chatId);
                 if (item == null) return;
 
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    // El backend devuelve ordenado por timestamp, el último es el más reciente
                     MessageResponse last = response.body().get(response.body().size() - 1);
                     item.setLastMessage(last.getText());
-                    item.setTimestamp(last.getTimestamp()); // Asegúrate de formatear esto si es necesario
+                    item.setTimestamp(last.getTimestamp());
                 } else {
                     item.setLastMessage("Sin mensajes aún");
                     item.setTimestamp("");
                 }
 
-                refreshList();
+                refreshListUI();
             }
 
             @Override
             public void onFailure(@NonNull Call<List<MessageResponse>> call, @NonNull Throwable t) {
-                Log.e(TAG, "Error cargando mensajes para chat " + chatId + ": " + t.getMessage());
+                Log.e(TAG, "Error msg chat " + chatId + ": " + t.getMessage());
             }
         });
     }
 
-    private void refreshList() {
+    private void refreshListUI() {
         if (getActivity() == null) return;
+
         getActivity().runOnUiThread(() -> {
             chatList.clear();
             chatList.addAll(chatMap.values());
+            // Idealmente usar DiffUtil en lugar de notifyDataSetChanged para mejor rendimiento
             adapter.notifyDataSetChanged();
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // Recargar al volver para actualizar últimos mensajes
-        if (!isLoading) {
-            loadChats();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Limpiar para evitar memory leaks o referencias viejas
-        chatMap.clear();
-        isLoading = false;
     }
 }

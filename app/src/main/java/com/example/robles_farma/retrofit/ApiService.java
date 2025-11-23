@@ -8,6 +8,7 @@ import com.example.robles_farma.request.PacienteUpdateRequest;
 import com.example.robles_farma.request.RegisterRequest;
 import com.example.robles_farma.response.BusquedaEspecialidadResponse;
 import com.example.robles_farma.response.CancelarCitaResponse;
+import com.example.robles_farma.response.ChatResponse;
 import com.example.robles_farma.response.CitaResponse;
 import com.example.robles_farma.response.CitasPacienteResponse;
 import com.example.robles_farma.response.DispositivoUsuarioResponse;
@@ -18,10 +19,13 @@ import com.example.robles_farma.response.HorarioEspecialidadResponse;
 import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.response.MedicoConHorariosResponse;
+import com.example.robles_farma.response.MessageResponse;
 import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.response.EspecialidadResponse;
 import com.example.robles_farma.response.PacienteUpdatePassResponse;
 import com.example.robles_farma.request.DispositivoPacienteRequest;
+
+import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -105,7 +109,7 @@ public interface ApiService {
 
     @Streaming
     @GET("pacientes/foto")
-    Call<ResponseBody> getFotoPerfil();
+    Call<FotoUploadResponse> getFotoPerfil();
 
     @Multipart
     @PUT("pacientes/update_foto")
@@ -129,4 +133,15 @@ public interface ApiService {
     // 🔹 Crear una nueva cita
     @POST("cita/")
     Call<ItemResponse<CitaResponse>> createCita(@Body CitaCreateRequest request);
+
+    @GET("chats/paciente/{chatId}/messages")
+    Call<List<MessageResponse>> getChatMessages(
+            @Path("chatId") String chatId,
+            @Header("Authorization") String token
+    );
+
+    @GET("chats/paciente")
+    Call<List<ChatResponse>> getChats(
+            @Header("Authorization") String token
+    );
 }

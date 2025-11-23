@@ -44,13 +44,16 @@ class PerfilFragment : Fragment() {
     // Declara tu LoginStorage
     private lateinit var loginStorage: LoginStorage
 
+    private var currentPhotoUrl: String? = null
+
     // Declara el ActivityResultLauncher para seleccionar imágenes
-    private val selectImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let {
-            // Se seleccionó una imagen, ahora la subimos
-            uploadFotoToServer(it)
+    private val selectImageLauncher =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                // Se seleccionó una imagen, ahora la subimos
+                uploadFotoToServer(it)
+            }
         }
-    }
 
     private lateinit var apiService: ApiService
 
@@ -78,6 +81,8 @@ class PerfilFragment : Fragment() {
         // 4. Configura los listeners de los botones
         setupClickListeners()
 
+
+
         binding.imageViewAvatar.setOnClickListener {
             mostrarDialogoOpcionesFoto()
         }
@@ -89,25 +94,44 @@ class PerfilFragment : Fragment() {
 
         if (paciente != null && token != null) {
             // Combina nombre y apellido paterno para el nombre principal
-            binding.textViewNombre.text = "${paciente.nombres} ${paciente.apellidoPaterno} ${paciente.apellidoMaterno}"
+            binding.textViewNombre.text =
+                "${paciente.nombres} ${paciente.apellidoPaterno} ${paciente.apellidoMaterno}"
             binding.textViewEmail.text = "DNI: ${paciente.nroDocumento}"
 
-            val fotoUrl = RetrofitClient.URL_API_SERVICE + "pacientes/foto"
+            // 2. LLAMADA A LA API PARA OBTENER LA URL DE CLOUDINARY
+            // Mostramos un placeholder mientras carga
+            binding.imageViewAvatar.setImageResource(R.drawable.default_user_image)
 
-            val headers = LazyHeaders.Builder()
-                .addHeader("Authorization", "Bearer $token")
-                .build()
+            apiService.getFotoPerfil().enqueue(object : Callback<FotoUploadResponse> {
+                override fun onResponse(
+                    call: Call<FotoUploadResponse>,
+                    response: Response<FotoUploadResponse>
+                ) {
+                    if (response.isSuccessful && response.body() != null) {
+                        val urlCloudinary = response.body()!!.url
 
-            val glideUrl = GlideUrl(fotoUrl, headers)
+                        // Validar que venga una URL real
+                        if (!urlCloudinary.isNullOrEmpty()) {
+                            currentPhotoUrl = urlCloudinary
 
-            // Cargar la imagen de perfil con Glide
-            Glide.with(this)
-                .load(glideUrl)
-                .placeholder(R.drawable.default_user_image)
-                .error(R.drawable.default_user_image)
-                .skipMemoryCache(true) // No guardar en caché de memoria
-                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE) // No guardar en caché de disco
-                .into(binding.imageViewAvatar)
+                            // 3. CARGAR CON GLIDE USANDO LA URL DE CLOUDINARY
+                            Glide.with(requireContext())
+                                .load(currentPhotoUrl)
+                                .placeholder(R.drawable.default_user_image)
+                                .error(R.drawable.default_user_image)
+                                .circleCrop() // Opcional: para que se vea redonda
+                                .into(binding.imageViewAvatar)
+                        }
+                    } else {
+                        // Si el backend responde 404 (sin foto), dejamos la default
+                        Log.e("PerfilFragment", "No se encontró foto o error en respuesta")
+                    }
+                }
+
+                override fun onFailure(call: Call<FotoUploadResponse>, t: Throwable) {
+                    Log.e("PerfilFragment", "Error de red al pedir foto: ${t.message}")
+                }
+            })
 
         } else {
             binding.textViewNombre.text = "Usuario Invitado"
@@ -167,16 +191,29 @@ class PerfilFragment : Fragment() {
             .setItems(opciones) { dialog, which ->
                 when (which) {
                     0 -> { // Ver foto de perfil
-                        // Navega a un Fragment/Activity de visualización de imagen
-                        // Aquí deberías pasar la URL de la imagen si tu "ver" fragment la necesita
-                        val bundle = Bundle().apply {
-                            putString("fotoUrl", RetrofitClient.URL_API_SERVICE + "pacientes/foto")
-                            putString("token", loginStorage.token) // Pasa el token si la vista también lo necesita
+
+                        // Verificamos si tenemos una URL válida
+                        if (currentPhotoUrl != null) {
+                            val bundle = Bundle().apply {
+                                // Pasamos la URL de Cloudinary DIRECTAMENTE
+                                putString("fotoUrl", currentPhotoUrl)
+                                // YA NO necesitas pasar el token, la URL de Cloudinary es pública
+                            }
+                            findNavController().navigate(
+                                R.id.action_navigation_perfil_to_verFotoFragment,
+                                bundle
+                            )
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "No hay foto para mostrar",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                        findNavController().navigate(R.id.action_navigation_perfil_to_verFotoFragment, bundle)
                     }
-                    1 -> { // Actualizar foto de perfil
-                        selectImageLauncher.launch("image/*") // Abre la galería
+
+                    1 -> { // Actualizar foto
+                        selectImageLauncher.launch("image/*")
                     }
                 }
             }
@@ -186,7 +223,8 @@ class PerfilFragment : Fragment() {
     private fun uploadFotoToServer(fileUri: Uri) {
         val token = loginStorage.token
         if (token == null) {
-            Toast.makeText(requireContext(), "Error: No se encontró token.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Error: No se encontró token.", Toast.LENGTH_SHORT)
+                .show()
             return
         }
 
@@ -198,13 +236,15 @@ class PerfilFragment : Fragment() {
 
         // 3. Copiar el contenido del Uri al archivo temporal
         try {
-            val inputStream: InputStream? = requireContext().contentResolver.openInputStream(fileUri)
+            val inputStream: InputStream? =
+                requireContext().contentResolver.openInputStream(fileUri)
             val outputStream = FileOutputStream(tempFile)
             inputStream?.copyTo(outputStream)
             inputStream?.close()
             outputStream.close()
         } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Error al procesar el archivo.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Error al procesar el archivo.", Toast.LENGTH_SHORT)
+                .show()
             e.printStackTrace()
             return
         }
@@ -221,21 +261,33 @@ class PerfilFragment : Fragment() {
 
         // 5. Llamar a la API (esto es lo mismo que ya tenías)
         apiService.updateFotoPerfil(body).enqueue(object : Callback<FotoUploadResponse> {
-            override fun onResponse(call: Call<FotoUploadResponse>, response: Response<FotoUploadResponse>) {
+            override fun onResponse(
+                call: Call<FotoUploadResponse>,
+                response: Response<FotoUploadResponse>
+            ) {
                 tempFile.delete() // Borra el archivo temporal después de la subida
                 if (response.isSuccessful) {
-                    Toast.makeText(requireContext(), "Foto actualizada exitosamente", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Foto actualizada exitosamente",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     setupDatosPaciente() // Recarga la imagen
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "Error desconocido"
                     Log.e("PerfilFragment", "Error al subir foto: $errorBody")
-                    Toast.makeText(requireContext(), "Error al subir foto: $errorBody", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error al subir foto: $errorBody",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<FotoUploadResponse>, t: Throwable) {
                 tempFile.delete() // Borra el archivo temporal también en caso de fallo de red
-                Toast.makeText(requireContext(), "Error de red: ${t.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Error de red: ${t.message}", Toast.LENGTH_LONG)
+                    .show()
             }
         })
     }

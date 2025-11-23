@@ -126,7 +126,7 @@
     <fragment
         android:id="@+id/navigation_reservar_cita"
         android:name="com.example.robles_farma.ui.citas.ReservarCitaFragment"
-        android:label="Reservar Cita"
+        android:label="Reserva tu cita"
         tools:layout="@layout/fragment_reservar_cita">
         <action
             android:id="@+id/action_reservar_to_resumen"
@@ -135,7 +135,7 @@
     <fragment
         android:id="@+id/navigation_resumen_cita"
         android:name="com.example.robles_farma.ui.citas.ResumenCitaFragment"
-        android:label="Resumen Cita"
+        android:label="Resumen de la cita"
         tools:layout="@layout/fragment_resumen_cita">
         <action
             android:id="@+id/action_resumen_to_confirmada"
