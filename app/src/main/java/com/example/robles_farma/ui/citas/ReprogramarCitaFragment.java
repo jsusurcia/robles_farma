@@ -89,7 +89,16 @@ public class ReprogramarCitaFragment extends Fragment {
             mostrarInformacionActual();
         }
 
+        binding.btnConfirmarCita.setOnClickListener(v -> {
+            confirmarReprogramacion();
+        });
+
         return binding.getRoot();
+    }
+
+    private void confirmarReprogramacion() {
+        Log.d("API_SUCCESS", "Parámetro ID Cita: " + idCita);
+        Log.d("API_SUCCESS", "Parámetro ID Horario: (Pendiente)");
     }
 
     private void mostrarCalendario() {
@@ -157,6 +166,9 @@ public class ReprogramarCitaFragment extends Fragment {
                                 if (horarios != null && horarios.length > 0) {
                                     listaHorarios.addAll(Arrays.asList(horarios));
                                     Log.d("API_SUCCESS", "Horarios agregados: " + horarios.length);
+                                    for (BloqueHorarioDisponibleData horario : horarios) {
+                                        Log.d("API_SUCCESS", "ID horario: " + horario.getIdHorario());
+                                    }
                                 }
                             }
                         }

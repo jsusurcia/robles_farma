@@ -51,7 +51,7 @@ public class BloqueHorarioDisponibleRecyclerViewAdapter extends RecyclerView.Ada
             }
 
             seleccionado = holder.getAdapterPosition();
-            Log.d("Adapter", "Horario seleccionado: " + horario.getHoraInicio() + " en posicion: " + seleccionado);
+            Log.d("API_SUCCESS", "Horario seleccionado: " + horario.getHoraInicio() + " en posicion: " + seleccionado);
             notifyItemChanged(seleccionado);
         });
     }
