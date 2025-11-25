@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.robles_farma.retrofit.FCMClient;
-import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.ui.auth.AuthActivity;
+import com.example.robles_farma.ui.dialogs.CalificacionDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -27,47 +27,30 @@ import androidx.annotation.NonNull;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
-    private LoginStorage loginStorage; // 1. Declara una instancia de LoginStorage
+    private LoginStorage loginStorage;
     private static final int REQUEST_CODE_POST_NOTIFICATIONS = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // 2. Inicializa LoginStorage PRIMERO
         loginStorage = new LoginStorage(this);
 
         boolean justLoggedIn = getIntent().getBooleanExtra("JUST_LOGGED_IN", false);
-
-        // 4. Verificamos si el usuario pidió ser recordado en un inicio anterior.
         boolean rememberMe = loginStorage.isRememberMeEnabled();
 
         if (!rememberMe && !justLoggedIn) {
-
-            Log.w("TOKEN_MAIN", "No hay sesión 'Recuérdame' activa y no es un inicio de sesión nuevo. Redirigiendo a AuthActivity.");
-
-            Intent intent = new Intent(this, AuthActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-            return; // Importante: no continuar con el onCreate
-        }
-
-        // 6. Verificación de validez del Token:
-        // Si pasaste el filtro (porque tienes "Recuérdame" O "Acabas de Iniciar Sesión"),
-        // AÚN DEBEMOS validar que el token no esté expirado.
-        // Tu metodo isUserLoggedIn() ya hace esto perfectamente.
-        if (!loginStorage.isUserLoggedIn()) {
-            // isUserLoggedIn() ya valida el token y lo limpia si está expirado
-            Log.w("TOKEN_MAIN", "Token expirado. Redirigiendo a AuthActivity.");
-
-            Intent intent = new Intent(this, AuthActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            Log.w("TOKEN_MAIN", "No hay sesión 'Recuérdame' activa y no es un inicio de sesión nuevo.");
+            irAlLogin();
             return;
         }
-        // --- Si llegamos aquí, el usuario SÍ está logueado ---
+
+        if (!loginStorage.isUserLoggedIn()) {
+            Log.w("TOKEN_MAIN", "Token expirado. Redirigiendo a AuthActivity.");
+            irAlLogin();
+            return;
+        }
+
         Log.d("TOKEN_MAIN", "Sesión válida encontrada. Cargando MainActivity.");
 
         if (!justLoggedIn) {
@@ -76,14 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
         askForNotificationPermission();
 
-        // 7. Ahora sí, inflamos la vista y configuramos el resto
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // 🔹 Toolbar
         setSupportActionBar(binding.toolbar);
 
-        // 🔹 Navegación inferior
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home,
@@ -97,52 +77,85 @@ public class MainActivity extends AppCompatActivity {
 
         binding.navView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
-
-            // Limpia el back stack antes de cambiar de pestaña
             navController.popBackStack(navController.getGraph().getStartDestinationId(), false);
-
-            // Navega al destino seleccionado
             navController.navigate(itemId);
             return true;
         });
+
+        // 2. VERIFICAR SI LLEGAMOS POR UNA NOTIFICACIÓN (App estaba cerrada)
+        checkIntentForNotification(getIntent());
+    }
+
+    // Método auxiliar para redirigir
+    private void irAlLogin() {
+        Intent intent = new Intent(this, AuthActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    // 3. VERIFICAR SI LLEGAMOS POR UNA NOTIFICACIÓN (App estaba abierta o en segundo plano)
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        Log.d("NOTIFICACION", "onNewIntent disparado");
+        checkIntentForNotification(intent);
     }
 
     /**
-     * Pide permiso para notificaciones en Android 13+
+     * Revisa si el Intent trae datos de calificación ("action" y "cita_id")
      */
-    private void askForNotificationPermission() {
-        // Solo aplica para Android 13 (API 33) y superior
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    private void checkIntentForNotification(Intent intent) {
+        if (intent == null) return;
 
-            // Verifica si el permiso AÚN NO ha sido concedido
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
-                    PackageManager.PERMISSION_DENIED) {
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            // Extraemos los datos que mandamos desde Python (data payload)
+            String action = extras.getString("action");
+            String citaId = extras.getString("cita_id");
 
-                // Muestra el diálogo de solicitud de permiso
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                        REQUEST_CODE_POST_NOTIFICATIONS);
+            Log.d("NOTIFICACION", "Action: " + action + " | CitaID: " + citaId);
+
+            // Validamos si es la acción correcta
+            if ("CALIFICAR_CITA".equals(action) && citaId != null) {
+                mostrarDialogoCalificacion(citaId);
             }
-            // Si el permiso ya fue concedido, no hace nada.
         }
     }
 
     /**
-     * Maneja la respuesta del usuario al diálogo de permiso
+     * Muestra el Diálogo (Interoperabilidad Java -> Kotlin)
      */
+    private void mostrarDialogoCalificacion(String citaId) {
+        // Como CalificacionDialog es Kotlin y 'newInstance' está en un companion object,
+        // en Java se accede a través de '.Companion'.
+        CalificacionDialog dialog = CalificacionDialog.Companion.newInstance(citaId);
+
+        // Mostramos el diálogo usando getSupportFragmentManager()
+        dialog.show(getSupportFragmentManager(), CalificacionDialog.TAG);
+    }
+
+
+    private void askForNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+                    PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                        REQUEST_CODE_POST_NOTIFICATIONS);
+            }
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == REQUEST_CODE_POST_NOTIFICATIONS) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permiso concedido
                 Log.d("MainActivity", "Permiso POST_NOTIFICATIONS concedido.");
             } else {
-                // Permiso denegado
                 Log.w("MainActivity", "Permiso POST_NOTIFICATIONS denegado.");
-                // Opcional: Mostrar un mensaje al usuario explicando por qué
-                // se necesitan las notificaciones.
             }
         }
     }

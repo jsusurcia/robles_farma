@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.robles_farma.databinding.ItemEspecialidadCardBinding
 import com.example.robles_farma.model.EspecialidadData
-
+import coil.load
+import com.example.robles_farma.R
 
 class EspMasBuscadasAdapter(
     private val onItemClicked: (EspecialidadData) -> Unit
@@ -36,8 +37,16 @@ class EspMasBuscadasAdapter(
             binding.textViewSpecialtyName.text = especialidad.nombre
             //binding.imageViewSpecialtyIcon.setImageResource(especialidad.totalCitas)
 
-            // provisional
-            binding.imageViewSpecialtyIcon.setImageResource(com.example.robles_farma.R.drawable.ic_perfil)
+            // 2. IMPLEMENTACIÓN DE COIL AQUÍ
+            // Gracias a tu configuración en MyApplication.java, esto leerá SVG automáticamente.
+            binding.imageViewSpecialtyIcon.load(especialidad.iconoUrl) {
+                // Habilita una animación suave de aparición
+                crossfade(true)
+                // Muestra este ícono mientras la imagen descarga
+                placeholder(R.drawable.ic_hora)
+                // Muestra este ícono si la URL falla o es nula
+                error(R.drawable.hospital_24_px)
+            }
 
             binding.root.setOnClickListener {
                 onItemClicked(especialidad)

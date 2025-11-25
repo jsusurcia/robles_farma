@@ -67,12 +67,13 @@ class HomeFragment : Fragment() {
 
             // 1. Obtener datos
             val nombreEspecialidad = specialty.nombre
-            val idEspecialidad = specialty.idEspecialidad // <--- OBTENER ID
+            val idEspecialidad = specialty.idEspecialidad
+            val iconoUrl = specialty.iconoUrl
 
             // 2. Crear Bundle
             val bundle = Bundle()
             bundle.putString("nombre_especialidad", nombreEspecialidad)
-            bundle.putInt("id_especialidad", idEspecialidad) // <--- AGREGAR ID AL BUNDLE
+            bundle.putInt("id_especialidad", idEspecialidad)
 
             // 3. Navegamos al fragmento de reservar cita, pasándole el bundle
             try {

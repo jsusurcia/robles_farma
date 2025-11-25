@@ -79,4 +79,8 @@ dependencies {
     implementation libs.core
 
     implementation libs.material.calendar.view
+
+    implementation(libs.coil)
+    // Extensión para leer SVG (CRUCIAL)
+    implementation(libs.coil.svg)
 }

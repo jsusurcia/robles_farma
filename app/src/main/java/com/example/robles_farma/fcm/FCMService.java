@@ -20,6 +20,8 @@ import com.example.robles_farma.sharedpreferences.FirebaseTokenManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Map;
+
 public class FCMService extends FirebaseMessagingService {
 
     private static final String TAG = "FCMService";
@@ -41,74 +43,78 @@ public class FCMService extends FirebaseMessagingService {
         FirebaseTokenManager.setFirebaseToken(getApplicationContext(), token, deviceName);
     }
 
-    /**
-     * AQUÍ OCURRE LA MAGIA.
-     * Este metodo se llama cuando se recibe un mensaje MIENTRAS LA APP ESTÁ EN PRIMER PLANO.
-     * Si la app está en segundo plano o cerrada, FCM (en Android)
-     * automáticamente maneja la notificación si envías un "notification payload".
-     */
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
 
-        // Imprimimos en consola (como ya hacías)
         Log.d(TAG, "From: " + message.getFrom());
 
-        // El backend parece estar enviando un "notification payload".
+        // 1. OBTENER LOS DATOS (Payload)
+        // Están en message.getData(), NO en message.getNotification()
+        Map<String, String> data = message.getData();
+
+        // 2. OBTENER LA NOTIFICACIÓN VISUAL (Si existe)
         if (message.getNotification() != null) {
             String title = message.getNotification().getTitle();
             String body = message.getNotification().getBody();
 
             Log.e("FCM MESSAGE title", title);
             Log.e("FCM MESSAGE body", body);
+            Log.e("FCM MESSAGE data", data.toString());
 
-            // ¡Llamamos a nuestra nueva función para MOSTRAR la notificación!
-            sendNotification(title, body);
+            // Pasamos título, cuerpo Y LOS DATOS a la función
+            sendNotification(title, body, data);
         }
-
-        // Si también envías un "data payload" (datos adicionales)
-        if (message.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + message.getData());
-            // Aquí podrías procesar datos extra si los tuvieras
+        else if (data.size() > 0) {
+            sendNotification("Nueva notificación", "Tienes un mensaje nuevo", data);
         }
     }
 
-    /**
-     * NUEVA FUNCIÓN: Construye y muestra la notificación visual en el dispositivo.
-     */
-    private void sendNotification(String messageTitle, String messageBody) {
-        // 1. Define qué pasa cuando el usuario TOCA la notificación
-        // (En este caso, abrir la MainActivity)
-        // Intent intent = new Intent(this, MainActivity.class);
-        Intent intent = new Intent(this, CargaActivity.class);
-        intent.putExtra("NAVIGATE_TO", "HOME_FRAGMENT");
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+    private void sendNotification(String messageTitle, String messageBody, Map<String, String> data) {
+        // CLAVE 1: Apuntar DIRECTO a MainActivity para evitar que el Splash (CargaActivity) se coma los datos.
+        Intent intent = new Intent(this, MainActivity.class);
 
-        // 2. Define un ID para el canal de notificación (requerido desde Android 8.0+)
+        // CLAVE 2: Limpiar flags para evitar duplicidad de actividades
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        // CLAVE 3: Copiar los datos del Map de Firebase al Intent de Android
+        if (data != null) {
+            for (Map.Entry<String, String> entry : data.entrySet()) {
+                intent.putExtra(entry.getKey(), entry.getValue());
+                Log.d(TAG, "Copiando al Intent -> Key: " + entry.getKey() + " Value: " + entry.getValue());
+            }
+        }
+
+        // CLAVE 4: Usar un requestCode ÚNICO.
+        // Si usas '0' siempre, Android reutiliza el intent anterior (que quizás no tenía datos).
+        // Al usar currentTimeMillis, forzamos uno nuevo.
+        int uniqueRequestCode = (int) System.currentTimeMillis();
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                this,
+                uniqueRequestCode, // <--- ÚNICO
+                intent,
+                // UPDATE_CURRENT: Si ya existe, actualiza sus extras. IMMUTABLE: Requisito Android 12+.
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
         String channelId = "fcm_default_channel";
         String channelName = "Notificaciones Generales";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        // 3. Construye la notificación
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        // ¡IMPORTANTE! Debes tener un icono en res/drawable
-                        // Usa R.mipmap.ic_launcher si no tienes uno para probar
-                        .setSmallIcon(R.drawable.citas_salud_logo)
+                        .setSmallIcon(R.drawable.citas_salud_logo) // Asegúrate de que este icono existe
                         .setContentTitle(messageTitle)
                         .setContentText(messageBody)
-                        .setAutoCancel(true) // La notificación se cierra al tocarla
+                        .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent)
                         .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-        // 4. Obtiene el servicio de Notificaciones
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // 5. Crea el Canal de Notificación (solo para Android 8.0 / API 26 y superior)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId,
                     channelName,
@@ -116,9 +122,6 @@ public class FCMService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(channel);
         }
 
-        // 6. Muestra la notificación
-        // Usamos un ID único (basado en la hora) para que se muestren múltiples notificaciones
-        int notificationId = (int) System.currentTimeMillis();
-        notificationManager.notify(notificationId, notificationBuilder.build());
+        notificationManager.notify(uniqueRequestCode, notificationBuilder.build());
     }
 }

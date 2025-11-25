@@ -1,5 +1,6 @@
 package com.example.robles_farma.retrofit;
 
+import com.example.robles_farma.request.CalificacionCreateRequest;
 import com.example.robles_farma.request.CitaCreateRequest;
 import com.example.robles_farma.request.EditarUbicacionCitaRequest;
 import com.example.robles_farma.request.LoginRequest;
@@ -7,6 +8,7 @@ import com.example.robles_farma.request.PacienteUpdatePassRequest;
 import com.example.robles_farma.request.PacienteUpdateRequest;
 import com.example.robles_farma.request.RegisterRequest;
 import com.example.robles_farma.response.BusquedaEspecialidadResponse;
+import com.example.robles_farma.response.CalificacionResponse;
 import com.example.robles_farma.response.CancelarCitaResponse;
 import com.example.robles_farma.response.ChatResponse;
 import com.example.robles_farma.response.CitaResponse;
@@ -152,4 +154,7 @@ public interface ApiService {
     Call<List<ChatResponse>> getChats(
             @Header("Authorization") String token
     );
+
+    @POST("calificacion/registrar")
+    Call<CalificacionResponse> registrarCalificacion(@Body CalificacionCreateRequest request);
 }

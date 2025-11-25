@@ -6,5 +6,4 @@ data class EspecialidadResponse (
     val status: String,
     val message: String,
     val data: List<EspecialidadData>
-
 )
