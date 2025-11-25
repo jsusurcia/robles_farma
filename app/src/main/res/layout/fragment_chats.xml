@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@color/color_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/chatHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="?attr/colorSurface"
         android:elevation="4dp"
         android:padding="12dp"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,25 +19,25 @@
             android:id="@+id/imgDoctor"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:src="@drawable/default_doctor_image"
             android:contentDescription="Foto del doctor"
+            android:src="@drawable/default_doctor_image"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvChatHeader"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Dr. Gregory House"
-            android:textColor="#212121"
-            android:textStyle="bold"
-            android:textSize="18sp"
             android:layout_marginStart="12dp"
-            app:layout_constraintStart_toEndOf="@id/imgDoctor"
+            android:text="Dr. Gregory House"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/imgDoctor"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -45,17 +45,17 @@
         android:id="@+id/recyclerViewMessages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:padding="8dp"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/chatHeader"
+        android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@id/messageInputContainer"
+        app:layout_constraintTop_toBottomOf="@id/chatHeader"
         tools:listitem="@layout/item_message_sent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/messageInputContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="?attr/colorSurface"
         android:elevation="8dp"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -64,44 +64,46 @@
             android:id="@+id/btnLocation"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_mylocation"
+            android:layout_marginStart="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Enviar ubicación"
-            app:layout_constraintStart_toStartOf="parent"
+            android:src="@android:drawable/ic_menu_mylocation"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="4dp"
-            app:tint="#757575" />
+            app:tint="?attr/colorSecondary" />
 
         <EditText
             android:id="@+id/etMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Escribe un mensaje..."
-            android:padding="12dp"
-            android:background="@drawable/bg_message_input"
-            android:textSize="15sp"
-            android:maxLines="4"
-            android:inputType="textMultiLine|textCapSentences"
-            app:layout_constraintStart_toEndOf="@id/btnLocation"
-            app:layout_constraintEnd_toStartOf="@id/btnSend"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_message_input"
+            android:hint="Escribe un mensaje..."
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLines="4"
+            android:padding="12dp"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="@color/gray"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btnSend"
+            app:layout_constraintStart_toEndOf="@id/btnLocation"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/btnSend"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@android:drawable/ic_menu_send"
             android:background="@drawable/bg_send_button"
             android:contentDescription="Enviar mensaje"
+            android:src="@android:drawable/ic_menu_send"
+            app:backgroundTint="?attr/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:tint="@android:color/white" />
+            app:tint="@color/white" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

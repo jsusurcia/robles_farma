@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="brand_sage">#76948A</color>
+    <color name="brand_burgundy">#5D2E2E</color>
+    <color name="brand_cream">#FFFCF5</color>
+    <color name="brand_cream_dark">#F0EAE0</color>
+
+    <color name="brand_sage_dark">#A8C6BA</color>
+    <color name="brand_burgundy_dark">#E6BEBE</color>
+
+    <color name="dark_bg">#1A1111</color>
+    <color name="dark_surface">#251A1A</color>
+
+    <color name="black">#FF1D1B20</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="principal_bg">#00796B</color>
     <color name="gray">#9E9E9E</color>
-    <color name="confirmada_color">#009688</color>
-    <color name="pendiente_color">#f59e0b</color>
-    <color name="cancelada_color">#d64651</color>
-    <color name="teal_200">#03DAC5</color>
-    <color name="teal_500">#009688</color>
-    <color name="color_primary">@color/principal_bg</color>
+
+    <color name="confirmada_color">#4CAF50</color>
+    <color name="pendiente_color">#FB8C00</color>
+    <color name="cancelada_color">#D32F2F</color>
+
+    <!-- Aquí ocurre la inversión -->
+    <color name="color_primary">@color/brand_sage</color>
     <color name="color_on_primary">@color/white</color>
 
-    <color name="color_surface">@color/white</color>
-    <color name="color_on_surface">@color/black</color>
+    <color name="color_secondary">@color/brand_burgundy</color>
+    <color name="color_on_secondary">@color/white</color>
 
-    <color name="color_background">#FFFAFAFA</color>
+    <color name="color_background">@color/brand_cream</color>
     <color name="color_on_background">@color/black</color>
+
+    <color name="color_surface">@color/white</color>
+    <color name="color_on_surface">@color/brand_burgundy</color>
+
+    <color name="textinput_dark_bg">#414141</color>
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,8 +11,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btn_confirmar_final">
+        app:layout_constraintBottom_toTopOf="@id/btn_confirmar_final"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -24,43 +23,45 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="16dp">
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:gravity="center_vertical">
+                    android:padding="16dp">
 
                     <ImageView
                         android:id="@+id/img_resumen_doctor"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
-                        android:src="@drawable/default_doctor_image"/>
+                        android:src="@drawable/default_doctor_image" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/tv_resumen_doctor"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Dr. House"
-                            android:textStyle="bold"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="18sp"
-                            android:textColor="@android:color/black"/>
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_resumen_especialidad"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Medicina General"
-                            android:textColor="@android:color/darker_gray"/>
+                            android:textColor="@color/gray" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -68,9 +69,10 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="16dp">
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -82,11 +84,12 @@
                         android:id="@+id/tv_resumen_fecha"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:drawableStart="@drawable/ic_calendar"
                         android:drawablePadding="8dp"
                         android:text="27 de Octubre, 2025"
-                        android:textColor="@android:color/black"
-                        android:layout_marginBottom="8dp"/>
+                        android:textColor="?attr/colorOnSurface"
+                        app:drawableTint="?attr/colorPrimary" />
 
                     <TextView
                         android:id="@+id/tv_resumen_hora"
@@ -95,52 +98,56 @@
                         android:drawableStart="@drawable/alarm_24px"
                         android:drawablePadding="8dp"
                         android:text="10:00 AM"
-                        android:textColor="@android:color/black"/>
+                        android:textColor="?attr/colorOnSurface"
+                        app:drawableTint="?attr/colorPrimary" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                android:layout_marginBottom="24dp">
+                app:cardElevation="2dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="16dp"
-                    android:gravity="center">
+                    android:padding="16dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="Lugar de atención"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:layout_marginBottom="8dp"/>
+                        android:textColor="?attr/colorOnSurface"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_nombre_centro_medico"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hospital José Soto Cadenillas"
                         android:drawableStart="@drawable/hospital_24_px"
                         android:drawablePadding="8dp"
                         android:gravity="center"
-                        android:textColor="@android:color/darker_gray"/>
+                        android:text="Hospital José Soto Cadenillas"
+                        android:textColor="@color/gray"
+                        app:drawableTint="?attr/colorSecondary" />
 
                     <TextView
                         android:id="@+id/tv_label_domicilio"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Visita a domicilio"
                         android:drawableStart="@drawable/ic_home"
                         android:drawablePadding="8dp"
                         android:gravity="center"
+                        android:text="Visita a domicilio"
+                        android:textColor="@color/gray"
                         android:visibility="gone"
-                        android:textColor="@android:color/darker_gray"/>
+                        app:drawableTint="?attr/colorSecondary" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -154,41 +161,47 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Ubicación"
-                        android:textColor="@android:color/black"/>
+                        android:textColor="?attr/colorOnSurface" />
+
                     <TextView
                         android:id="@+id/tv_direccion_centro"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:gravity="end"
-                        android:text="Av. 30 Agosto #1285"/>
+                        android:text="Av. 30 Agosto #1285"
+                        android:textColor="?attr/colorOnSurface" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Piso / Sala"
-                        android:textColor="@android:color/black"/>
+                        android:textColor="?attr/colorOnSurface" />
+
                     <TextView
                         android:id="@+id/tv_piso_sala"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="end"
-                        android:text="2 / E420"/>
+                        android:text="2 / E420"
+                        android:textColor="?attr/colorOnSurface" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -197,25 +210,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone"> <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ubicación"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="4dp"/>
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:text="Ubicación"
+                    android:textColor="?attr/colorOnSurface" />
 
                 <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxStrokeColor="?attr/colorPrimary"
+                    app:endIconDrawable="@drawable/my_location_24px"
                     app:endIconMode="custom"
-                    app:endIconDrawable="@drawable/my_location_24px">
+                    app:endIconTint="?attr/colorPrimary"
+                    app:hintTextColor="?attr/colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_direccion_domicilio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Ingresar ubicación" />
+                        android:hint="Ingresar ubicación"
+                        android:textColor="?attr/colorOnSurface" />
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
@@ -223,24 +242,26 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="24dp">
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Coste"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"/>
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/tv_coste_total"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="S/ 50.00"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black"/>
+                    android:textStyle="bold" />
             </LinearLayout>
 
         </LinearLayout>
@@ -251,12 +272,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="Confirmar cita"
         android:paddingTop="12dp"
+
         android:paddingBottom="12dp"
+        android:text="Confirmar cita"
+
+        android:textColor="?attr/colorOnPrimary"
+        app:backgroundTint="?attr/colorPrimary"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

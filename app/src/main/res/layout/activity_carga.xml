@@ -5,24 +5,23 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CargaActivity"
     android:gravity="center"
-    >
+    tools:context=".CargaActivity">
 
     <ImageView
         android:id="@+id/logo_citas_salud"
         android:layout_width="match_parent"
         android:layout_height="350dp"
-        android:src="@drawable/citas_salud_logo"/>
+        android:src="@drawable/citas_salud_logo" />
 
     <TextView
         android:id="@+id/title_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Conectando con tu salud..."
         android:layout_below="@+id/logo_citas_salud"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
+        android:text="Conectando con tu salud..."
         android:textColor="#4A222C"
         android:textSize="20sp" />
 

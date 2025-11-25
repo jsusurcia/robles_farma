@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_background">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -10,58 +11,67 @@
         android:padding="20dp">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <!-- Campo DNI -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="DNI"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:hint="DNI"
+
+                app:boxStrokeColor="?attr/colorPrimary"
+                app:hintTextColor="?attr/colorPrimary">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etDniLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number" />
+                    android:inputType="number"
+                    android:textColor="?attr/colorOnSurface" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Campo Clave -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Clave"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Clave"
+                app:boxStrokeColor="?attr/colorPrimary"
+
+                app:hintTextColor="?attr/colorPrimary"
                 app:passwordToggleEnabled="true"
-                android:layout_height="wrap_content">
+                app:passwordToggleTint="?attr/colorOnSurface">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etClaveLogin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textColor="?attr/colorOnSurface" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Check para recordar -->
             <CheckBox
                 android:id="@+id/chkRecordarme"
-                android:text="Recuérdame"
-                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:buttonTint="?attr/colorPrimary"
+                android:text="Recuérdame"
+                android:textColor="?attr/colorOnSurface" />
 
-            <!-- Botón de inicio de sesión -->
             <Button
                 android:id="@+id/btnIniciarSesion"
-                android:text="Iniciar sesión"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/principal_bg"
-                android:textColor="@android:color/white"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="20dp"
+                android:backgroundTint="?attr/colorPrimary"
+
+                android:text="Iniciar sesión"
+                android:textColor="?attr/colorOnPrimary" />
 
         </LinearLayout>
     </ScrollView>
@@ -71,6 +81,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:indeterminateTint="?attr/colorPrimary"
         android:visibility="gone" />
 
 </FrameLayout>

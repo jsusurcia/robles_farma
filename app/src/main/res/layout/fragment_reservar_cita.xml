@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    tools:context=".ReservarFragment">
+
+    android:background="@color/color_background"
+
+    tools:context=".ui.citas.ReservarCitaFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
         android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:fillViewport="true"
         app:layout_constraintBottom_toTopOf="@id/btn_continuar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,8 +35,9 @@
                 android:layout_marginTop="24dp"
                 android:text="Odontología"
                 android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium"
-                android:textStyle="bold"
-                android:textColor="@android:color/black" />
+                android:textColor="?attr/colorOnSurface"
+
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_subtitulo_seleccion"
@@ -44,68 +46,65 @@
                 android:layout_marginTop="4dp"
                 android:text="Seleccione la fecha y la hora para su cita"
                 android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-                android:textColor="@color/material_on_surface_emphasis_medium"/>
+
+                android:textColor="@color/gray" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/calendar_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                app:cardBackgroundColor="?attr/colorSurface"
                 app:cardCornerRadius="12dp"
+
                 app:cardElevation="4dp">
 
                 <com.applandeo.materialcalendarview.CalendarView
                     android:id="@+id/calendar_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:type="one_day_picker"
+                    app:forwardButtonSrc="@drawable/ic_chevron_right"
 
-                    app:headerColor="@android:color/white"
-                    app:headerLabelColor="@android:color/black"
+                    app:headerColor="?attr/colorSurface"
+                    app:headerLabelColor="?attr/colorOnSurface"
 
-                    app:previousButtonSrc="@drawable/ic_arrow_left_black"
-                    app:forwardButtonSrc="@drawable/ic_arrow_right_black"
+                    app:previousButtonSrc="@drawable/ic_chevron_left"
+                    app:selectionColor="?attr/colorPrimary"
 
-                    app:selectionColor="@color/color_primary"
-                    app:selectionLabelColor="@android:color/white"
-                    app:todayLabelColor="@color/black"
-                    />
-
+                    app:selectionLabelColor="?attr/colorOnPrimary"
+                    app:todayLabelColor="?attr/colorPrimary"
+                    app:type="one_day_picker" />
             </androidx.cardview.widget.CardView>
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/toggle_tipo_visita"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:layout_marginTop="24dp"
-                app:singleSelection="true"
+                android:gravity="center_horizontal"
+                app:checkedButton="@id/btn_en_centro"
                 app:selectionRequired="true"
-                app:checkedButton="@id/btn_en_centro">
+                app:singleSelection="true">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_en_centro"
-                    style="?attr/materialButtonOutlinedStyle"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="En centro médico"
                     android:textAllCaps="false"
-                    app:strokeColor="@color/button_toggle_tint"
-                    android:textColor="@color/button_toggle_tint"
-                    app:backgroundTint="@color/button_toggle_bg_tint"/>
+                    android:textColor="?attr/colorPrimary" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_a_domicilio"
-                    style="?attr/materialButtonOutlinedStyle"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Visita a domicilio"
                     android:textAllCaps="false"
-                    app:strokeColor="@color/button_toggle_tint"
-                    android:textColor="@color/button_toggle_tint"
-                    app:backgroundTint="@color/button_toggle_bg_tint"/>
+                    android:textColor="?attr/colorPrimary" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -116,16 +115,17 @@
                 android:layout_marginTop="24dp"
                 android:text="Horarios disponibles"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"/>
+                android:textColor="?attr/colorOnSurface"
+
+                android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_horarios_disponibles"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
-                android:layout_marginTop="16dp"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                 app:spanCount="2"
                 tools:itemCount="5"
@@ -141,12 +141,16 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Continuar"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
+        android:text="Continuar"
+        android:textColor="?attr/colorOnPrimary"
+
+        app:backgroundTint="?attr/colorPrimary"
         app:cornerRadius="12dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

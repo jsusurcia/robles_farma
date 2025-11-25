@@ -4,14 +4,19 @@
         <item name="colorPrimary">@color/color_primary</item>
         <item name="colorOnPrimary">@color/color_on_primary</item>
 
+        <item name="colorSecondary">@color/color_secondary</item>
+        <item name="colorOnSecondary">@color/color_on_secondary</item>
+
         <item name="colorSurface">@color/color_surface</item>
         <item name="colorOnSurface">@color/color_on_surface</item>
-
         <item name="android:colorBackground">@color/color_background</item>
         <item name="colorOnBackground">@color/color_on_background</item>
 
         <item name="homeAsUpIndicator">@drawable/ic_chevron_left</item>
-        <item name="colorControlNormal">?attr/colorSurface</item>
+
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+
+        <item name="android:windowLightStatusBar">true</item>
 
     </style>
 

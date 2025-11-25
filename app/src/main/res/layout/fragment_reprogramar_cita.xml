@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
+
     android:fillViewport="true"
+
     tools:context=".ui.citas.ReprogramarCitaFragment">
 
     <LinearLayout
@@ -14,10 +16,10 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- CARD: Detalles actuales de la cita -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp">
 
@@ -30,164 +32,170 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:text="Detalles actuales de la cita"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="16dp"/>
+                    android:textColor="?attr/colorOnSurface"
 
-                <!-- Layout de información Fecha -->
+                    android:textSize="18sp"
+
+                    android:textStyle="bold" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_calendar"
-                        app:tint="@color/teal_500" />
+
+                        app:tint="?attr/colorSecondary" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Fecha:"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/gray"
+                            android:textSize="14sp" />
+
                         <TextView
                             android:id="@+id/textCurrentFecha"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="15 de Diciembre de 2025"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Layout de información Hora -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_hora"
-                        app:tint="@color/teal_500" />
+
+                        app:tint="?attr/colorSecondary" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Hora:"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/gray"
+                            android:textSize="14sp" />
+
                         <TextView
                             android:id="@+id/textCurrentHora"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="10:30 AM"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Layout de información Ubicacion -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="12dp"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_ubicacion"
-                        app:tint="@color/teal_500" />
+
+                        app:tint="?attr/colorSecondary" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Ubicación:"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/gray"
+                            android:textSize="14sp" />
+
                         <TextView
                             android:id="@+id/textCurrentUbicacion"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Clínica Central, Sala 3 Av. Principal 123, Ciudad"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
 
-                <!-- Layout de información Personal Médico -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_perfil"
-                        app:tint="@color/teal_500" />
+
+                        app:tint="?attr/colorSecondary" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:layout_marginStart="16dp"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Personal médico:"
-                            android:textSize="14sp"
-                            android:textColor="@color/gray" />
+                            android:textColor="@color/gray"
+                            android:textSize="14sp" />
+
                         <TextView
                             android:id="@+id/textCurrentDoctor"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Dra. Polo"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="16sp" />
                     </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- CARD: Seleccionar nueva fecha y hora -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:layout_marginHorizontal="1dp"
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="?attr/colorSurface"
             app:cardCornerRadius="8dp"
             app:cardElevation="4dp">
 
@@ -200,125 +208,129 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:text="Seleccionar nueva fecha y hora"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="16dp"/>
+                    android:textColor="?attr/colorOnSurface"
 
-                <!-- Campo para seleccionar nueva fecha -->
+                    android:textSize="18sp"
+
+                    android:textStyle="bold" />
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/inputLayoutFecha"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nueva Fecha"
-                    app:startIconDrawable="@drawable/ic_calendar">
+
+                    app:boxStrokeColor="?attr/colorPrimary"
+                    app:hintTextColor="?attr/colorPrimary"
+                    app:startIconDrawable="@drawable/ic_calendar"
+                    app:startIconTint="?attr/colorPrimary">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextFecha"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:clickable="true"
                         android:focusable="false"
-                        android:clickable="true" />
+                        android:textColor="?attr/colorOnSurface" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Sección de horarios disponibles -->
                 <LinearLayout
                     android:id="@+id/layoutHorariosContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginTop="16dp"
+                    android:orientation="vertical"
                     android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
                         android:text="Horarios disponibles"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="12dp"/>
+                        android:textColor="?attr/colorOnSurface"
 
-                    <!-- RecyclerView para mostrar los horarios -->
+                        android:textSize="16sp"
+
+                        android:textStyle="bold" />
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerViewHorarios"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        tools:listitem="@layout/card_bloque_horario"
-                        tools:itemCount="6"/>
+                        tools:itemCount="6"
+                        tools:listitem="@layout/card_bloque_horario" />
 
                 </LinearLayout>
 
-                <!-- Mensaje cuando no hay horarios disponibles -->
                 <LinearLayout
                     android:id="@+id/layoutNoHorarios"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="24dp"
                     android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="24dp"
                     android:visibility="gone">
 
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
+                        android:layout_marginBottom="12dp"
                         android:src="@drawable/ic_hora"
-                        app:tint="@color/gray"
-                        android:layout_marginBottom="12dp"/>
+                        app:tint="@color/gray" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="No hay horarios disponibles"
-                        android:textSize="16sp"
+                        android:textAlignment="center"
                         android:textColor="@color/gray"
-                        android:textAlignment="center"/>
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Por favor, selecciona otra fecha"
-                        android:textSize="14sp"
-                        android:textColor="@color/gray"
                         android:layout_marginTop="4dp"
-                        android:textAlignment="center"/>
+                        android:text="Por favor, selecciona otra fecha"
+                        android:textAlignment="center"
+                        android:textColor="@color/gray"
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
-                <!-- ProgressBar mientras se cargan los horarios -->
                 <LinearLayout
                     android:id="@+id/layoutCargandoHorarios"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="24dp"
                     android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="24dp"
                     android:visibility="gone">
 
                     <ProgressBar
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:indeterminateTint="@color/teal_500"/>
+
+                        android:indeterminateTint="?attr/colorPrimary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
                         android:text="Cargando horarios disponibles..."
-                        android:textSize="14sp"
                         android:textColor="@color/gray"
-                        android:layout_marginTop="12dp"/>
+                        android:textSize="14sp" />
 
                 </LinearLayout>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Botones de acción -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConfirmarCita"
             android:layout_width="match_parent"
@@ -326,8 +338,10 @@
             android:layout_marginTop="32dp"
             android:padding="14dp"
             android:text="Confirmar reprogramación"
-            android:textColor="@color/white"
-            app:backgroundTint="@color/teal_500"
+
+            android:textColor="?attr/colorOnPrimary"
+            app:backgroundTint="?attr/colorPrimary"
+
             app:cornerRadius="12dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -336,7 +350,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:padding="14dp"
-            android:text="Cancelar cita"
+            android:text="Cancelar reprogramación"
             android:textColor="@color/white"
             app:backgroundTint="@color/cancelada_color"
             app:cornerRadius="12dp" />

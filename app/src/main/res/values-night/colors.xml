@@ -1,10 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_primary">@color/teal_200</color>
-    <color name="color_on_primary">@color/black</color>
 
-    <color name="color_surface">#FF121212</color>
-    <color name="color_on_surface">#FFEEEEEE</color>
-    <color name="color_background">#FF121212</color>
-    <color name="color_on_background">#FFEEEEEE</color>
+    <!-- Fondos -->
+    <color name="dark_bg">#121212</color>
+    <color name="dark_surface">#1E1E1E</color>
+
+    <!-- Marca adaptada a oscuro -->
+    <color name="brand_sage_dark">#9FC6B7</color>
+    <color name="brand_burgundy_dark">#CFA7A7</color>
+
+    <!-- Colores Material 3 -->
+    <color name="color_primary">@color/brand_sage_dark</color>
+    <color name="color_on_primary">#FFFFFF</color>
+
+    <color name="color_secondary">@color/brand_burgundy_dark</color>
+    <color name="color_on_secondary">#FFFFFF</color>
+
+    <color name="color_background">@color/dark_bg</color>
+    <color name="color_on_background">#ECECEC</color>
+
+    <color name="color_surface">@color/dark_surface</color>
+    <color name="color_on_surface">#E0E0E0</color>
+
+    <!-- Estados -->
+    <color name="confirmada_color">#66BB6A</color>
+    <color name="pendiente_color">#FFA726</color>
+    <color name="cancelada_color">#EF5350</color>
+
+    <color name="textinput_dark_bg">#414141</color>
+
 </resources>

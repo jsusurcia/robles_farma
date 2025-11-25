@@ -16,4 +16,6 @@
     <string name="title_editar_ubicacion_cita">Editar ubicación</string>
     <string name="title_cancelar_cita">Cancelar cita</string>
     <string name="title_reprogramar_cita">Reprogramar cita</string>
+
+    <string name="img_empty_state">Sin chats</string>
 </resources>

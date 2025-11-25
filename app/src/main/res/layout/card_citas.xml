@@ -1,139 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
+    app:cardBackgroundColor="?attr/colorSurface"
     app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/white">
+
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Imagen circular del doctor -->
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageDoctor"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:scaleType="centerCrop"
             android:src="@drawable/default_doctor_image"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Contenedor de texto -->
         <LinearLayout
             android:id="@+id/textContainer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginStart="16dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imageDoctor"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/chipStatus"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintStart_toEndOf="@id/imageDoctor"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/textDoctorName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dr. Emily Turner"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textSpecialty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="Medicina general"
-                android:textSize="14sp"
                 android:textColor="@color/gray"
-                android:layout_marginTop="4dp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="Aug 15, 2024 at"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:layout_marginTop="4dp" />
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/textHour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="10:00 AM"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:layout_marginTop="4dp" />
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/ic_ubicacion" />
+                    android:src="@drawable/ic_ubicacion"
+                    app:tint="@color/gray" />
 
                 <TextView
                     android:id="@+id/textLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
                     android:text="Health Connect Cli"
-                    android:textSize="14sp"
                     android:textColor="@color/gray"
-                    android:layout_marginStart="4dp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
         </LinearLayout>
 
-        <!-- Chip de estado "Confirmada" -->
         <com.google.android.material.chip.Chip
             android:id="@+id/chipStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Confirmada"
-            android:textSize="10sp"
             android:textColor="@android:color/white"
-            app:chipBackgroundColor="@color/principal_bg"
-            app:chipCornerRadius="20dp"
-            app:chipMinHeight="32dp"
-            app:chipEndPadding="8dp"
-            app:chipStartPadding="8dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            android:textSize="10sp"
 
-        <!-- Icono de Información -->
+            app:chipBackgroundColor="@color/confirmada_color"
+
+            app:chipCornerRadius="20dp"
+            app:chipEndPadding="8dp"
+            app:chipMinHeight="32dp"
+            app:chipStartPadding="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/iconInfo"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="4dp"
             android:src="@drawable/ic_info"
+
             app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintEnd_toStartOf="@id/iconMessage"
             app:layout_constraintTop_toBottomOf="@id/textContainer"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            app:tint="?attr/colorSecondary" />
 
-        <!-- Icono de Mensaje -->
         <ImageView
             android:id="@+id/iconMessage"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_chat"
+
             app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textContainer" />
+            app:layout_constraintTop_toBottomOf="@id/textContainer"
+            app:tint="?attr/colorPrimary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

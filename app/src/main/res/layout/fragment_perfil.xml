@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
     tools:context=".ui.perfil.PerfilFragment">
 
     <com.google.android.material.imageview.ShapeableImageView
@@ -12,107 +12,126 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="32dp"
-        android:src="@drawable/default_user_image"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-        android:scaleType="centerCrop"
         android:padding="4dp"
-        app:strokeColor="#DDDDDD"
-        app:strokeWidth="2dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_user_image"
         app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        />
+
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
+        app:strokeColor="?attr/colorPrimary"
+        app:strokeWidth="2dp" />
 
     <TextView
         android:id="@+id/textView_nombre"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        tools:text="Marco Díaz"
-        android:textColor="@android:color/black"
+        android:textColor="?attr/colorOnSurface"
+
         android:textSize="22sp"
+
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/imageView_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/imageView_avatar"
+        tools:text="Marco Díaz" />
 
     <TextView
         android:id="@+id/textView_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        tools:text="marco.diaz@example.com"
+        android:textColor="@color/gray"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/textView_nombre"
+
+        app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textView_nombre"
+        tools:text="marco.diaz@example.com" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginTop="32dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@id/textView_email"
+
+        android:alpha="0.5"
+        android:background="@color/gray"
+
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textView_email" />
 
     <TextView
         android:id="@+id/textView_editar_perfil"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Editar perfil"
-        android:textSize="18sp"
-        android:padding="16dp"
-        android:drawablePadding="16dp"
-        android:gravity="center_vertical"
-        android:clickable="true"
-        android:focusable="true"
         android:background="?attr/selectableItemBackground"
-        app:drawableStartCompat="@drawable/ic_person_edit"
+        android:clickable="true"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="Editar perfil"
+        android:textColor="?attr/colorOnSurface"
+
+        android:textSize="18sp"
         app:drawableEndCompat="@drawable/ic_chevron_right"
-        app:layout_constraintTop_toBottomOf="@id/divider"
+
+        app:drawableStartCompat="@drawable/ic_person_edit"
+        app:drawableTint="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/divider" />
 
     <TextView
         android:id="@+id/textView_ajustes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Ajustes"
-        android:textSize="18sp"
-        android:padding="16dp"
-        android:drawablePadding="16dp"
-        android:gravity="center_vertical"
-        android:clickable="true"
-        android:focusable="true"
         android:background="?attr/selectableItemBackground"
-        app:drawableStartCompat="@drawable/ic_settings"
+        android:clickable="true"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="Ajustes"
+        android:textColor="?attr/colorOnSurface"
+
+        android:textSize="18sp"
         app:drawableEndCompat="@drawable/ic_chevron_right"
-        app:layout_constraintTop_toBottomOf="@id/textView_editar_perfil"
+
+        app:drawableStartCompat="@drawable/ic_settings"
+        app:drawableTint="?attr/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textView_editar_perfil" />
 
     <TextView
         android:id="@+id/textView_cerrar_sesion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Cerrar sesión"
-        android:textColor="#D32F2F"
-        android:textSize="18sp"
-        android:padding="16dp"
-        android:drawablePadding="16dp"
-        android:gravity="center_vertical"
-        android:clickable="true"
-        android:focusable="true"
         android:background="?attr/selectableItemBackground"
-        app:drawableTint="#D32F2F"
-        app:drawableStartCompat="@drawable/ic_logout"
+        android:clickable="true"
+        android:drawablePadding="16dp"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="Cerrar sesión"
+        android:textColor="@color/cancelada_color"
+
+        android:textSize="18sp"
         app:drawableEndCompat="@drawable/ic_chevron_right"
-        app:layout_constraintTop_toBottomOf="@id/textView_ajustes"
+
+        app:drawableStartCompat="@drawable/ic_logout"
+        app:drawableTint="@color/cancelada_color"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/textView_ajustes" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

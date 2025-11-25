@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -8,70 +7,73 @@
     android:layout_marginTop="6dp"
     android:layout_marginEnd="12dp"
     android:layout_marginBottom="6dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardBackgroundColor="?attr/colorSurface"
+
     app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
-    android:foreground="?android:attr/selectableItemBackground">
+
+    app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp">
 
-        <!-- Imagen del doctor - USANDO ÍCONO DEL SISTEMA -->
         <ImageView
             android:id="@+id/imgDoctor"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/default_doctor_image"
             android:contentDescription="Imagen del doctor"
             android:scaleType="centerCrop"
+            android:src="@drawable/default_doctor_image"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Nombre del doctor -->
         <TextView
             android:id="@+id/tvDoctorName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
+            android:ellipsize="end"
+
+            android:maxLines="1"
+
             android:text="Dr. Ana García"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end"
-            app:layout_constraintTop_toTopOf="@id/imgDoctor"
+            app:layout_constraintEnd_toStartOf="@id/tvTimestamp"
             app:layout_constraintStart_toEndOf="@id/imgDoctor"
-            app:layout_constraintEnd_toStartOf="@id/tvTimestamp" />
+            app:layout_constraintTop_toTopOf="@id/imgDoctor" />
 
-        <!-- Último mensaje -->
         <TextView
             android:id="@+id/tvLastMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Hola, ¿cómo se siente hoy?"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="14sp"
-            android:maxLines="1"
             android:ellipsize="end"
-            app:layout_constraintTop_toBottomOf="@id/tvDoctorName"
-            app:layout_constraintStart_toStartOf="@id/tvDoctorName"
-            app:layout_constraintEnd_toEndOf="@id/tvDoctorName"
-            app:layout_constraintBottom_toBottomOf="@id/imgDoctor" />
 
-        <!-- Timestamp -->
+            android:maxLines="1"
+
+            android:text="Hola, ¿cómo se siente hoy?"
+            android:textColor="@color/gray"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/imgDoctor"
+            app:layout_constraintEnd_toEndOf="@id/tvDoctorName"
+            app:layout_constraintStart_toStartOf="@id/tvDoctorName"
+            app:layout_constraintTop_toBottomOf="@id/tvDoctorName" />
+
         <TextView
             android:id="@+id/tvTimestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="10:30"
-            android:textColor="@android:color/darker_gray"
+            android:textColor="@color/gray"
             android:textSize="12sp"
-            app:layout_constraintTop_toTopOf="@id/tvDoctorName"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvDoctorName" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
