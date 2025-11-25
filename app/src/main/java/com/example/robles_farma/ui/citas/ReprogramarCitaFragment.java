@@ -35,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReprogramarCitaFragment extends Fragment {
+public class ReprogramarCitaFragment extends Fragment implements BloqueHorarioDisponibleRecyclerViewAdapter.OnHorarioClickListener {
     private FragmentReprogramarCitaBinding binding;
     private BloqueHorarioDisponibleRecyclerViewAdapter adapter;
     private List<BloqueHorarioDisponibleData> listaHorarios = new ArrayList<>();
@@ -52,6 +52,7 @@ public class ReprogramarCitaFragment extends Fragment {
     private String hour;
     private String location;
     private boolean enCentroMedico;
+    private int idHorarioSeleccionado = -1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,14 +66,14 @@ public class ReprogramarCitaFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         binding.recyclerViewHorarios.setLayoutManager(gridLayoutManager);
 
-        adapter = new BloqueHorarioDisponibleRecyclerViewAdapter(listaHorarios, getContext());
+        adapter = new BloqueHorarioDisponibleRecyclerViewAdapter(listaHorarios, getContext(), this);
         binding.recyclerViewHorarios.setAdapter(adapter);
 
         // Configurar calendario picker
         binding.editTextFecha.setOnClickListener(v -> {
             mostrarCalendario();
         });
-        
+
         // Recuperar los argumentos
         Bundle args = getArguments();
         if (args != null) {
@@ -96,9 +97,24 @@ public class ReprogramarCitaFragment extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onHorarioClick(int idHorario) {
+        this.idHorarioSeleccionado = idHorario;
+        Log.d("API_SUCCESS", "Horario seleccionado en Fragment: " + idHorario);
+    }
+
     private void confirmarReprogramacion() {
+        if (idHorarioSeleccionado == -1) {
+            Log.w("API_WARNING", "No se ha seleccionado ningún horario");
+            // Aquí podrías mostrar un Toast o mensaje al usuario
+            return;
+        }
+
         Log.d("API_SUCCESS", "Parámetro ID Cita: " + idCita);
-        Log.d("API_SUCCESS", "Parámetro ID Horario: (Pendiente)");
+        Log.d("API_SUCCESS", "Parámetro ID Horario: " + idHorarioSeleccionado);
+
+        // Aquí irá tu llamada a la API cuando esté lista:
+        // reprogramarCita(idCita, idHorarioSeleccionado);
     }
 
     private void mostrarCalendario() {
@@ -114,6 +130,9 @@ public class ReprogramarCitaFragment extends Fragment {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             String fechaFormateada = format.format(fechaSeleccionada.getTime());
             binding.editTextFecha.setText(fechaFormateada);
+
+            // Resetear la selección cuando se cambia la fecha
+            idHorarioSeleccionado = -1;
 
             cargarHorarios(idEspecialidad, fechaFormateada, enCentroMedico);
         }, anio, mes, dia);
@@ -214,7 +233,7 @@ public class ReprogramarCitaFragment extends Fragment {
         binding.layoutCargandoHorarios.setVisibility(View.GONE);
         binding.layoutHorariosContainer.setVisibility(View.VISIBLE);
         binding.layoutNoHorarios.setVisibility(View.GONE);
-        //adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
 
         Log.d("UI_STATE", "Mostrando estado: CON DATOS (" + listaHorarios.size() + " horarios)");
     }

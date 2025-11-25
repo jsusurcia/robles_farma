@@ -19,10 +19,17 @@ public class BloqueHorarioDisponibleRecyclerViewAdapter extends RecyclerView.Ada
     private final List<BloqueHorarioDisponibleData> listaHorarios;
     private final Context context;
     private int seleccionado = RecyclerView.NO_POSITION;
+    private int seleccionadoPosicion = -1;
+    private OnHorarioClickListener listener;
 
-    public BloqueHorarioDisponibleRecyclerViewAdapter(List<BloqueHorarioDisponibleData> listaHorarios, Context context) {
+    public interface OnHorarioClickListener {
+        void onHorarioClick(int idHorario);
+    }
+
+    public BloqueHorarioDisponibleRecyclerViewAdapter(List<BloqueHorarioDisponibleData> listaHorarios, Context context, OnHorarioClickListener listener) {
         this.listaHorarios = listaHorarios;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -50,6 +57,7 @@ public class BloqueHorarioDisponibleRecyclerViewAdapter extends RecyclerView.Ada
                 notifyItemChanged(seleccionado);
             }
 
+            listener.onHorarioClick(horario.getIdHorario());
             seleccionado = holder.getAdapterPosition();
             Log.d("API_SUCCESS", "Horario seleccionado: " + horario.getHoraInicio() + " en posicion: " + seleccionado);
             notifyItemChanged(seleccionado);
