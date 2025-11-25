@@ -49,11 +49,8 @@ public class FCMService extends FirebaseMessagingService {
 
         Log.d(TAG, "From: " + message.getFrom());
 
-        // 1. OBTENER LOS DATOS (Payload)
-        // Están en message.getData(), NO en message.getNotification()
         Map<String, String> data = message.getData();
 
-        // 2. OBTENER LA NOTIFICACIÓN VISUAL (Si existe)
         if (message.getNotification() != null) {
             String title = message.getNotification().getTitle();
             String body = message.getNotification().getBody();
@@ -71,10 +68,8 @@ public class FCMService extends FirebaseMessagingService {
     }
 
     private void sendNotification(String messageTitle, String messageBody, Map<String, String> data) {
-        // CLAVE 1: Apuntar DIRECTO a MainActivity para evitar que el Splash (CargaActivity) se coma los datos.
         Intent intent = new Intent(this, MainActivity.class);
 
-        // CLAVE 2: Limpiar flags para evitar duplicidad de actividades
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         // CLAVE 3: Copiar los datos del Map de Firebase al Intent de Android
@@ -85,16 +80,12 @@ public class FCMService extends FirebaseMessagingService {
             }
         }
 
-        // CLAVE 4: Usar un requestCode ÚNICO.
-        // Si usas '0' siempre, Android reutiliza el intent anterior (que quizás no tenía datos).
-        // Al usar currentTimeMillis, forzamos uno nuevo.
         int uniqueRequestCode = (int) System.currentTimeMillis();
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 this,
                 uniqueRequestCode, // <--- ÚNICO
                 intent,
-                // UPDATE_CURRENT: Si ya existe, actualiza sus extras. IMMUTABLE: Requisito Android 12+.
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
