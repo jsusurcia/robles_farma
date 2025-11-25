@@ -327,7 +327,6 @@
             android:padding="14dp"
             android:text="Confirmar reprogramación"
             android:textColor="@color/white"
-            android:enabled="false"
             app:backgroundTint="@color/teal_500"
             app:cornerRadius="12dp" />
 

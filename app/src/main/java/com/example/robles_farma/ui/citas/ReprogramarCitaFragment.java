@@ -14,6 +14,7 @@ import android.widget.DatePicker;
 
 import com.example.robles_farma.R;
 //import com.example.robles_farma.adapter.BloqueHorarioDisponibleRecyclerViewAdapter;
+import com.example.robles_farma.adapter.BloqueHorarioDisponibleRecyclerViewAdapter;
 import com.example.robles_farma.databinding.FragmentReprogramarCitaBinding;
 import com.example.robles_farma.model.BloqueHorarioDisponibleData;
 import com.example.robles_farma.model.HorarioEspecialidadData;
@@ -36,7 +37,7 @@ import retrofit2.Response;
 
 public class ReprogramarCitaFragment extends Fragment {
     private FragmentReprogramarCitaBinding binding;
-    //private BloqueHorarioDisponibleRecyclerViewAdapter adapter;
+    private BloqueHorarioDisponibleRecyclerViewAdapter adapter;
     private List<BloqueHorarioDisponibleData> listaHorarios = new ArrayList<>();
     private LoginStorage loginStorage;
     private PacienteResponse paciente;
@@ -64,8 +65,8 @@ public class ReprogramarCitaFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
         binding.recyclerViewHorarios.setLayoutManager(gridLayoutManager);
 
-        //adapter = new BloqueHorarioDisponibleRecyclerViewAdapter(listaHorarios, getContext());
-        //binding.recyclerViewHorarios.setAdapter(adapter);
+        adapter = new BloqueHorarioDisponibleRecyclerViewAdapter(listaHorarios, getContext());
+        binding.recyclerViewHorarios.setAdapter(adapter);
 
         // Configurar calendario picker
         binding.editTextFecha.setOnClickListener(v -> {
@@ -88,7 +89,16 @@ public class ReprogramarCitaFragment extends Fragment {
             mostrarInformacionActual();
         }
 
+        binding.btnConfirmarCita.setOnClickListener(v -> {
+            confirmarReprogramacion();
+        });
+
         return binding.getRoot();
+    }
+
+    private void confirmarReprogramacion() {
+        Log.d("API_SUCCESS", "Parámetro ID Cita: " + idCita);
+        Log.d("API_SUCCESS", "Parámetro ID Horario: (Pendiente)");
     }
 
     private void mostrarCalendario() {
@@ -156,6 +166,9 @@ public class ReprogramarCitaFragment extends Fragment {
                                 if (horarios != null && horarios.length > 0) {
                                     listaHorarios.addAll(Arrays.asList(horarios));
                                     Log.d("API_SUCCESS", "Horarios agregados: " + horarios.length);
+                                    for (BloqueHorarioDisponibleData horario : horarios) {
+                                        Log.d("API_SUCCESS", "ID horario: " + horario.getIdHorario());
+                                    }
                                 }
                             }
                         }
