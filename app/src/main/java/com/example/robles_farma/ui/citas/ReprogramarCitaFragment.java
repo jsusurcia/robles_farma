@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import com.example.robles_farma.R;
 //import com.example.robles_farma.adapter.BloqueHorarioDisponibleRecyclerViewAdapter;
@@ -18,12 +20,18 @@ import com.example.robles_farma.adapter.BloqueHorarioDisponibleRecyclerViewAdapt
 import com.example.robles_farma.databinding.FragmentReprogramarCitaBinding;
 import com.example.robles_farma.model.BloqueHorarioDisponibleData;
 import com.example.robles_farma.model.HorarioEspecialidadData;
+import com.example.robles_farma.request.ReprogramarCitaRequest;
 import com.example.robles_farma.response.HorarioEspecialidadResponse;
 import com.example.robles_farma.response.PacienteResponse;
+import com.example.robles_farma.response.ReprogramarCitaResponse;
 import com.example.robles_farma.retrofit.ApiService;
 import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -113,8 +121,49 @@ public class ReprogramarCitaFragment extends Fragment implements BloqueHorarioDi
         Log.d("API_SUCCESS", "Parámetro ID Cita: " + idCita);
         Log.d("API_SUCCESS", "Parámetro ID Horario: " + idHorarioSeleccionado);
 
-        // Aquí irá tu llamada a la API cuando esté lista:
-        // reprogramarCita(idCita, idHorarioSeleccionado);
+        reprogramarCita(idCita, idHorarioSeleccionado);
+    }
+
+    private void reprogramarCita(int idCita, int idHorarioSeleccionado) {
+//        ApiService apiService = RetrofitClient.createService();
+//        Call<HorarioEspecialidadResponse> call = apiService.getHorariosDisponibles(
+//                idEspecialidad,
+//                date,
+//                enCentroMedico,
+//                loginStorage.getToken()
+//        );
+        ApiService apiService = RetrofitClient.createService();
+        Call<ReprogramarCitaResponse> call = apiService.reprogramarCita(idCita, new ReprogramarCitaRequest(idHorarioSeleccionado));
+        call.enqueue(new Callback<ReprogramarCitaResponse>() {
+            @Override
+            public void onResponse(Call<ReprogramarCitaResponse> call, Response<ReprogramarCitaResponse> response) {
+                if (response.isSuccessful()) {
+                    ReprogramarCitaResponse reprogramarCitaResponse = response.body();
+                    if (reprogramarCitaResponse != null && reprogramarCitaResponse.getData() != null) {
+                        String message = reprogramarCitaResponse.getMessage();
+                        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                        Navigation.findNavController(binding.getRoot()).popBackStack(R.id.navigation_citas, false);
+                    } else {
+                        String error = response.errorBody().toString();
+                        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Error al reprogramar la cita: " + response.message(), Toast.LENGTH_SHORT).show();
+                    try {
+                        JSONObject jsonError = new JSONObject(response.errorBody().string());
+                        String error = jsonError.getString("message");
+                        Toast.makeText(getContext(), "Error al reprogramar la cita: " + error, Toast.LENGTH_SHORT).show();
+                    }catch (IOException | JSONException e){
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReprogramarCitaResponse> call, Throwable t) {
+                Log.e("API_FAILURE", "Error en la llamada a la API: " + t.getMessage());
+            }
+        });
     }
 
     private void mostrarCalendario() {

@@ -7,6 +7,7 @@ import com.example.robles_farma.request.LoginRequest;
 import com.example.robles_farma.request.PacienteUpdatePassRequest;
 import com.example.robles_farma.request.PacienteUpdateRequest;
 import com.example.robles_farma.request.RegisterRequest;
+import com.example.robles_farma.request.ReprogramarCitaRequest;
 import com.example.robles_farma.response.BusquedaEspecialidadResponse;
 import com.example.robles_farma.response.CalificacionResponse;
 import com.example.robles_farma.response.CancelarCitaResponse;
@@ -26,6 +27,7 @@ import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.response.EspecialidadResponse;
 import com.example.robles_farma.response.PacienteUpdatePassResponse;
 import com.example.robles_farma.request.DispositivoPacienteRequest;
+import com.example.robles_farma.response.ReprogramarCitaResponse;
 
 import java.util.List;
 
@@ -98,7 +100,6 @@ public interface ApiService {
             @Body EditarUbicacionCitaRequest request
     );
 
-
     // 🔹 Obtener horarios disponibles por fecha y especialidad
     @GET("horarios_disponibles/especialidad/{idEspecialidad}")
     Call<HorarioEspecialidadResponse> getHorariosDisponibles(
@@ -108,6 +109,12 @@ public interface ApiService {
             @Header("Authorization") String token
     );
 
+    // 🔹 Reprogramar cita
+    @POST("cita/{id_cita}/reprogramar")
+    Call<ReprogramarCitaResponse> reprogramarCita(
+            @Path("id_cita") int idCita,
+            @Body ReprogramarCitaRequest request
+    );
 
     @Streaming
     @GET("pacientes/foto")
