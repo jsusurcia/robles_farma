@@ -56,7 +56,6 @@ public class DetalleCitaFragment extends Fragment {
         // Mostrar QR de la cita
         mostrarQr(codigoQr);
 
-
         // Configurar el botón "Editar Ubicación
         binding.btnEditarUbicacion.setOnClickListener(v -> {
             redirigirFragmentEditarUbicacion(v, idCita, idPersonal);
