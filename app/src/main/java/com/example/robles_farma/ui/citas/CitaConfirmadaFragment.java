@@ -26,6 +26,9 @@ public class CitaConfirmadaFragment extends Fragment {
     private String ubicacion;
     private double precio;
     private String codigoQrData; // El texto para generar el QR
+    private String nroComprobante;
+    private String fechaEmision;
+    private double igv;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -49,7 +52,14 @@ public class CitaConfirmadaFragment extends Fragment {
 
         // Botón: Comprobante (Opcional por ahora)
         binding.btnComprobante.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Descargando comprobante...", Toast.LENGTH_SHORT).show();
+            ComprobanteBottomSheet sheet = ComprobanteBottomSheet.newInstance(
+                    nroComprobante,
+                    fechaEmision,
+                    precio,
+                    igv,
+                    nombreDoctor + " - " + "Consulta"
+            );
+            sheet.show(getParentFragmentManager(), "ComprobanteSheet");
         });
     }
 
@@ -61,6 +71,9 @@ public class CitaConfirmadaFragment extends Fragment {
             ubicacion = getArguments().getString("ubicacion");
             precio = getArguments().getDouble("precio");
             codigoQrData = getArguments().getString("codigo_qr_data");
+            nroComprobante = getArguments().getString("nro_comprobante");
+            fechaEmision = getArguments().getString("fecha_emision");
+            igv = getArguments().getDouble("igv");
         }
     }
 

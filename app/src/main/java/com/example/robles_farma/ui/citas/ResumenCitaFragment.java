@@ -284,6 +284,9 @@ public class ResumenCitaFragment extends Fragment {
                     bundle.putString("ubicacion", ubi);
                     bundle.putDouble("precio", response.body().getData().getComprobante().getMontoTotal());
                     bundle.putString("codigo_qr_data", response.body().getData().getCita().getCodigoQr());
+                    bundle.putString("nro_comprobante", response.body().getData().getComprobante().getNroComprobante());
+                    bundle.putString("fecha_emision", response.body().getData().getComprobante().getFechaEmision());
+                    bundle.putDouble("igv", response.body().getData().getComprobante().getIgv());
 
                     try {
                         Navigation.findNavController(requireView()).navigate(R.id.action_resumen_to_confirmada, bundle);
