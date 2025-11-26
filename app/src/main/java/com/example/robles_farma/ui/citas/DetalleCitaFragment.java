@@ -56,10 +56,7 @@ public class DetalleCitaFragment extends Fragment {
         // Mostrar QR de la cita
         mostrarQr(codigoQr);
 
-        // Configurar el botón "Enviar Mensaje"
-        binding.btnEnviarMensaje.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Aquí se supone que va la lógica para abrir el chat", Toast.LENGTH_SHORT).show();
-        });
+
 
         // Configurar el botón "Editar Ubicación
         binding.btnEditarUbicacion.setOnClickListener(v -> {
