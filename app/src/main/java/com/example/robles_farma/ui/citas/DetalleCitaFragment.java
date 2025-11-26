@@ -1,5 +1,6 @@
 package com.example.robles_farma.ui.citas;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.example.robles_farma.R;
 import com.example.robles_farma.databinding.FragmentDetalleCitaBinding;
+import com.google.zxing.BarcodeFormat;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 public class DetalleCitaFragment extends Fragment {
     FragmentDetalleCitaBinding binding;
@@ -35,6 +38,7 @@ public class DetalleCitaFragment extends Fragment {
         String date = args.getString("date", "");
         String hour = args.getString("hour", "");
         String location = args.getString("location", "Centro Médico");
+        String codigoQr = args.getString("codigoQr", "");
         boolean enCentroMedico = args.getBoolean("enCentroMedico", false);
 
         //Lógica para ocultar el botón "Enviar Mensaje"
@@ -48,6 +52,9 @@ public class DetalleCitaFragment extends Fragment {
         binding.tvFecha.setText(date);
         binding.tvHora.setText(hour);
         binding.tvUbicacion.setText(location);
+
+        // Mostrar QR de la cita
+        mostrarQr(codigoQr);
 
         // Configurar el botón "Enviar Mensaje"
         binding.btnEnviarMensaje.setOnClickListener(v -> {
@@ -69,6 +76,19 @@ public class DetalleCitaFragment extends Fragment {
         });
 
         return binding.getRoot();
+    }
+
+    private void mostrarQr(String codigoQr) {
+        if (codigoQr != null && !codigoQr.isEmpty()) {
+            try {
+                BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                // Genera un Bitmap de 400x400 pixeles
+                Bitmap bitmap = barcodeEncoder.encodeBitmap(codigoQr, BarcodeFormat.QR_CODE, 400, 400);
+                binding.ivQrCode.setImageBitmap(bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void redirigirFragmentEditarUbicacion(View v, int idCita, int idPersonal) {

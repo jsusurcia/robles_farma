@@ -169,6 +169,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
             String date = cita.getFecha();
             String hour = cita.getHora();
             String location = cita.getUbicacion();
+            String codigoQr = cita.getCodigoQr();
             boolean enCentroMedico = cita.isEnCentroMedico();
 
             if (v.getId() == R.id.iconInfo) {
@@ -181,6 +182,7 @@ public class CitasRecyclerViewAdapter extends RecyclerView.Adapter<CitasRecycler
                 args.putString("date", date);
                 args.putString("hour", hour);
                 args.putString("location", location);
+                args.putString("codigoQr", codigoQr);
                 args.putBoolean("enCentroMedico", enCentroMedico);
 
                 Navigation.findNavController(v)

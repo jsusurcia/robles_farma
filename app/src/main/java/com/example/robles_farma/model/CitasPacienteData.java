@@ -29,8 +29,10 @@ public class CitasPacienteData {
     private String nombrePaciente;
     @SerializedName("apellido_paciente")
     private String apellidoPaciente;
+    @SerializedName("codigo_qr")
+    private String codigoQr;
 
-    public CitasPacienteData(int idCita, int idPersonal, String nombrePersonal, String especialidad, String fecha, String hora, boolean enCentroMedico, String ubicacion, String estado, int idPaciente, String nombrePaciente, String apellidoPaciente) {
+    public CitasPacienteData(int idCita, int idPersonal, String nombrePersonal, String especialidad, String fecha, String hora, boolean enCentroMedico, String ubicacion, String estado, int idPaciente, String nombrePaciente, String apellidoPaciente, String codigoQr) {
         this.idCita = idCita;
         this.idPersonal = idPersonal;
         this.nombrePersonal = nombrePersonal;
@@ -43,6 +45,7 @@ public class CitasPacienteData {
         this.idPaciente = idPaciente;
         this.nombrePaciente = nombrePaciente;
         this.apellidoPaciente = apellidoPaciente;
+        this.codigoQr = codigoQr;
     }
 
     public int getIdCita() {
@@ -95,5 +98,9 @@ public class CitasPacienteData {
 
     public String getApellidoPaciente() {
         return apellidoPaciente;
+    }
+
+    public String getCodigoQr() {
+        return codigoQr;
     }
 }
