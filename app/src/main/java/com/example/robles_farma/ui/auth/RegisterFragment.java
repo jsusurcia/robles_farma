@@ -285,29 +285,9 @@ public class RegisterFragment extends Fragment {
     private void validarFortalezaContrasena(String password) {
         List<String> errores = new ArrayList<>();
 
-        if (password.length() < 8) {
-            errores.add("Mínimo 8 caracteres");
-        }
+        if (password.length() >= 5) {
+            errores.add("Mínimo 5 caracteres");
 
-        if (!Pattern.compile("[A-Z]").matcher(password).find()) {
-            errores.add("1 mayúscula");
-        }
-
-        if (!Pattern.compile("[a-z]").matcher(password).find()) {
-            errores.add("1 minúscula");
-        }
-
-        if (!Pattern.compile("[0-9]").matcher(password).find()) {
-            errores.add("1 número");
-        }
-
-        if (!Pattern.compile("[!@#$%^&*(),.?\":{}|<>]").matcher(password).find()) {
-            errores.add("1 especial (!@#$%^&*)");
-        }
-
-        if (!errores.isEmpty() && !password.isEmpty()) {
-            tilClave.setError("Falta: " + String.join(", ", errores));
-            tilClave.setErrorEnabled(true);
         } else {
             tilClave.setError(null);
             tilClave.setErrorEnabled(false);
@@ -330,12 +310,7 @@ public class RegisterFragment extends Fragment {
 
     // VALIDAR SI LA CONTRASEÑA ES SEGURA
     private boolean esContrasenaSegura(String password) {
-        if (password.length() < 8) return false;
-        if (!Pattern.compile("[A-Z]").matcher(password).find()) return false;
-        if (!Pattern.compile("[a-z]").matcher(password).find()) return false;
-        if (!Pattern.compile("[0-9]").matcher(password).find()) return false;
-        if (!Pattern.compile("[!@#$%^&*(),.?\":{}|<>]").matcher(password).find()) return false;
-        return true;
+        return password.length() >= 5;
     }
 
     // VALIDAR DOCUMENTO SEGÚN TIPO (método auxiliar)
@@ -437,7 +412,7 @@ public class RegisterFragment extends Fragment {
         //  Verificar si el documento ya está registrado
         if (documentoYaRegistrado(nroDocumento)) {
             Toast.makeText(getContext(),
-                    "⚠️ Este documento ya está registrado en el sistema",
+                    "Este documento ya está registrado en el sistema",
                     Toast.LENGTH_LONG).show();
             etDNI.requestFocus();
             return;
@@ -481,15 +456,11 @@ public class RegisterFragment extends Fragment {
 
         if (!esContrasenaSegura(clave)) {
             Toast.makeText(getContext(),
-                    "Contraseña débil. Debe tener:\n" +
-                            "• Mínimo 8 caracteres\n" +
-                            "• 1 mayúscula\n" +
-                            "• 1 minúscula\n" +
-                            "• 1 número\n" +
-                            "• 1 carácter especial (!@#$%^&*)",
+                    "La contraseña debe tener al menos 5 caracteres",
                     Toast.LENGTH_LONG).show();
             etClave.requestFocus();
             return;
+
         }
 
         if (TextUtils.isEmpty(confirmarClave)) {

@@ -174,7 +174,7 @@
             android:hint="Clave"
             app:boxStrokeColor="?attr/colorPrimary"
             app:errorEnabled="true"
-            app:helperText="Mín. 8 caracteres: 1 mayúscula, 1 minúscula, 1 número, 1 especial"
+            app:helperText="Mín. 5 caracteres"
 
             app:helperTextTextColor="@color/gray"
             app:hintTextColor="?attr/colorPrimary"
@@ -185,7 +185,7 @@
                 android:id="@+id/etClave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:inputType="numberPassword"
                 android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -207,7 +207,7 @@
                 android:id="@+id/etConfirmarClave"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:inputType="numberPassword"
                 android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 

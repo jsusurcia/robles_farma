@@ -95,7 +95,7 @@ public class LoginFragment extends Fragment {
                     // Registrar token FCM para notificaciones
                     FCMClient.registrarDispositivoFCM(requireContext());
 
-                    // ✅ ELIMINADO: preCargarNombresDoctores(...) ya no es necesario.
+                    //ELIMINADO: preCargarNombresDoctores(...) ya no es necesario.
 
                     Toast.makeText(getContext(), "Login exitoso", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getActivity(), MainActivity.class);
