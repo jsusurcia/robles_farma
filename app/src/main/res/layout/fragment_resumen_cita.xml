@@ -264,6 +264,240 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <!-- SECCIÓN DE MÉTODO DE PAGO -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:text="Método de pago"
+                        android:textColor="?attr/colorOnSurface"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- RadioGroup para seleccionar método de pago -->
+                    <RadioGroup
+                        android:id="@+id/rg_metodo_pago"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioButton
+                            android:id="@+id/rb_efectivo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:paddingStart="8dp"
+                            android:text="Efectivo"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="15sp" />
+
+                        <RadioButton
+                            android:id="@+id/rb_tarjeta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:paddingStart="8dp"
+                            android:text="Tarjeta de crédito/débito"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="15sp" />
+
+                        <RadioButton
+                            android:id="@+id/rb_yape"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:text="Yape"
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="15sp" />
+                    </RadioGroup>
+
+                    <!-- Contenedor para formularios dinámicos -->
+                    <LinearLayout
+                        android:id="@+id/layout_detalles_pago"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Mensaje para Efectivo -->
+                        <LinearLayout
+                            android:id="@+id/layout_efectivo"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_background_info"
+                            android:orientation="horizontal"
+                            android:padding="12dp"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="12dp"
+                                android:src="@drawable/ic_info"
+                                app:tint="?attr/colorPrimary" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="El pago en efectivo se realizará al momento de la consulta. Por favor, asegúrese de llevar el monto exacto."
+                                android:textColor="?attr/colorOnSurface"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <!-- Formulario para Tarjeta -->
+                        <LinearLayout
+                            android:id="@+id/layout_tarjeta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                app:boxStrokeColor="?attr/colorPrimary"
+                                app:hintTextColor="?attr/colorPrimary">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_numero_tarjeta"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Número de tarjeta"
+                                    android:inputType="number"
+                                    android:maxLength="16"
+                                    android:textColor="?attr/colorOnSurface" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                app:boxStrokeColor="?attr/colorPrimary"
+                                app:hintTextColor="?attr/colorPrimary">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_nombre_titular"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Nombre del titular"
+                                    android:inputType="textPersonName"
+                                    android:textColor="?attr/colorOnSurface" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:layout_weight="1"
+                                    app:boxStrokeColor="?attr/colorPrimary"
+                                    app:hintTextColor="?attr/colorPrimary">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/et_fecha_expiracion"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="MM/AA"
+                                        android:inputType="number"
+                                        android:maxLength="5"
+                                        android:textColor="?attr/colorOnSurface" />
+                                </com.google.android.material.textfield.TextInputLayout>
+
+                                <com.google.android.material.textfield.TextInputLayout
+                                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_weight="1"
+                                    app:boxStrokeColor="?attr/colorPrimary"
+                                    app:hintTextColor="?attr/colorPrimary">
+
+                                    <com.google.android.material.textfield.TextInputEditText
+                                        android:id="@+id/et_cvv"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="CVV"
+                                        android:inputType="numberPassword"
+                                        android:maxLength="4"
+                                        android:textColor="?attr/colorOnSurface" />
+                                </com.google.android.material.textfield.TextInputLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <!-- Formulario para Yape -->
+                        <LinearLayout
+                            android:id="@+id/layout_yape"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="12dp"
+                                app:boxStrokeColor="?attr/colorPrimary"
+                                app:hintTextColor="?attr/colorPrimary"
+                                app:prefixText="+51 ">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_telefono_yape"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Número de teléfono"
+                                    android:inputType="phone"
+                                    android:maxLength="9"
+                                    android:textColor="?attr/colorOnSurface" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:boxStrokeColor="?attr/colorPrimary"
+                                app:hintTextColor="?attr/colorPrimary">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_codigo_operacion"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Código de operación"
+                                    android:inputType="textCapCharacters"
+                                    android:textColor="?attr/colorOnSurface" />
+                            </com.google.android.material.textfield.TextInputLayout>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
         </LinearLayout>
     </ScrollView>
 

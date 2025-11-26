@@ -8,6 +8,7 @@ import com.example.robles_farma.request.PacienteUpdatePassRequest;
 import com.example.robles_farma.request.PacienteUpdateRequest;
 import com.example.robles_farma.request.RegisterRequest;
 import com.example.robles_farma.request.ReprogramarCitaRequest;
+import com.example.robles_farma.request.ReservaRequest;
 import com.example.robles_farma.response.BusquedaEspecialidadResponse;
 import com.example.robles_farma.response.CalificacionResponse;
 import com.example.robles_farma.response.CancelarCitaResponse;
@@ -28,6 +29,8 @@ import com.example.robles_farma.response.EspecialidadResponse;
 import com.example.robles_farma.response.PacienteUpdatePassResponse;
 import com.example.robles_farma.request.DispositivoPacienteRequest;
 import com.example.robles_farma.response.ReprogramarCitaResponse;
+import com.example.robles_farma.response.ReservaResponse;
+import com.example.robles_farma.response.TipoPagoResponse;
 
 import java.util.List;
 
@@ -148,8 +151,15 @@ public interface ApiService {
             @Query("en_centro_medico") boolean enCentroMedico
     );
     // 🔹 Crear una nueva cita
+
     @POST("cita/")
     Call<ItemResponse<CitaResponse>> createCita(@Body CitaCreateRequest request);
+
+    //Nueva ruta para la reserva de la cita
+    @POST("reserva/")
+    Call<ReservaResponse> reservarCita(
+            @Body ReservaRequest request
+    );
 
     @GET("chats/paciente/{chatId}/messages")
     Call<List<MessageResponse>> getChatMessages(
@@ -164,4 +174,8 @@ public interface ApiService {
 
     @POST("calificacion/registrar")
     Call<CalificacionResponse> registrarCalificacion(@Body CalificacionCreateRequest request);
+
+    // Endpoint nuevo para los tipos de pago
+    @GET("tipo_pago/")
+    Call<ItemListResponse<TipoPagoResponse>> getTiposPago();
 }
