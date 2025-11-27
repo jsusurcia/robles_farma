@@ -276,7 +276,7 @@ public class ResumenCitaFragment extends Fragment {
     private void realizarReservaCita() {
         String direccionEnvio = null;
 
-        // 1. Validar Dirección (si es domicilio)
+        // Validar Dirección (si es domicilio)
         if (esDomicilio) {
             direccionEnvio = binding.etDireccionDomicilio.getText().toString().trim();
             if (direccionEnvio.isEmpty()) {
@@ -286,17 +286,26 @@ public class ResumenCitaFragment extends Fragment {
             }
         }
 
-        // 2. Validar Selección de Pago
+        // Validar Selección de Pago
         if (idMetodoPagoSeleccionado == -1) {
             Toast.makeText(getContext(), "Por favor, seleccione un método de pago", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // 3. Validar campos específicos del pago (Opcional pero recomendado)
+        // Validar campos para YAPE
         if (idMetodoPagoSeleccionado == 3) { // Yape
             if (binding.etTelefonoYape.getText().toString().isEmpty() ||
                     binding.etCodigoOperacion.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "Complete los datos de Yape", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else if (idMetodoPagoSeleccionado == 2) { // Tarjeta
+            if (binding.etNumeroTarjeta.getText().toString().trim().isEmpty() ||
+                    binding.etNombreTitular.getText().toString().trim().isEmpty() ||
+                    binding.etFechaExpiracion.getText().toString().trim().isEmpty() ||
+                    binding.etCvv.getText().toString().trim().isEmpty()) {
+
+                Toast.makeText(getContext(), "Por favor, complete todos los datos de la tarjeta", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
