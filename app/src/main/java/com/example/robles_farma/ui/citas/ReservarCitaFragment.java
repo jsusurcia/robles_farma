@@ -125,7 +125,7 @@ public class ReservarCitaFragment extends Fragment {
         adapter.setOnItemClickListener(item -> {
             this.horarioSeleccionado=item;
             // TODO: Guardar horario seleccionado y pasar a confirmar
-            Toast.makeText(getContext(), "Seleccionado: " + item.horario.getHora_inicio(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Seleccionado: " + item.horario.getHora_inicio(), Toast.LENGTH_SHORT).show();
         });
         rvHorarios.setLayoutManager(new GridLayoutManager(getContext(), 2)); // Grid 2 columnas
         //Con esto se desactiva el scroll interno
