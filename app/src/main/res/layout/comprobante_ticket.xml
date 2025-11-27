@@ -237,7 +237,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Guardar"
-        app:icon="@drawable/ic_download"
+        android:textColor="@color/white"
         app:cornerRadius="8dp"
         app:backgroundTint="@color/brand_sage"/>
 

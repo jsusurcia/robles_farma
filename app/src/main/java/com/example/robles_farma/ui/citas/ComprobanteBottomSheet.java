@@ -124,9 +124,6 @@ public class ComprobanteBottomSheet extends BottomSheetDialogFragment {
                 Uri imageUri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues);
                 fos = resolver.openOutputStream(imageUri);
             } else {
-                // Para versiones antiguas (Opcional, si tu minSdk es bajo)
-                // Aquí necesitarías pedir permisos de escritura, pero para tu proyecto
-                // académico asumo que usarás un emulador/celular moderno.
                 Toast.makeText(getContext(), "Versión de Android antigua no soportada en esta demo", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -138,7 +135,7 @@ public class ComprobanteBottomSheet extends BottomSheetDialogFragment {
             }
 
             Toast.makeText(getContext(), "¡Guardado en Imágenes/CitaSalud!", Toast.LENGTH_LONG).show();
-            dismiss(); // Cerrar el bottom sheet al terminar
+            dismiss();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -157,13 +154,13 @@ public class ComprobanteBottomSheet extends BottomSheetDialogFragment {
 
     private String formatearFecha(String fechaIso) {
         try {
-            // Ajusta este formato al que recibes exactamente de tu API
+            // Ajusta este formato al que se recibe en la API
             SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
             Date date = input.parse(fechaIso);
             SimpleDateFormat output = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
             return output.format(date);
         } catch (ParseException e) {
-            return fechaIso; // Si falla, mostrar original
+            return fechaIso;
         }
     }
 }
