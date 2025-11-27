@@ -24,6 +24,7 @@ import com.example.robles_farma.response.ItemResponse;
 import com.example.robles_farma.response.LoginResponse;
 import com.example.robles_farma.response.MedicoConHorariosResponse;
 import com.example.robles_farma.response.MessageResponse;
+import com.example.robles_farma.response.PacienteAseguradoResponse;
 import com.example.robles_farma.response.PacienteResponse;
 import com.example.robles_farma.response.EspecialidadResponse;
 import com.example.robles_farma.response.PacienteUpdatePassResponse;
@@ -155,6 +156,9 @@ public interface ApiService {
 
     @POST("cita/")
     Call<ItemResponse<CitaResponse>> createCita(@Body CitaCreateRequest request);
+
+    @GET("pacientes/{id_paciente}/es_asegurado")
+    Call<ItemResponse<PacienteAseguradoResponse>> esAsegurado(@Path("id_paciente") int idPaciente);
 
     //Nueva ruta para la reserva de la cita
     @POST("reserva/")

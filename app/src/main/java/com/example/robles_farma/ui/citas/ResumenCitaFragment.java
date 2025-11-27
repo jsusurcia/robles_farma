@@ -1,5 +1,6 @@
 package com.example.robles_farma.ui.citas;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -25,10 +26,12 @@ import com.example.robles_farma.response.CitaResponse;
 import com.example.robles_farma.response.FotoUploadResponse;
 import com.example.robles_farma.response.ItemListResponse;
 import com.example.robles_farma.response.ItemResponse;
+import com.example.robles_farma.response.PacienteAseguradoResponse;
 import com.example.robles_farma.response.ReservaResponse;
 import com.example.robles_farma.response.TipoPagoResponse;
 import com.example.robles_farma.retrofit.ApiService;
 import com.example.robles_farma.retrofit.RetrofitClient;
+import com.example.robles_farma.sharedpreferences.LoginStorage;
 
 import java.util.List;
 
@@ -41,9 +44,11 @@ public class ResumenCitaFragment extends Fragment {
     // --- 1. VARIABLES GLOBALES ---
     private FragmentResumenCitaBinding binding;
     private ApiService apiService;
+    private LoginStorage loginStorage;
 
     // Datos de la Cita (Recibidos del bundle)
     private int idHorario;
+    private String idPaciente;
     private String nombreDoctor;
     private String especialidad;
     private String fecha;
@@ -66,6 +71,9 @@ public class ResumenCitaFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentResumenCitaBinding.inflate(inflater, container, false);
+        loginStorage = new LoginStorage(getContext());
+        //paciente = loginStorage.getPaciente();
+        idPaciente = loginStorage.getUserId(getContext());
         return binding.getRoot();
     }
 
@@ -120,12 +128,47 @@ public class ResumenCitaFragment extends Fragment {
         }
     }
 
+    private void calcularDescuento() {
+        Call<ItemResponse<PacienteAseguradoResponse>> call = apiService.esAsegurado(Integer.parseInt(idPaciente));
+        call.enqueue(new Callback<ItemResponse<PacienteAseguradoResponse>>() {
+            @Override
+            public void onResponse(Call<ItemResponse<PacienteAseguradoResponse>> call, Response<ItemResponse<PacienteAseguradoResponse>> response) {
+                if (response.isSuccessful()) {
+                    Log.d("TEST_RESERVA", "PACIENTE ASEGURADO?: " + response.body().getData().isEsAsegurado());
+                    boolean esAsegurado = response.body().getData().isEsAsegurado();
+                    if (esAsegurado) {
+                        //Guardar el precio original
+                        double precioOriginal = precioReal;
+                        //Calcular el precio con descuento
+                        precioReal = precioReal - (precioReal * 0.20);
+                        //Configuraciones para el UI
+                        binding.tvPrecioOriginal.setText("S/ " + String.format("%.2f", precioOriginal));
+                        binding.tvPrecioOriginal.setPaintFlags(binding.tvPrecioOriginal.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                        binding.tvPrecioOriginal.setVisibility(View.VISIBLE);
+                        binding.tvCosteTotal.setText("S/ " + String.format("%.2f", precioReal));
+                    }
+                } else {
+                    String errorMsg = "Error al obtener el estado del seguro del paciente";
+                    Log.e("TEST_RESERVA", errorMsg);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ItemResponse<PacienteAseguradoResponse>> call, Throwable t) {
+                Log.e("TEST_RESERVA", "Error de conexión: " + t.getMessage());
+                binding.tvPrecioOriginal.setVisibility(View.GONE);
+                binding.tvCosteTotal.setText("S/ " + String.format("%.2f", precioReal));
+            }
+        });
+    }
+
     private void configurarUI() {
         binding.tvResumenDoctor.setText(nombreDoctor);
         binding.tvResumenEspecialidad.setText(especialidad);
         binding.tvResumenFecha.setText(fecha);
         binding.tvResumenHora.setText(hora);
         binding.tvCosteTotal.setText("S/ " + String.format("%.2f", precioReal));
+        calcularDescuento();
 
         if (esDomicilio) {
             // MODO DOMICILIO
@@ -257,8 +300,8 @@ public class ResumenCitaFragment extends Fragment {
                 return;
             }
         }
-        // Nota: Para tarjeta y efectivo, como es simulación, podemos ser más laxos.
 
+        Log.d("TEST_RESERVA", "ID Paciente: " + idPaciente);
         Log.d("TEST_RESERVA", "ID Horario: " + idHorario);
         Log.d("TEST_RESERVA", "Es Domicilio: " + esDomicilio);
         Log.d("TEST_RESERVA", "Dirección: " + (direccionEnvio != null ? direccionEnvio : "EN CENTRO MÉDICO"));
