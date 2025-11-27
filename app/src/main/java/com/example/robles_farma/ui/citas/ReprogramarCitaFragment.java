@@ -102,6 +102,10 @@ public class ReprogramarCitaFragment extends Fragment implements BloqueHorarioDi
             confirmarReprogramacion();
         });
 
+        binding.btnCancelarCita.setOnClickListener(v -> {
+            requireActivity().onBackPressed();
+        });
+
         return binding.getRoot();
     }
 
@@ -114,7 +118,6 @@ public class ReprogramarCitaFragment extends Fragment implements BloqueHorarioDi
     private void confirmarReprogramacion() {
         if (idHorarioSeleccionado == -1) {
             Log.w("API_WARNING", "No se ha seleccionado ningún horario");
-            // Aquí podrías mostrar un Toast o mensaje al usuario
             return;
         }
 
@@ -125,13 +128,6 @@ public class ReprogramarCitaFragment extends Fragment implements BloqueHorarioDi
     }
 
     private void reprogramarCita(int idCita, int idHorarioSeleccionado) {
-//        ApiService apiService = RetrofitClient.createService();
-//        Call<HorarioEspecialidadResponse> call = apiService.getHorariosDisponibles(
-//                idEspecialidad,
-//                date,
-//                enCentroMedico,
-//                loginStorage.getToken()
-//        );
         ApiService apiService = RetrofitClient.createService();
         Call<ReprogramarCitaResponse> call = apiService.reprogramarCita(idCita, new ReprogramarCitaRequest(idHorarioSeleccionado));
         call.enqueue(new Callback<ReprogramarCitaResponse>() {
