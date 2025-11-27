@@ -266,7 +266,7 @@ public class ResumenCitaFragment extends Fragment {
         Log.d("TEST_RESERVA", "Dirección: " + (direccionEnvio != null ? direccionEnvio : "EN CENTRO MÉDICO"));
         Log.d("TEST_RESERVA", "ID Tipo Pago: " + idMetodoPagoSeleccionado);
 
-        Toast.makeText(getContext(), "Datos validados. Revisa el Logcat.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Datos validados.", Toast.LENGTH_SHORT).show();
 
         ReservaRequest request = new ReservaRequest(idHorario, direccionEnvio, idMetodoPagoSeleccionado);
         Call<ReservaResponse> call = apiService.reservarCita(request);
