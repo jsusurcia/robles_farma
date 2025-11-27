@@ -259,14 +259,10 @@ public class ResumenCitaFragment extends Fragment {
         }
         // Nota: Para tarjeta y efectivo, como es simulación, podemos ser más laxos.
 
-        // 4. LOG DE VERIFICACIÓN (Lo que pediste)
-        Log.d("TEST_RESERVA", "=== INICIANDO PROCESO DE RESERVA ===");
         Log.d("TEST_RESERVA", "ID Horario: " + idHorario);
         Log.d("TEST_RESERVA", "Es Domicilio: " + esDomicilio);
         Log.d("TEST_RESERVA", "Dirección: " + (direccionEnvio != null ? direccionEnvio : "EN CENTRO MÉDICO"));
         Log.d("TEST_RESERVA", "ID Tipo Pago: " + idMetodoPagoSeleccionado);
-
-        Toast.makeText(getContext(), "Datos validados.", Toast.LENGTH_SHORT).show();
 
         ReservaRequest request = new ReservaRequest(idHorario, direccionEnvio, idMetodoPagoSeleccionado);
         Call<ReservaResponse> call = apiService.reservarCita(request);

@@ -50,7 +50,7 @@ public class CitaConfirmadaFragment extends Fragment {
             Navigation.findNavController(view).navigate(R.id.navigation_citas);
         });
 
-        // Botón: Comprobante (Opcional por ahora)
+        // Botón: Comprobante
         binding.btnComprobante.setOnClickListener(v -> {
             ComprobanteBottomSheet sheet = ComprobanteBottomSheet.newInstance(
                     nroComprobante,

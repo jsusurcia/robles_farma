@@ -77,7 +77,6 @@ public class PasadasCitasFragment extends Fragment {
                         binding.emptyView.setVisibility(View.GONE);
 
                         for (CitasPacienteData c : citasResponse.getData()) {
-                            // ✅ ELIMINADO: Ya no guardamos manualmente los nombres en doctorNames
                             listaCitasPasadas.add(c);
                         }
 
@@ -105,9 +104,6 @@ public class PasadasCitasFragment extends Fragment {
                     }
 
                     Log.e("CitasError", errorMessage);
-                    if (getContext() != null) {
-                        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
-                    }
 
                     binding.recyclerViewPasadas.setVisibility(View.GONE);
                     binding.emptyView.setVisibility(View.VISIBLE);

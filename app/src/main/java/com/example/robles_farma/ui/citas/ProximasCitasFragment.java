@@ -88,16 +88,6 @@ public class ProximasCitasFragment extends Fragment {
                         CitasPacienteData[] citas = citasResponse.getData();
 
                         for (CitasPacienteData c : citas) {
-
-                            // Guardar nombre de doctor para chats
-                            /*
-                            if (c.getIdPersonal() != 0 && c.getNombrePersonal() != null) {
-                                ChatListFragment.doctorNames.put(
-                                        String.valueOf(c.getIdPersonal()),
-                                        c.getNombrePersonal()
-                                );
-                            }*/
-
                             listaProxCitas.add(c);
                         }
 
@@ -125,7 +115,6 @@ public class ProximasCitasFragment extends Fragment {
                     }
 
                     Log.e("CitasError", "Error API: " + errorMessage);
-                    Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
 
                     binding.recyclerViewProximas.setVisibility(View.GONE);
                     binding.emptyView.setVisibility(View.VISIBLE);
