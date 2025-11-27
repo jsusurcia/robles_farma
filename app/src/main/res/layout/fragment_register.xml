@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_background"
-
     android:fillViewport="true"
-
     android:isScrollContainer="true"
     android:scrollbars="vertical">
 
@@ -24,7 +22,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:hint="Tipo de documento"
-
             app:boxStrokeColor="?attr/colorPrimary"
             app:hintTextColor="?attr/colorPrimary">
 
@@ -36,6 +33,7 @@
                 android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- ✅ CAMPO DE DOCUMENTO CORREGIDO -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilDni"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -45,7 +43,6 @@
             android:hint="Número de documento"
             app:boxStrokeColor="?attr/colorPrimary"
             app:errorEnabled="true"
-
             app:helperText="Según tipo seleccionado"
             app:helperTextTextColor="@color/gray"
             app:hintTextColor="?attr/colorPrimary">
@@ -55,7 +52,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:maxLength="12"
                 android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -72,10 +68,9 @@
                 android:id="@+id/etNombres"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName|textCapWords"
-                android:textColor="?attr/colorOnSurface"
+                android:inputType="text"
                 android:maxLength="50"
-                />
+                android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -91,10 +86,9 @@
                 android:id="@+id/etApellidoPaterno"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName|textCapWords"
-                android:textColor="?attr/colorOnSurface"
+                android:inputType="text"
                 android:maxLength="50"
-                />
+                android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -110,10 +104,9 @@
                 android:id="@+id/etApellidoMaterno"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPersonName|textCapWords"
-                android:textColor="?attr/colorOnSurface"
+                android:inputType="text"
                 android:maxLength="50"
-                />
+                android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -132,8 +125,6 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:inputType="none"
-
-
                 android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -151,10 +142,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPostalAddress|textCapSentences"
-                android:maxLines="2"
-                android:textColor="?attr/colorOnSurface"
                 android:maxLength="70"
-                />
+                android:maxLines="2"
+                android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -184,8 +174,6 @@
             app:boxStrokeColor="?attr/colorPrimary"
             app:errorEnabled="true"
             app:helperText="Mín. 5 caracteres"
-
-
             app:helperTextTextColor="@color/gray"
             app:hintTextColor="?attr/colorPrimary"
             app:passwordToggleEnabled="true"
@@ -208,7 +196,6 @@
             android:layout_marginBottom="12dp"
             android:hint="Confirmar clave"
             app:boxStrokeColor="?attr/colorPrimary"
-
             app:errorEnabled="true"
             app:hintTextColor="?attr/colorPrimary"
             app:passwordToggleEnabled="true"
@@ -237,9 +224,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName|textCapWords"
-                android:textColor="?attr/colorOnSurface"
                 android:maxLength="90"
-                />
+                android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -249,7 +235,6 @@
             android:layout_marginBottom="16dp"
             android:hint="Número de emergencia"
             app:boxStrokeColor="?attr/colorPrimary"
-
             app:hintTextColor="?attr/colorPrimary"
             app:prefixText="+51 "
             app:prefixTextColor="?attr/colorOnSurface">
@@ -271,7 +256,6 @@
             android:layout_marginTop="16dp"
             android:layout_marginBottom="12dp"
             android:padding="8dp"
-
             android:text="¿Cuentas con seguro de salud?"
             android:textColor="?attr/colorOnSurface"
             android:textSize="15sp"
@@ -284,8 +268,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:padding="8dp"
-
-            android:text="Acepto los Términos y Condiciones y las Políticas de privacidad"
+            android:text="Acepto los Términos y Condiciones"
             android:textColor="?attr/colorOnSurface"
             android:textSize="15sp"
             app:buttonTint="?attr/colorPrimary"
@@ -297,10 +280,8 @@
             android:layout_height="56dp"
             android:layout_marginBottom="80dp"
             android:text="Registrarse"
-
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
-
             app:backgroundTint="?attr/colorPrimary"
             app:cornerRadius="8dp"
             app:elevation="4dp" />

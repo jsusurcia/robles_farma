@@ -30,6 +30,7 @@ import com.example.robles_farma.response.PacienteUpdatePassResponse;
 import com.example.robles_farma.request.DispositivoPacienteRequest;
 import com.example.robles_farma.response.ReprogramarCitaResponse;
 import com.example.robles_farma.response.ReservaResponse;
+import com.example.robles_farma.response.TipoDocumentoResponse;
 import com.example.robles_farma.response.TipoPagoResponse;
 
 import java.util.List;
@@ -178,4 +179,8 @@ public interface ApiService {
     // Endpoint nuevo para los tipos de pago
     @GET("tipo_pago/")
     Call<ItemListResponse<TipoPagoResponse>> getTiposPago();
+
+    // Endpoint para tipos de documento
+    @GET("tipo_documento/")
+    Call<ItemListResponse<TipoDocumentoResponse>> getTiposDocumento();
 }
