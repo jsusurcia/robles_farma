@@ -21,6 +21,8 @@ import com.example.robles_farma.retrofit.FCMClient;
 import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
 
+import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -107,10 +109,23 @@ public class LoginFragment extends Fragment {
                     }
                 } else {
                     String errorMessage = "Error en el inicio de sesión";
-                    if (response.body() != null && response.body().getMessage() != null){
-                        errorMessage = response.body().getMessage();
+                    try{
+                        if( response.errorBody()!= null){
+                            String errorString = response.errorBody().string();
+                            JSONObject jsonObject= new JSONObject(errorString);
+                            if (jsonObject.has("detail")){
+                                errorMessage=jsonObject.getString("detail");
+                            }
+                        }
+                    }catch(Exception e){
+                        e.printStackTrace();
                     }
                     Toast.makeText(getContext(), errorMessage, Toast.LENGTH_LONG).show();
+
+//                    if (response.body() != null && response.body().getMessage() != null){
+//                        errorMessage = response.body().getMessage();
+//                    }
+//
                 }
             }
 
