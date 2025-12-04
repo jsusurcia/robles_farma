@@ -136,7 +136,13 @@
                         android:text="Hospital José Soto Cadenillas"
                         android:textColor="@color/gray"
                         app:drawableTint="?attr/colorSecondary" />
-
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btn_llamar_centro"
+                        android:text="Llamar a centro médico"
+                        android:visibility="gone"
+                        />
                     <TextView
                         android:id="@+id/tv_label_domicilio"
                         android:layout_width="wrap_content"

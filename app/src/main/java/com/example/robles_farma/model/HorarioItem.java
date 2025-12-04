@@ -12,6 +12,11 @@ public class HorarioItem {
     private String piso;
     private String sala;
 
+    @SerializedName("telefono_centro_medico")
+    private String telefonoCentroMedico;
+
+
+
     // --- GETTERS ---
     public int getId_horario() { return id_horario; }
     public String getHora_inicio() { return hora_inicio; }
@@ -21,4 +26,5 @@ public class HorarioItem {
 
     public String getPiso() { return piso; }
     public String getSala() { return sala; }
+    public String getTelefonoCentroMedico() { return telefonoCentroMedico; }
 }

@@ -1,6 +1,8 @@
 package com.example.robles_farma.ui.citas;
 
+import android.content.Intent;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,6 +34,7 @@ import com.example.robles_farma.response.TipoPagoResponse;
 import com.example.robles_farma.retrofit.ApiService;
 import com.example.robles_farma.retrofit.RetrofitClient;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
+import com.google.gson.internal.NonNullElementWrapperList;
 
 import java.util.List;
 
@@ -61,6 +64,8 @@ public class ResumenCitaFragment extends Fragment {
     private String direccionCentro;
     private String piso;
     private String sala;
+
+    private String telefono;
 
     // Datos de Pago
     private int idMetodoPagoSeleccionado = -1; // -1 indica que no se ha seleccionado nada
@@ -116,6 +121,7 @@ public class ResumenCitaFragment extends Fragment {
             fecha = getArguments().getString("fecha");
             hora = getArguments().getString("hora");
             precioReal = getArguments().getDouble("precio_consulta", 0.0);
+            telefono = getArguments().getString("telefono_centro");
 
             // Lógica inversa: si no es en centro médico, es domicilio
             boolean enCentro = getArguments().getBoolean("en_centro_medico");
@@ -176,6 +182,7 @@ public class ResumenCitaFragment extends Fragment {
             binding.tvLabelDomicilio.setVisibility(View.VISIBLE);
             binding.layoutDetallesCentro.setVisibility(View.GONE);
             binding.layoutDetallesDomicilio.setVisibility(View.VISIBLE);
+            binding.btnLlamarCentro.setVisibility(View.GONE);
         } else {
             // MODO CENTRO MÉDICO
             binding.tvNombreCentroMedico.setVisibility(View.VISIBLE);
@@ -187,6 +194,20 @@ public class ResumenCitaFragment extends Fragment {
             binding.tvDireccionCentro.setText(direccionCentro != null ? direccionCentro : "-");
             String textoUbicacion = (piso != null ? piso : "-") + " / " + (sala != null ? sala : "-");
             binding.tvPisoSala.setText(textoUbicacion);
+            if (telefono != null && !telefono.isEmpty()){
+                binding.btnLlamarCentro.setVisibility(View.VISIBLE);
+                binding.btnLlamarCentro.setOnClickListener(v ->{
+                    try {
+                        Uri number = Uri.parse("tel:" + telefono);
+                        Intent callIntent = new Intent(Intent.ACTION_DIAL,number);
+                        startActivity(callIntent);
+                    }catch(Exception e){
+                        Toast.makeText(getContext(), "No se puede realizar una llamada al centro médico", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }else {
+                binding.btnLlamarCentro.setVisibility(View.GONE);
+            }
         }
     }
 

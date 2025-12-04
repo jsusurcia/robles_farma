@@ -118,7 +118,38 @@
                 android:textColor="?attr/colorOnSurface"
 
                 android:textStyle="bold" />
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/chip_group_filtro"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                app:singleSelection="true"
+                >
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_todos"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Todos" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_manana"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mañana"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    />
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/chip_tarde"
+                    android:text="Tarde"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    />
 
+            </com.google.android.material.chip.ChipGroup>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_horarios_disponibles"
                 android:layout_width="match_parent"
@@ -130,6 +161,17 @@
                 app:spanCount="2"
                 tools:itemCount="5"
                 tools:listitem="@layout/card_bloque_horario" />
+            <TextView
+                android:id="@+id/tv_empty_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="No hay horarios disponibles"
+                android:textColor="@android:color/darker_gray"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:visibility="gone"
+                />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

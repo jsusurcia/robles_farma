@@ -14,7 +14,14 @@ import com.example.robles_farma.MyApplication;
 import com.example.robles_farma.sharedpreferences.LoginStorage;
 
 public class RetrofitClient {
-    public static final String URL_API_SERVICE = "https://citassalud-production.up.railway.app/";
+    //Para el railway
+    //public static final String URL_API_SERVICE = "https://citassalud-production.up.railway.app/";
+
+    //para solo usar emulador
+    public static final String URL_API_SERVICE = "http://10.0.2.2:8000/";
+
+    //para usarlo con la pc y tablet
+    //public static final String URL_API_SERVICE = "https://10.0.2.2:8000/";
     public static String API_TOKEN;
 
     private static class AuthInterceptor implements Interceptor {

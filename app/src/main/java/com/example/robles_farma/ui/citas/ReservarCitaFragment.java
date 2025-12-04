@@ -43,7 +43,7 @@ public class ReservarCitaFragment extends Fragment {
     // Componentes visuales
     private CalendarView calendarView;
     private RecyclerView rvHorarios;
-    private TextView tvEspecialidadTitulo;
+    private TextView tvEspecialidadTitulo, tv_empty_state;
 
     // Variables de datos
     private String especialidadNombre;
@@ -55,6 +55,11 @@ public class ReservarCitaFragment extends Fragment {
     private HorariosAdapter adapter;
 
     private HorariosAdapter.HorarioDisplay horarioSeleccionado = null;
+
+    //Variable para filtrar entre turno de mañana o tarde
+    //Esta variable almacenara todos los horarios recolectador por la API
+    //Así cuando se haga el filtro no se perderán
+    private List<HorariosAdapter.HorarioDisplay> listaOriginalBackup = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +75,7 @@ public class ReservarCitaFragment extends Fragment {
         calendarView = binding.calendarView;
         rvHorarios = binding.rvHorariosDisponibles;
         tvEspecialidadTitulo = binding.tvEspecialidadTitulo;
+        tv_empty_state=binding.tvEmptyState;
 
         // 2. Iniciar API
         apiService = RetrofitClient.createService();
@@ -85,6 +91,17 @@ public class ReservarCitaFragment extends Fragment {
 
         // 6. Configurar Toggle (Centro Médico vs Domicilio)
         configurarToggle();
+
+        //7. Filtro de turno
+        binding.chipGroupFiltro.setOnCheckedChangeListener((group, checkedId)->{
+            if (checkedId == R.id.chip_todos){
+                filtrarHorarios("Todos");
+            } else if (checkedId == R.id.chip_manana) {
+                filtrarHorarios("Mañana");
+            } else if (checkedId == R.id.chip_tarde) {
+                filtrarHorarios("Tarde");
+            }
+        });
         // En onViewCreated...
         binding.btnContinuar.setOnClickListener(v -> {
             if (horarioSeleccionado == null) {
@@ -110,6 +127,7 @@ public class ReservarCitaFragment extends Fragment {
             bundle.putString("direccion_centro", horarioSeleccionado.horario.getDireccion_centro_medico());
             bundle.putString("piso", horarioSeleccionado.horario.getPiso());
             bundle.putString("sala", horarioSeleccionado.horario.getSala());
+            bundle.putString("telefono_centro",horarioSeleccionado.telefono);
             // Navegar
             try {
                 // Asegúrate de importar: androidx.navigation.Navigation
@@ -208,23 +226,36 @@ public class ReservarCitaFragment extends Fragment {
             @Override
             public void onResponse(Call<ItemListResponse<MedicoConHorariosResponse>> call, Response<ItemListResponse<MedicoConHorariosResponse>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
+                    //Recolecta la lista de médicos obtenidos a través de la API
                     List<MedicoConHorariosResponse> medicos = response.body().getData();
                     List<HorariosAdapter.HorarioDisplay> listaPlana = new ArrayList<>();
+
 
                     // Aplanar datos: De (Médico -> Lista Horas) a (Lista Plana Visual)
                     if (medicos != null) {
                         for (MedicoConHorariosResponse medico : medicos) {
                             for (HorarioItem h : medico.getHorarios()) {
-                                listaPlana.add(new HorariosAdapter.HorarioDisplay(h, medico.getNombreCompleto(),medico.getPrecio()));
+                                listaPlana.add(new HorariosAdapter.HorarioDisplay(h, medico.getNombreCompleto(),medico.getPrecio(),h.getTelefonoCentroMedico()));
                             }
                         }
                     }
+                    listaOriginalBackup.clear();
+                    //Agregamos los datos originales a la lista de backup
+                    //El tipo de estructura es una lista plana
+                    //Es colección
+                    listaOriginalBackup.addAll(listaPlana);
 
                     adapter.setDatos(listaPlana); // Actualizar UI
 
                     if (listaPlana.isEmpty()) {
+                        //En caso no haya horarios para mostrar
+                        binding.rvHorariosDisponibles.setVisibility(View.GONE);
+                        binding.tvEmptyState.setVisibility(View.VISIBLE);
                         Toast.makeText(getContext(), "No hay horarios disponibles.", Toast.LENGTH_SHORT).show();
+                    }else{
+                        //En caso sí haya horarios para mostrar y cargar
+                        binding.rvHorariosDisponibles.setVisibility(View.VISIBLE);
+                        binding.tvEmptyState.setVisibility(View.GONE);
                     }
 
                 } else {
@@ -243,5 +274,35 @@ public class ReservarCitaFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private  void filtrarHorarios(String turno){
+        if (listaOriginalBackup.isEmpty()){
+            return;
+        }
+        //Preparamos la lista temporal vacía
+        List<HorariosAdapter.HorarioDisplay> listaFiltrada = new ArrayList<>();
+
+        for (HorariosAdapter.HorarioDisplay item : listaOriginalBackup){
+            String horaString = item.horario.getHora_inicio();
+            int hora = Integer.parseInt(horaString.substring(0,2));
+            //EJEMPLO
+            //09:30:00
+            //Coge el 09 y lo convierte en int 9, para poder operar con el
+
+            if (turno.equalsIgnoreCase("Todos")){
+                listaFiltrada.add(item);//Pasan todos
+            }else if (turno.equalsIgnoreCase("Mañana")&& hora<12){
+                listaFiltrada.add(item);//Antes de las 12
+            } else if (turno.equalsIgnoreCase("Tarde") && hora>=12) {
+                listaFiltrada.add(item);//Despues de las 12
+            }
+
+        }
+        adapter.setDatos(listaFiltrada);
+        if (listaFiltrada.isEmpty()) {
+            Toast.makeText(getContext(), "No hay Horarios disponibles en este turno", Toast.LENGTH_SHORT).show();
+
+        }
     }
 }

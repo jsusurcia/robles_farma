@@ -23,11 +23,13 @@ public class HorariosAdapter extends RecyclerView.Adapter<HorariosAdapter.Horari
         public HorarioItem horario;
         public String nombreDoctor;
         public double precio;
+        public String telefono;
 
-        public HorarioDisplay(HorarioItem horario, String nombreDoctor, double precio) {
+        public HorarioDisplay(HorarioItem horario, String nombreDoctor, double precio, String telefono) {
             this.horario = horario;
             this.nombreDoctor = nombreDoctor;
             this.precio = precio;
+            this.telefono= telefono;
         }
     }
 
